@@ -3,6 +3,7 @@ Metrics: true
 
 Cauldron:
   MillisecondsToHeatUp: 5000
+  DamageEntities: true
   Sound:
     AmbientBubbleVolume: 0.45
     ItemSplashVolume: 1.0

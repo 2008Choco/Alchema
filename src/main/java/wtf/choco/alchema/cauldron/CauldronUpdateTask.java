@@ -55,8 +55,11 @@ public class CauldronUpdateTask extends BukkitRunnable {
     public void run() {
         this.currentTick++;
 
+        // Pull configuration values every tick, but only once for every cauldron iteration
         FileConfiguration config = plugin.getConfig();
         int millisecondsToHeatUp = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP, 5000), 0);
+        boolean damageEntities = config.getBoolean(AlchemaConstants.CONFIG_CAULDRON_DAMAGE_ENTITIES, true);
+
         float volumeAmbientBubble = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_AMBIENT_BUBBLE_VOLUME, 0.45);
         float volumeItemSplash = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_ITEM_SPLASH_VOLUME, 1.0);
         float volumeSuccessfulCraft = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_SUCCESSFUL_CRAFT_VOLUME, 0.5);
@@ -131,7 +134,7 @@ public class CauldronUpdateTask extends BukkitRunnable {
                         world.playSound(location, Sound.ENTITY_PLAYER_SPLASH, volumeItemSplash, 2F);
                     }
                 }
-                else if (entity instanceof LivingEntity) {
+                else if (damageEntities && entity instanceof LivingEntity) {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     if (currentTick % 20 == 0) {
                         EntityDamageByCauldronEvent entityDamageByCauldronEvent = AlchemaEventFactory.callEntityDamageByCauldronEvent(livingEntity, cauldron, 1.0);
