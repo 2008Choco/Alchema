@@ -1,0 +1,15 @@
+{
+    "result": {
+        "item": "minecraft:turtle_egg"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:egg"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:scute"
+        }
+    ]
+}

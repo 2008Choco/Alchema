@@ -1,0 +1,15 @@
+{
+    "result": {
+        "item": "minecraft:wheat"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:wheat_seeds"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:bone_meal"
+        }
+    ]
+}

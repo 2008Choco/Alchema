@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:lapis_ore"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:stone"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:lapis_lazuli",
+            "amount": 2
+        }
+    ]
+}

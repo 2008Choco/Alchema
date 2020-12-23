@@ -1,0 +1,19 @@
+{
+    "result": {
+        "item": "minecraft:mushroom_stew"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:bowl"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:brown_mushroom"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:red_mushroom"
+        }
+    ]
+}

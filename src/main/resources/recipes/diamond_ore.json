@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:diamond_ore"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:stone"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:diamond",
+            "amount": 2
+        }
+    ]
+}

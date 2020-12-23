@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:pumpkin"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:pumpkin_seeds"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:bone_meal",
+            "amount": 2
+        }
+    ]
+}

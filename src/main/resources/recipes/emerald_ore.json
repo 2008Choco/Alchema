@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:emerald_ore"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:stone"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:emerald",
+            "amount": 2
+        }
+    ]
+}

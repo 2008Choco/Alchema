@@ -1,0 +1,20 @@
+{
+    "result": {
+        "item": "minecraft:fermented_spider_eye",
+        "amount": 2
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:spider_eye"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:sugar"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:brown_mushroom"
+        }
+    ]
+}

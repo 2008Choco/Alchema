@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:beetroot_soup"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:bowl"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:beetroot",
+            "amount": 4
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "result": {
+        "item": "minecraft:rabbit_stew"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:bowl"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:cooked_rabbit"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:baked_potato"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:red_mushroom"
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:melon"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:melon_seeds"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:bone_meal",
+            "amount": 2
+        }
+    ]
+}

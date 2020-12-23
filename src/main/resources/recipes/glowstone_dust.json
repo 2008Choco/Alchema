@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "minecraft:glowstone_dust",
+        "amount": 2
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:redstone"
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:coal"
+        }
+    ]
+}
