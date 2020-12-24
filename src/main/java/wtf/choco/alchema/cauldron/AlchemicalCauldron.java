@@ -309,13 +309,15 @@ public class AlchemicalCauldron {
         cauldronBlockObject.addProperty("z", cauldronBlock.getZ());
         object.add("cauldron", cauldronBlockObject);
 
-        JsonArray ingredientsArray = new JsonArray();
-        this.ingredients.forEach(ingredient -> {
-            JsonObject ingredientObject = ingredient.toJson();
-            ingredientObject.addProperty("type", ingredient.getKey().toString());
-            ingredientsArray.add(ingredientObject);
-        });
-        object.add("ingredients", ingredientsArray);
+        if (ingredients.size() > 0) {
+            JsonArray ingredientsArray = new JsonArray();
+            this.ingredients.forEach(ingredient -> {
+                JsonObject ingredientObject = ingredient.toJson();
+                ingredientObject.addProperty("type", ingredient.getKey().toString());
+                ingredientsArray.add(ingredientObject);
+            });
+            object.add("ingredients", ingredientsArray);
+        }
 
         return object;
     }
