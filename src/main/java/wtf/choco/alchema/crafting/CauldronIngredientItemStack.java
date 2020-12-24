@@ -2,15 +2,14 @@ package wtf.choco.alchema.crafting;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.util.ItemUtil;
 
 /**
  * A {@link CauldronIngredient} implementation wrapped around an {@link ItemStack}.
@@ -55,19 +54,8 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
      * @param object the object from which to deserialize
      */
     public CauldronIngredientItemStack(@NotNull JsonObject object) {
-        // TODO: Make this more specific than just "type" and "amount"
-        if (!object.has("item")) {
-            throw new JsonParseException("object does not contain type.");
-        }
-
-        Material material = Material.matchMaterial(object.get("item").getAsString());
-        int amount = object.has("amount") ? object.get("amount").getAsInt() : 1;
-
-        if (material == null) {
-            throw new JsonParseException("Could not find material with id " + object.get("item").getAsString());
-        }
-
-        this.item = new ItemStack(material, amount);
+        this.item = ItemUtil.deserializeItemStack(object);
+        this.item.setAmount(object.has("amount") ? Math.max(object.get("amount").getAsInt(), 1) : 1);
     }
 
     @NotNull
@@ -114,12 +102,8 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
     @NotNull
     @Override
     public JsonObject toJson() {
-        JsonObject object = new JsonObject();
-
-        // TODO: More specific properties
-        object.addProperty("item", this.item.getType().getKey().toString());
-        object.addProperty("amount", getAmount());
-
+        JsonObject object = ItemUtil.serializeItemStack(item);
+        object.addProperty("amount", getAmount()); // Adjust "amount" to match getAmount()
         return object;
     }
 
