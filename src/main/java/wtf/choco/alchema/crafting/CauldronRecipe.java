@@ -6,13 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
+import wtf.choco.alchema.util.ItemUtil;
 import wtf.choco.alchema.util.NamespacedKeyUtil;
 
 /**
@@ -226,6 +224,10 @@ public class CauldronRecipe {
         Preconditions.checkArgument(key != null, "key cannot be null");
         Preconditions.checkArgument(object != null, "object cannot be null");
 
+        if (!object.has("result")) {
+            throw new JsonParseException("Missing result object");
+        }
+
         if (!object.has("ingredients") || !object.get("ingredients").isJsonArray()) {
             throw new JsonParseException("Missing ingredients array");
         }
@@ -235,7 +237,7 @@ public class CauldronRecipe {
             throw new JsonParseException("ingredients array must contain at least two ingredients");
         }
 
-        Entry<@NotNull Material, @NotNull Integer> result = parseQuantifiedMaterial(object.getAsJsonObject("result"));
+        ItemStack result = ItemUtil.deserializeItemStack(object.getAsJsonObject("result"));
 
         List<@NotNull CauldronIngredient> ingredients = new ArrayList<>(ingredientsArray.size());
 
@@ -263,30 +265,7 @@ public class CauldronRecipe {
             ingredients.add(ingredient);
         }
 
-        return new CauldronRecipe(key, new ItemStack(result.getKey(), result.getValue()), ingredients);
-    }
-
-    @NotNull
-    private static Entry<@NotNull Material, @NotNull Integer> parseQuantifiedMaterial(@NotNull JsonElement element) {
-        Preconditions.checkArgument(element != null, "element cannot be null");
-
-        if (!element.isJsonObject()) {
-            throw new JsonParseException("Expected object, got " + element.getClass().getSimpleName() + " instead.");
-        }
-
-        JsonObject object = element.getAsJsonObject();
-        if (!object.has("item")) {
-            throw new JsonParseException("object does not contain type.");
-        }
-
-        Material type = Material.matchMaterial(object.get("item").getAsString());
-        int amount = object.has("amount") ? object.get("amount").getAsInt() : 1;
-
-        if (type == null) {
-            throw new JsonParseException("Could not find material with id " + object.get("item").getAsString());
-        }
-
-        return new SimpleEntry<>(type, amount);
+        return new CauldronRecipe(key, result, ingredients);
     }
 
 }
