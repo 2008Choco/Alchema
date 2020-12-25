@@ -43,6 +43,8 @@ import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
 import wtf.choco.alchema.util.AlchemaEventFactory;
 import wtf.choco.alchema.util.NamespacedKeyUtil;
+import wtf.choco.alchema.util.UpdateChecker;
+import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 
 public final class Alchema extends JavaPlugin {
 
@@ -130,12 +132,7 @@ public final class Alchema extends JavaPlugin {
             new Metrics(this, 9741); // https://bstats.org/what-is-my-plugin-id
         }
 
-        // Check for newer version (NOTE: DISABLED FOR FIRST UPDATE, DO NOT HAVE A RESOURCE ID JUST YET)
-        if (getConfig().getBoolean("CheckForUpdates")) {
-            this.getLogger().info("Update checking was enabled but is not functional due to this being the initial release of Alchema. Update checking will be available in the next release.");
-        }
-        /*
-        UpdateChecker updateChecker = UpdateChecker.init(this, -1);
+        UpdateChecker updateChecker = UpdateChecker.init(this, 87078);
         if (getConfig().getBoolean("CheckForUpdates", true)) {
             this.getLogger().info("Getting version information...");
             updateChecker.requestUpdateCheck().whenComplete((result, exception) -> {
@@ -154,7 +151,6 @@ public final class Alchema extends JavaPlugin {
                 }
             });
         }
-        */
     }
 
     @Override
