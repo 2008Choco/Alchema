@@ -22,6 +22,7 @@ import wtf.choco.alchema.Alchema;
  */
 public class CauldronIngredientMaterial implements CauldronIngredient {
 
+    /** The {@link NamespacedKey} used for this ingredient type */
     public static final NamespacedKey KEY = Alchema.key("material");
 
     private final Material material;

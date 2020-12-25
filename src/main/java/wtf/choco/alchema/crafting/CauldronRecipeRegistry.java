@@ -108,6 +108,15 @@ public class CauldronRecipeRegistry {
         this.ingredientTypes.put(key, ingredientProvider);
     }
 
+    /**
+     * Parse a {@link CauldronIngredient} with the ingredient type matching the provided
+     * {@link NamespacedKey} from a {@link JsonObject}.
+     *
+     * @param key the key of the ingredient type to parse
+     * @param object the object from which to parse the ingredient
+     *
+     * @return the parsed ingredient. null if invalid
+     */
     @Nullable
     public CauldronIngredient parseIngredientType(@NotNull NamespacedKey key, @NotNull JsonObject object) {
         Preconditions.checkArgument(key != null, "key must not be null");
@@ -121,6 +130,9 @@ public class CauldronRecipeRegistry {
         return ingredientProvider.apply(object);
     }
 
+    /**
+     * Clear all registered ingredient types.
+     */
     public void clearIngredientTypes() {
         this.ingredientTypes.clear();
     }

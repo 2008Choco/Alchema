@@ -20,6 +20,7 @@ import wtf.choco.alchema.util.ItemUtil;
  */
 public class CauldronIngredientItemStack implements CauldronIngredient {
 
+    /** The {@link NamespacedKey} used for this ingredient type */
     public static final NamespacedKey KEY = Alchema.key("item");
 
     private final ItemStack item;

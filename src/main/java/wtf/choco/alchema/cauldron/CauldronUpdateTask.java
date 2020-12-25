@@ -35,7 +35,13 @@ import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
 
-public class CauldronUpdateTask extends BukkitRunnable {
+/**
+ * An implementation of {@link BukkitRunnable} that handles the updating and ticking of
+ * in-world {@link AlchemicalCauldron} instances.
+ *
+ * @author Parker Hawke - Choco
+ */
+public final class CauldronUpdateTask extends BukkitRunnable {
 
     private static CauldronUpdateTask instance = null;
 
@@ -186,6 +192,15 @@ public class CauldronUpdateTask extends BukkitRunnable {
         }
     }
 
+    /**
+     * Start the singleton {@link CauldronUpdateTask}.
+     * <p>
+     * <strong>NOTE:</strong> This is for internal use only
+     *
+     * @param plugin the plugin to start the task
+     *
+     * @return the task instance
+     */
     @NotNull
     public static CauldronUpdateTask startTask(@NotNull Alchema plugin) {
         Preconditions.checkNotNull(plugin, "plugin cannot be null");

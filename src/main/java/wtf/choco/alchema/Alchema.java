@@ -46,8 +46,14 @@ import wtf.choco.alchema.util.NamespacedKeyUtil;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 
+/**
+ * The main plugin class of Alchema.
+ *
+ * @author Parker Hawke - Choco
+ */
 public final class Alchema extends JavaPlugin {
 
+    /** The chat prefix used by Alchema */
     public static final String CHAT_PREFIX = ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Alchema | " + ChatColor.GRAY;
 
     private static final Gson GSON = new Gson();

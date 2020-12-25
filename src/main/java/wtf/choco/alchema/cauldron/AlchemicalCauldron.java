@@ -52,6 +52,11 @@ public class AlchemicalCauldron {
 
     private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
 
+    /**
+     * Construct a new {@link AlchemicalCauldron}.
+     *
+     * @param block the block at which the cauldron is located
+     */
     public AlchemicalCauldron(@NotNull Block block) {
         Preconditions.checkArgument(block.getType() == Material.CAULDRON, "AlchemicalCauldron block type must be CAULDRON");
 

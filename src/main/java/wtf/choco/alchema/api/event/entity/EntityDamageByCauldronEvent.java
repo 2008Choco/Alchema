@@ -92,6 +92,11 @@ public class EntityDamageByCauldronEvent extends EntityEvent implements Cancella
         return HANDLERS;
     }
 
+    /**
+     * Get the HandlerList instance for this event.
+     *
+     * @return the handler list
+     */
     @NotNull
     public static HandlerList getHandlerList() {
         return HANDLERS;

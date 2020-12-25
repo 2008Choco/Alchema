@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class UpdateChecker {
 
+    /** The default version scheme for this update checker */
     public static final VersionScheme VERSION_SCHEME_DECIMAL = (first, second) -> {
         String[] firstSplit = splitVersionInfo(first), secondSplit = splitVersionInfo(second);
         if (firstSplit == null || secondSplit == null) {
