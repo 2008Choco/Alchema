@@ -104,37 +104,6 @@ public class CauldronRecipe {
     }
 
     /**
-     * Add an ingredient and its required amount to this recipe.
-     *
-     * @param ingredient the ingredient to add
-     *
-     * @return this instance. Allows for chained method calls
-     */
-    @NotNull
-    public CauldronRecipe addIngredient(@NotNull CauldronIngredient ingredient) {
-        Preconditions.checkArgument(ingredient != null, "ingredient must not be null");
-
-        int existingIndex = -1;
-
-        for (int i = 0; i < ingredients.size(); i++) {
-            CauldronIngredient cauldronIngredient = ingredients.get(i);
-            if (cauldronIngredient.isSimilar(ingredient)) {
-                existingIndex = i;
-                break;
-            }
-        }
-
-        if (existingIndex != -1) {
-            // If possible, merge existing ingredients to not overflow the cauldron with many of the same type
-            this.ingredients.set(existingIndex, ingredients.get(existingIndex).merge(ingredient));
-        } else {
-            this.ingredients.add(ingredient);
-        }
-
-        return this;
-    }
-
-    /**
      * Check whether this recipe contains the specified ingredient. Quantity is not
      * accounted for in this check.
      *
