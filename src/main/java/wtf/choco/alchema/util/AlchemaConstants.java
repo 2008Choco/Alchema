@@ -1,5 +1,9 @@
 package wtf.choco.alchema.util;
 
+import org.bukkit.NamespacedKey;
+
+import wtf.choco.alchema.Alchema;
+
 /**
  * Various constants for the Alchema plugin. Non-documented but field names should
  * be self-descriptive.
@@ -13,6 +17,10 @@ public final class AlchemaConstants {
 
     /** A metadata key used by Alchema to denote that an item entity was recently crafted by a cauldron */
     public static final String METADATA_KEY_CAULDRON_CRAFTED = "alchema:cauldron_crafted";
+
+
+    /** A {@link NamespacedKey} used as an NBT key for entity essence items */
+    public static final NamespacedKey NBT_KEY_ENTITY_ESSENCE = Alchema.key("entity_essence");
 
 
     /** Configuration path, Cauldron.MillisecondsToHeatUp */

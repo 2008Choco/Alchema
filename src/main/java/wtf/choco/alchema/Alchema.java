@@ -35,10 +35,12 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.cauldron.CauldronManager;
 import wtf.choco.alchema.cauldron.CauldronUpdateTask;
 import wtf.choco.alchema.command.CommandAlchema;
+import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
 import wtf.choco.alchema.util.AlchemaEventFactory;
@@ -62,6 +64,7 @@ public final class Alchema extends JavaPlugin {
 
     private final CauldronManager cauldronManager = new CauldronManager();
     private final CauldronRecipeRegistry recipeRegistry = new CauldronRecipeRegistry();
+    private final EntityEssenceEffectRegistry entityEssenceEffectRegistry = new EntityEssenceEffectRegistry();
 
     private File cauldronFile;
     private File recipesDirectory;
@@ -74,6 +77,7 @@ public final class Alchema extends JavaPlugin {
 
         this.recipeRegistry.registerIngredientType(CauldronIngredientItemStack.KEY, CauldronIngredientItemStack::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientMaterial.KEY, CauldronIngredientMaterial::new);
+        this.recipeRegistry.registerIngredientType(CauldronIngredientEntityEssence.KEY, object -> new CauldronIngredientEntityEssence(object, entityEssenceEffectRegistry));
     }
 
     @Override
@@ -121,6 +125,9 @@ public final class Alchema extends JavaPlugin {
                 this.getLogger().info("Registered " + result.getTotal() + " cauldron recipes. (" + result.getThirdParty() + " third-party)");
             }
         });
+
+        // Register entity essence effects
+        EntityEssenceEffectRegistry.registerDefaultAlchemaEssences(entityEssenceEffectRegistry);
 
         // Register listeners
         PluginManager manager = Bukkit.getPluginManager();
@@ -179,6 +186,7 @@ public final class Alchema extends JavaPlugin {
         this.cauldronManager.clearCauldrons();
         this.recipeRegistry.clearRecipes();
         this.recipeRegistry.clearIngredientTypes();
+        this.entityEssenceEffectRegistry.clearEntityEssenceData();
 
         if (cauldronUpdateTask != null) {
             this.cauldronUpdateTask.cancel();
@@ -203,6 +211,15 @@ public final class Alchema extends JavaPlugin {
     @NotNull
     public CauldronRecipeRegistry getRecipeRegistry() {
         return recipeRegistry;
+    }
+
+    /**
+     * Get the {@link EntityEssenceEffectRegistry} instance.
+     *
+     * @return the entity essence effect registry
+     */
+    public EntityEssenceEffectRegistry getEntityEssenceEffectRegistry() {
+        return entityEssenceEffectRegistry;
     }
 
     /**

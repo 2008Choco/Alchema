@@ -14,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -29,9 +30,11 @@ import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
 import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
 import wtf.choco.alchema.crafting.CauldronIngredient;
+import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
 
@@ -127,7 +130,19 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                     }
 
                     ItemStack itemStack = item.getItemStack();
-                    CauldronIngredient ingredient = new CauldronIngredientItemStack(itemStack, itemStack.getAmount());
+                    CauldronIngredient ingredient = null;
+
+                    // Entity essence
+                    if (EntityEssenceData.isEntityEssence(itemStack)) {
+                        EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
+                        if (entityType != null) {
+                            ingredient = new CauldronIngredientEntityEssence(entityType, plugin.getEntityEssenceEffectRegistry());
+                        }
+                    }
+
+                    if (ingredient == null) {
+                        ingredient = new CauldronIngredientItemStack(itemStack, itemStack.getAmount());
+                    }
 
                     CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(cauldron, ingredient, item);
 
