@@ -80,7 +80,7 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     @Override
     public ItemStack asItemStack() {
         EntityEssenceData essenceData = essenceEffectRegistry.getEntityEssenceData(entityType);
-        return essenceData != null ? essenceData.createItemStack() : EntityEssenceData.createEmptyVial();
+        return essenceData != null ? essenceData.createItemStack(amount) : EntityEssenceData.createEmptyVial();
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -177,13 +178,51 @@ public class EntityEssenceData {
     /**
      * Create an {@link ItemStack} that encapsulates this essence data in an inventory.
      *
+     * @param essenceAmount the amount of essence in the vial
      * @param amount the amount of the item to create
      *
      * @return the item
      */
     @NotNull
-    public ItemStack createItemStack(int amount) {
-        ItemStack item = new ItemStack(Material.POTION);
+    public ItemStack createItemStack(int essenceAmount, int amount) {
+        Preconditions.checkArgument(essenceAmount > 0, "essenceAmount must be > 0");
+        Preconditions.checkArgument(amount > 0, "amount must be > 0");
+
+        ItemStack item = new ItemStack(Material.POTION, amount);
+        this.applyTo(item, essenceAmount);
+        return item;
+    }
+
+    /**
+     * Create an {@link ItemStack} that encapsulates this essence data in an inventory.
+     *
+     * @param essenceAmount the amount of essence in the vial
+     *
+     * @return the item
+     */
+    @NotNull
+    public ItemStack createItemStack(int essenceAmount) {
+        return createItemStack(essenceAmount, 1);
+    }
+
+    /**
+     * Apply the required ItemMeta and change the type of the provided {@link ItemStack} to
+     * more appropriately represent this essence data as an ItemStack.
+     *
+     * @param item the item to update
+     * @param essenceAmount the amount of essence to set
+     *
+     * @return the item stack instance for convenience
+     */
+    @NotNull
+    public ItemStack applyTo(@NotNull ItemStack item, int essenceAmount) {
+        Preconditions.checkArgument(item != null, "item must not be null");
+        Preconditions.checkArgument(essenceAmount > 0, "essenceAmount must be > 0");
+
+        if (item.getType() != Material.POTION) {
+            item.setType(Material.POTION);
+        }
+
         PotionMeta meta = (PotionMeta) item.getItemMeta();
         if (meta == null) {
             throw new IllegalStateException("trap"); // Theoretically impossible
@@ -206,21 +245,29 @@ public class EntityEssenceData {
 
         // Apply custom NBT data
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(AlchemaConstants.NBT_KEY_ENTITY_ESSENCE, AlchemaPersistentDataTypes.ENTITY_TYPE, entityType);
+        container.set(AlchemaConstants.NBT_KEY_ESSENCE_TYPE, AlchemaPersistentDataTypes.ENTITY_TYPE, entityType);
+        container.set(AlchemaConstants.NBT_KEY_ESSENCE_AMOUNT, PersistentDataType.INTEGER, essenceAmount);
 
         item.setItemMeta(meta);
-        item.setAmount(amount);
         return item;
     }
 
     /**
-     * Create an {@link ItemStack} that encapsulates this essence data in an inventory.
+     * Apply the required ItemMeta and change the type of the provided {@link ItemStack} to
+     * more appropriately represent this essence data as an ItemStack. If the item is already
+     * a vial of essence, the amount of essence will remain the same. Else, the essence amount
+     * will be set to 1.
      *
-     * @return the item
+     * @param item the item to update
+     *
+     * @return the item stack instance for convenience
      */
     @NotNull
-    public ItemStack createItemStack() {
-        return createItemStack(1);
+    public ItemStack applyTo(@NotNull ItemStack item) {
+        Preconditions.checkArgument(item != null, "item must not be null");
+
+        int essenceAmount = getEntityEssenceAmount(item);
+        return applyTo(item, Math.max(essenceAmount, 1));
     }
 
     /**
@@ -232,6 +279,29 @@ public class EntityEssenceData {
      */
     public static boolean isEntityEssence(@Nullable ItemStack item) {
         return getEntityEssenceType(item) != null;
+    }
+
+    /**
+     * Set the {@link EntityType} of the essence for the provided {@link ItemStack}.
+     *
+     * @param item the item to update
+     * @param type the type of entity to set
+     *
+     * @return the item stack instance for convenience
+     */
+    @NotNull
+    public static ItemStack setEntityEssenceType(@NotNull ItemStack item, @NotNull EntityType type) {
+        Preconditions.checkArgument(item != null, "item must not be null");
+        Preconditions.checkArgument(type != null, "type must not be null");
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return item;
+        }
+
+        meta.getPersistentDataContainer().set(AlchemaConstants.NBT_KEY_ESSENCE_TYPE, AlchemaPersistentDataTypes.ENTITY_TYPE, type);
+        item.setItemMeta(meta);
+        return item;
     }
 
     /**
@@ -256,7 +326,51 @@ public class EntityEssenceData {
             return null;
         }
 
-        return meta.getPersistentDataContainer().get(AlchemaConstants.NBT_KEY_ENTITY_ESSENCE, AlchemaPersistentDataTypes.ENTITY_TYPE);
+        return meta.getPersistentDataContainer().get(AlchemaConstants.NBT_KEY_ESSENCE_TYPE, AlchemaPersistentDataTypes.ENTITY_TYPE);
+    }
+
+    /**
+     * Set the amount of essence for the provided {@link ItemStack}.
+     *
+     * @param item the item to update
+     * @param amount the amount of essence to set
+     *
+     * @return the item stack instance for convenience
+     */
+    @NotNull
+    public static ItemStack setEntityEssenceAmount(@NotNull ItemStack item, int amount) {
+        Preconditions.checkArgument(item != null, "item must not be null");
+        Preconditions.checkArgument(amount > 0, "amount must be > 0");
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return item;
+        }
+
+        meta.getPersistentDataContainer().set(AlchemaConstants.NBT_KEY_ESSENCE_AMOUNT, PersistentDataType.INTEGER, amount);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    /**
+     * Get the amount of essence contained in the provided {@link ItemStack}.
+     *
+     * @param item the item to check
+     *
+     * @return the amount of essence
+     */
+    public static int getEntityEssenceAmount(@Nullable ItemStack item) {
+        if (item == null) {
+            return -1;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return -1;
+        }
+
+        Integer amount = meta.getPersistentDataContainer().get(AlchemaConstants.NBT_KEY_ESSENCE_AMOUNT, PersistentDataType.INTEGER);
+        return amount != null ? amount.intValue() : -1;
     }
 
     /**

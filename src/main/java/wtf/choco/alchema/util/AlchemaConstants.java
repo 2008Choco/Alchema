@@ -19,8 +19,11 @@ public final class AlchemaConstants {
     public static final String METADATA_KEY_CAULDRON_CRAFTED = "alchema:cauldron_crafted";
 
 
-    /** A {@link NamespacedKey} used as an NBT key for entity essence items */
-    public static final NamespacedKey NBT_KEY_ENTITY_ESSENCE = Alchema.key("entity_essence");
+    /** A {@link NamespacedKey} used as an NBT key for entity essence items. Determines the type of entity essence */
+    public static final NamespacedKey NBT_KEY_ESSENCE_TYPE = Alchema.key("essence_type");
+
+    /** A {@link NamespacedKey} used as an NBT key for entity essence items. Determines the quantity */
+    public static final NamespacedKey NBT_KEY_ESSENCE_AMOUNT = Alchema.key("essence_amount");
 
 
     /** Configuration path, Cauldron.MillisecondsToHeatUp */
