@@ -14,3 +14,6 @@ permissions:
   alchema.command.reload:
     description: Grants access to the /alchema reload subcommand
     default: op
+  alchema.command.integrations:
+    description: Grants access to the /alchema integrations subcommand
+    default: true

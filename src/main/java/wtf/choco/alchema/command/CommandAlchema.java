@@ -1,26 +1,33 @@
 package wtf.choco.alchema.command;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.util.StringUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
 
 public final class CommandAlchema implements TabExecutor {
 
-    private static final List<String> BASE_ARGS = Arrays.asList("version", "reload");
+    private static final List<String> BASE_ARGS = Arrays.asList("version", "reload", "integrations");
 
     private final Alchema plugin;
 
@@ -54,7 +61,7 @@ public final class CommandAlchema implements TabExecutor {
 
         else if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("alchema.command.reload")) {
-                sender.sendMessage(Alchema.CHAT_PREFIX + "You have insufficient privileges to run this command.");
+                sender.sendMessage(Alchema.CHAT_PREFIX + "You have insufficient permissions to run this command.");
                 return true;
             }
 
@@ -77,6 +84,38 @@ public final class CommandAlchema implements TabExecutor {
             sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.GREEN + "Successfully reloaded the configuration file.");
         }
 
+        else if (args[0].equalsIgnoreCase("integrations")) {
+            if (!sender.hasPermission("alchema.command.integrations")) {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "You have insufficient permissions to run this command.");
+                return true;
+            }
+
+            List<@NotNull Plugin> integrations = Arrays.stream(CauldronRecipeRegisterEvent.getHandlerList().getRegisteredListeners())
+                .map(RegisteredListener::getPlugin)
+                .distinct()
+                .filter(plugin -> plugin != this.plugin) // Remove Alchema from the list... just in case
+                .collect(Collectors.toList());
+
+            if (integrations.isEmpty()) {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "No plugins are currently integrating with Alchema.");
+
+                // Just a little bit of shameless self-promotion :)
+                String selloutPrefix = ChatColor.WHITE.toString() + ChatColor.BOLD + " | " + ChatColor.GRAY;
+                sender.sendMessage(selloutPrefix + "Alchema recommends " + ChatColor.YELLOW + "AlchemicalArrows " + ChatColor.GRAY + "by " + ChatColor.GREEN + "Choco" + ChatColor.GRAY + ".");
+                sender.sendMessage(selloutPrefix + "It adds over " + ChatColor.YELLOW + "15 unique cauldron recipes" + ChatColor.GRAY + "!");
+                sender.sendMessage(selloutPrefix + "Get it at " + ChatColor.GREEN + "https://www.spigotmc.org/resources/11693/");
+                return true;
+            }
+
+            sender.sendMessage(Alchema.CHAT_PREFIX + "Currently integrating with " + ChatColor.YELLOW + "(" + integrations.size() + ") plugin" + (integrations.size() > 1 ? "s" : "") + ChatColor.GRAY + ":");
+            for (Plugin plugin : integrations) {
+                PluginDescriptionFile description = plugin.getDescription();
+                String authors = generateListOfAuthors(plugin);
+
+                sender.sendMessage(" - " + ChatColor.YELLOW + plugin.getName() + " " + ChatColor.GREEN + description.getVersion() + ChatColor.GRAY + " by " + authors + ChatColor.GRAY + ".");
+            }
+        }
+
         else {
             sender.sendMessage(Alchema.CHAT_PREFIX + "Unknown command argument, " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + ".");
         }
@@ -88,6 +127,34 @@ public final class CommandAlchema implements TabExecutor {
     @Nullable
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
         return args.length == 1 ? StringUtil.copyPartialMatches(args[0], BASE_ARGS, new ArrayList<>()) : Collections.emptyList();
+    }
+
+    @NotNull
+    private String generateListOfAuthors(@NotNull Plugin plugin) {
+        Preconditions.checkArgument(plugin != null, "plugin must not be null");
+
+        List<String> authors = plugin.getDescription().getAuthors();
+        if (authors.isEmpty()) {
+            return ChatColor.GREEN + "Unknown";
+        }
+        else if (authors.size() == 1) {
+            return ChatColor.GREEN + authors.get(0);
+        }
+
+        StringBuilder authorsString = new StringBuilder();
+
+        for (int i = 0; i < authors.size(); i++) {
+            String author = authors.get(i);
+            if (i == authors.size() - 1) {
+                authorsString.append(ChatColor.GRAY + ", and ");
+            } else if (i != 0) {
+                authorsString.append(ChatColor.GRAY + ", ");
+            }
+
+            authorsString.append(ChatColor.GREEN + author);
+        }
+
+        return authorsString.toString();
     }
 
 }
