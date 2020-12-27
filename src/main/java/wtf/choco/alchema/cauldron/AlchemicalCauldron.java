@@ -8,8 +8,10 @@ import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -42,6 +44,14 @@ import wtf.choco.alchema.util.NamespacedKeyUtil;
  */
 public class AlchemicalCauldron {
 
+    private static final Set<Material> HEAT_SOURCE_BLOCKS = EnumSet.of(
+        Material.FIRE,
+        Material.SOUL_FIRE,
+        Material.CAMPFIRE,
+        Material.SOUL_CAMPFIRE,
+        Material.LAVA
+    );
+
     private long heatingStartTime;
     private boolean heatingUp = false, bubbling = false;
 
@@ -67,7 +77,7 @@ public class AlchemicalCauldron {
             block.getX() + 1 - 0.125, block.getY() + 1 - 0.125, block.getZ() + 1 - 0.125
         );
 
-        this.heatingStartTime = (fireBlock.getType() == Material.FIRE) ? System.currentTimeMillis() : -1;
+        this.heatingStartTime = HEAT_SOURCE_BLOCKS.contains(fireBlock.getType()) ? System.currentTimeMillis() : -1;
     }
 
     /**
@@ -151,7 +161,7 @@ public class AlchemicalCauldron {
         }
 
         Levelled cauldron = (Levelled) cauldronBlock.getBlockData();
-        return cauldron.getLevel() == cauldron.getMaximumLevel() && fireBlock.getType() == Material.FIRE;
+        return cauldron.getLevel() == cauldron.getMaximumLevel() && HEAT_SOURCE_BLOCKS.contains(fireBlock.getType());
     }
 
     /**
