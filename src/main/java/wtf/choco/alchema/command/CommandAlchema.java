@@ -5,7 +5,10 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
@@ -27,7 +30,12 @@ import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
 
 public final class CommandAlchema implements TabExecutor {
 
-    private static final List<String> BASE_ARGS = Arrays.asList("version", "reload", "integrations");
+    private static final Map<@NotNull String, @Nullable String> BASE_ARGS = new HashMap<>();
+    static {
+        BASE_ARGS.put("version", null);
+        BASE_ARGS.put("reload", "alchema.command.reload");
+        BASE_ARGS.put("integrations", "alchema.command.integrations");
+    }
 
     private final Alchema plugin;
 
@@ -38,7 +46,7 @@ public final class CommandAlchema implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length == 0) {
-            sender.sendMessage(Alchema.CHAT_PREFIX + "Insufficient arguments. " + ChatColor.YELLOW + "/" + label + " " + BASE_ARGS);
+            sender.sendMessage(Alchema.CHAT_PREFIX + "Insufficient arguments. " + ChatColor.YELLOW + "/" + label + " <" + String.join(" | ", getArgsFor(sender)) + ">");
             return true;
         }
 
@@ -125,8 +133,24 @@ public final class CommandAlchema implements TabExecutor {
 
     @Override
     @Nullable
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
-        return args.length == 1 ? StringUtil.copyPartialMatches(args[0], BASE_ARGS, new ArrayList<>()) : Collections.emptyList();
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+        return args.length == 1 ? StringUtil.copyPartialMatches(args[0], getArgsFor(sender), new ArrayList<>()) : Collections.emptyList();
+    }
+
+    @NotNull
+    private List<String> getArgsFor(@NotNull CommandSender sender) {
+        Preconditions.checkArgument(sender != null, "sender must not be null");
+
+        List<String> args = new ArrayList<>(BASE_ARGS.size());
+
+        for (Entry<@NotNull String, @Nullable String> arg : BASE_ARGS.entrySet()) {
+            String permission = arg.getValue();
+            if (permission == null || sender.hasPermission(permission)) {
+                args.add(arg.getKey());
+            }
+        }
+
+        return args;
     }
 
     @NotNull
