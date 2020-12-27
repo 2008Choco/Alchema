@@ -157,18 +157,18 @@ public final class CauldronUpdateTask extends BukkitRunnable {
             });
 
             if (!cauldron.hasIngredients()) {
-                return;
+                continue;
             }
 
             CauldronRecipe activeRecipe = recipeRegistry.getApplicableRecipe(cauldron.getIngredients());
             if (activeRecipe == null) {
-                return;
+                continue;
             }
 
             OfflinePlayer lastInteracted = cauldron.getLastInteracted();
             CauldronItemCraftEvent cauldronCraftEvent = AlchemaEventFactory.callCauldronItemCraftEvent(cauldron, activeRecipe, lastInteracted != null ? lastInteracted.getPlayer() : null);
             if (cauldronCraftEvent.isCancelled()) {
-                break;
+                continue;
             }
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
