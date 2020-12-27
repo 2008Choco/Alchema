@@ -1,6 +1,7 @@
 package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,11 +9,12 @@ import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,7 +24,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Item;
 import org.bukkit.util.BoundingBox;
 
@@ -44,13 +48,14 @@ import wtf.choco.alchema.util.NamespacedKeyUtil;
  */
 public class AlchemicalCauldron {
 
-    private static final Set<Material> HEAT_SOURCE_BLOCKS = EnumSet.of(
-        Material.FIRE,
-        Material.SOUL_FIRE,
-        Material.CAMPFIRE,
-        Material.SOUL_CAMPFIRE,
-        Material.LAVA
-    );
+    private static final Map<@NotNull Material, @NotNull Predicate<@NotNull BlockData>> HEAT_SOURCE_BLOCKS = new EnumMap<>(Material.class);
+    static {
+        HEAT_SOURCE_BLOCKS.put(Material.FIRE, Predicates.alwaysTrue());
+        HEAT_SOURCE_BLOCKS.put(Material.SOUL_FIRE, Predicates.alwaysTrue());
+        HEAT_SOURCE_BLOCKS.put(Material.CAMPFIRE, blockData -> ((Campfire) blockData).isLit());
+        HEAT_SOURCE_BLOCKS.put(Material.SOUL_CAMPFIRE, blockData -> ((Campfire) blockData).isLit());
+        HEAT_SOURCE_BLOCKS.put(Material.LAVA, Predicates.alwaysTrue());
+    }
 
     private long heatingStartTime;
     private boolean heatingUp = false, bubbling = false;
@@ -77,7 +82,8 @@ public class AlchemicalCauldron {
             block.getX() + 1 - 0.125, block.getY() + 1 - 0.125, block.getZ() + 1 - 0.125
         );
 
-        this.heatingStartTime = HEAT_SOURCE_BLOCKS.contains(fireBlock.getType()) ? System.currentTimeMillis() : -1;
+        Material type = fireBlock.getType();
+        this.heatingStartTime = HEAT_SOURCE_BLOCKS.containsKey(type) && HEAT_SOURCE_BLOCKS.get(type).test(fireBlock.getBlockData()) ? System.currentTimeMillis() : -1;
     }
 
     /**
@@ -161,7 +167,8 @@ public class AlchemicalCauldron {
         }
 
         Levelled cauldron = (Levelled) cauldronBlock.getBlockData();
-        return cauldron.getLevel() == cauldron.getMaximumLevel() && HEAT_SOURCE_BLOCKS.contains(fireBlock.getType());
+        Material type = fireBlock.getType();
+        return cauldron.getLevel() == cauldron.getMaximumLevel() && HEAT_SOURCE_BLOCKS.containsKey(type) && HEAT_SOURCE_BLOCKS.get(type).test(fireBlock.getBlockData());
     }
 
     /**
