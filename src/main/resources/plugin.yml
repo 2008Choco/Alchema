@@ -3,6 +3,7 @@ main: wtf.choco.alchema.Alchema
 version: ${project.version}
 description: ${project.description}
 author: Choco
+website: https://choco.wtf
 api-version: 1.16
 
 commands:
