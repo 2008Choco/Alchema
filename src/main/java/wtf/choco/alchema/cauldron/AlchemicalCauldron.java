@@ -82,8 +82,7 @@ public class AlchemicalCauldron {
             block.getX() + 1 - 0.125, block.getY() + 1 - 0.125, block.getZ() + 1 - 0.125
         );
 
-        Material type = fireBlock.getType();
-        this.heatingStartTime = HEAT_SOURCE_BLOCKS.containsKey(type) && HEAT_SOURCE_BLOCKS.get(type).test(fireBlock.getBlockData()) ? System.currentTimeMillis() : -1;
+        this.heatingStartTime = hasValidHeatSource() ? System.currentTimeMillis() : -1;
     }
 
     /**
@@ -157,6 +156,16 @@ public class AlchemicalCauldron {
     }
 
     /**
+     * Check whether or not this cauldron has a valid heat source.
+     *
+     * @return true if a valid heat source is present, false otherwise
+     */
+    public boolean hasValidHeatSource() {
+        Predicate<@NotNull BlockData> heatSourcePredicate = HEAT_SOURCE_BLOCKS.get(fireBlock.getType());
+        return heatSourcePredicate != null && heatSourcePredicate.test(fireBlock.getBlockData());
+    }
+
+    /**
      * Check whether or not this cauldron may be heated up.
      *
      * @return true if heating is possible, false otherwise
@@ -167,8 +176,7 @@ public class AlchemicalCauldron {
         }
 
         Levelled cauldron = (Levelled) cauldronBlock.getBlockData();
-        Material type = fireBlock.getType();
-        return cauldron.getLevel() == cauldron.getMaximumLevel() && HEAT_SOURCE_BLOCKS.containsKey(type) && HEAT_SOURCE_BLOCKS.get(type).test(fireBlock.getBlockData());
+        return cauldron.getLevel() == cauldron.getMaximumLevel() && hasValidHeatSource();
     }
 
     /**
