@@ -33,4 +33,11 @@ public interface RecipeLoadResult {
         return getNative() + getThirdParty();
     }
 
+    /**
+     * Get the time, in milliseconds, it took for this process to complete.
+     *
+     * @return the completion time
+     */
+    public long getTimeToComplete();
+
 }

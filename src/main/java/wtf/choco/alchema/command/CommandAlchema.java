@@ -68,9 +68,10 @@ public final class CommandAlchema implements TabExecutor {
                     return;
                 }
 
-                sender.sendMessage(Alchema.CHAT_PREFIX + "Loaded " + ChatColor.YELLOW + "(" + result.getTotal() + ") " + ChatColor.GRAY + "cauldron recipes." + (result.getNative() != result.getTotal()
-                    ? ChatColor.YELLOW + " (" + result.getNative() + ") " + ChatColor.GRAY + "internal recipes and " + ChatColor.YELLOW + "(" + result.getThirdParty() + ") " + ChatColor.GRAY + "third-party recipes (other plugins)."
-                    : ""));
+                sender.sendMessage(Alchema.CHAT_PREFIX + "Loaded " + ChatColor.YELLOW + "(" + result.getTotal() + ") " + ChatColor.GRAY + "cauldron recipes" + (result.getNative() != result.getTotal()
+                    ? ChatColor.YELLOW + ". (" + result.getNative() + ") " + ChatColor.GRAY + "internal recipes and " + ChatColor.YELLOW + "(" + result.getThirdParty() + ") " + ChatColor.GRAY + "third-party recipes (other plugins)."
+                    : ".")
+                        + " Took " + result.getTimeToComplete() + "ms.");
             });
 
             sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.GREEN + "Successfully reloaded the configuration file.");

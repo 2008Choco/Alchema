@@ -161,6 +161,8 @@ public class CauldronRecipeRegistry {
      */
     @NotNull
     public CompletableFuture<@NotNull RecipeLoadResult> loadCauldronRecipes(@NotNull Alchema plugin, @NotNull File recipesDirectory) {
+        long now = System.currentTimeMillis();
+
         return CompletableFuture.supplyAsync(() -> {
             int registered = 0;
 
@@ -199,7 +201,9 @@ public class CauldronRecipeRegistry {
              */
             Bukkit.getScheduler().runTask(plugin, () -> {
                 AlchemaEventFactory.callCauldronRecipeRegisterEvent(this);
-                registryEventFuture.complete(new StandardRecipeLoadResult(nativelyRegistered));
+
+                long timeToComplete = System.currentTimeMillis() - now;
+                registryEventFuture.complete(new StandardRecipeLoadResult(nativelyRegistered, timeToComplete));
             });
 
             return registryEventFuture;
@@ -210,10 +214,12 @@ public class CauldronRecipeRegistry {
     private class StandardRecipeLoadResult implements RecipeLoadResult {
 
         private final int nativelyRegistered, thirdPartyRegistered;
+        private final long timeToComplete;
 
-        public StandardRecipeLoadResult(int nativelyRegistered) {
+        public StandardRecipeLoadResult(int nativelyRegistered, long timeToComplete) {
             this.nativelyRegistered = nativelyRegistered;
             this.thirdPartyRegistered = getRecipes().size() - nativelyRegistered;
+            this.timeToComplete = timeToComplete;
         }
 
         @Override
@@ -224,6 +230,11 @@ public class CauldronRecipeRegistry {
         @Override
         public int getThirdParty() {
             return thirdPartyRegistered;
+        }
+
+        @Override
+        public long getTimeToComplete() {
+            return timeToComplete;
         }
 
     }
