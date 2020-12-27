@@ -61,7 +61,7 @@ public final class CommandAlchema implements TabExecutor {
             this.plugin.getRecipeRegistry().clearRecipes();
             this.plugin.reloadConfig();
 
-            this.plugin.loadCauldronRecipes().whenComplete((result, exception) -> {
+            this.plugin.getRecipeRegistry().loadCauldronRecipes(plugin, plugin.getRecipesDirectory()).whenComplete((result, exception) -> {
                 if (exception != null) {
                     exception.printStackTrace();
                     sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.RED + "Something went wrong while loading recipes... check the console for errors.");

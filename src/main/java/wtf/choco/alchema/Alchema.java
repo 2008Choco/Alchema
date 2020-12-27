@@ -14,7 +14,6 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.concurrent.CompletableFuture;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -30,19 +29,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import org.jetbrains.annotations.NotNull;
 
-import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.cauldron.CauldronManager;
 import wtf.choco.alchema.cauldron.CauldronUpdateTask;
 import wtf.choco.alchema.command.CommandAlchema;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
-import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
-import wtf.choco.alchema.util.AlchemaEventFactory;
-import wtf.choco.alchema.util.NamespacedKeyUtil;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 
@@ -56,7 +51,7 @@ public final class Alchema extends JavaPlugin {
     /** The chat prefix used by Alchema */
     public static final String CHAT_PREFIX = ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Alchema | " + ChatColor.GRAY;
 
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
     private static Alchema instance;
 
@@ -111,7 +106,7 @@ public final class Alchema extends JavaPlugin {
         }
 
         // Load cauldron recipes (asynchronously)
-        this.loadCauldronRecipes().whenComplete((result, exception) -> {
+        this.recipeRegistry.loadCauldronRecipes(this, recipesDirectory).whenComplete((result, exception) -> {
             if (exception != null) {
                 exception.printStackTrace();
                 return;
@@ -206,71 +201,13 @@ public final class Alchema extends JavaPlugin {
     }
 
     /**
-     * Asynchronously load all cauldron recipes from file, as well as any recipes from
-     * third-party plugins listening to the {@link CauldronRecipeRegisterEvent}. The returned
-     * {@link CompletableFuture} instance provides the load result.
+     * Get the directory from which Alchema's recipes are loaded.
      *
-     * @return a completable future where the supplied value is the amount of loaded recipes
+     * @return the recipes directory
      */
     @NotNull
-    public CompletableFuture<@NotNull RecipeLoadResult> loadCauldronRecipes() {
-        return CompletableFuture.supplyAsync(() -> {
-            int registered = 0;
-
-            for (File recipeFile : recipesDirectory.listFiles((file, name) -> name.endsWith(".json"))) {
-                String fileName = recipeFile.getName();
-                fileName = fileName.substring(0, fileName.indexOf(".json"));
-
-                if (!NamespacedKeyUtil.isValidKey(fileName)) {
-                    this.getLogger().warning("Invalid recipe file name, \"" + recipeFile.getName() + "\". Must be alphanumerical, lowercased and separated by underscores.");
-                    continue;
-                }
-
-                NamespacedKey key = new NamespacedKey(this, fileName);
-
-                try (BufferedReader reader = Files.newReader(recipeFile, Charset.defaultCharset())) {
-                    JsonObject recipeObject = GSON.fromJson(reader, JsonObject.class);
-                    CauldronRecipe recipe = CauldronRecipe.fromJson(key, recipeObject, recipeRegistry);
-
-                    this.recipeRegistry.registerCauldronRecipe(recipe);
-                    registered++;
-                } catch (IOException | JsonSyntaxException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return registered;
-        })
-        .thenCompose(registered -> {
-            CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
-
-            /*
-             * Events need to be called synchronously.
-             *
-             * This also forces the event to be called AFTER all plugins have finished enabling and registering their listeners.
-             * runTask() is run on the next server tick which is done post-plugin enable.
-             */
-            Bukkit.getScheduler().runTask(this, () -> {
-                AlchemaEventFactory.callCauldronRecipeRegisterEvent(recipeRegistry);
-                registryEventFuture.complete(
-                    new RecipeLoadResult() {
-
-                        @Override
-                        public int getNative() {
-                            return registered;
-                        }
-
-                        @Override
-                        public int getThirdParty() {
-                            return recipeRegistry.getRecipes().size() - registered;
-                        }
-
-                    }
-                );
-            });
-
-            return registryEventFuture;
-        });
+    public File getRecipesDirectory() {
+        return recipesDirectory;
     }
 
     /**
@@ -329,38 +266,6 @@ public final class Alchema extends JavaPlugin {
         if (executor instanceof TabCompleter) {
             command.setTabCompleter((TabCompleter) executor);
         }
-    }
-
-
-    /**
-     * Represents a result of the {@link Alchema#loadCauldronRecipes()} asynchronous
-     * recipe loading.
-     */
-    public interface RecipeLoadResult {
-
-        /**
-         * Get the amount of recipes loaded natively from Alchema's file system.
-         *
-         * @return the amount of native recipes loaded
-         */
-        public int getNative();
-
-        /**
-         * Get the amount of recipes loaded from third-party plugins.
-         *
-         * @return the amount of third-party recipes loaded
-         */
-        public int getThirdParty();
-
-        /**
-         * Get the amount of total recipes loaded.
-         *
-         * @return the total recipe count
-         */
-        public default int getTotal() {
-            return getNative() + getThirdParty();
-        }
-
     }
 
 }
