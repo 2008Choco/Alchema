@@ -1,6 +1,7 @@
 package wtf.choco.alchema.listener;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.entity.Player;
@@ -40,7 +41,13 @@ public final class CauldronDeathMessageListener implements Listener {
         player.removeMetadata(AlchemaConstants.METADATA_KEY_DAMAGED_BY_CAULDRON, plugin);
 
         if (System.currentTimeMillis() - lastDamaged < BOIL_TO_DEATH_TIME_FRAME) {
-            event.setDeathMessage(player.getName() + " has boiled to death in a cauldron.");
+            List<String> deathMessages = plugin.getConfig().getStringList(AlchemaConstants.CONFIG_CAULDRON_DEATH_MESSAGES);
+            if (deathMessages.isEmpty()) {
+                return;
+            }
+
+            String deathMessage = deathMessages.get(ThreadLocalRandom.current().nextInt(deathMessages.size()));
+            event.setDeathMessage((deathMessage != null && !deathMessage.trim().isEmpty()) ? String.format(deathMessage, player.getName()) : null);
         }
     }
 
