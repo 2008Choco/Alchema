@@ -51,18 +51,19 @@ public final class CommandAlchema implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("version")) {
+            String versionSuffix = "";
+
+            UpdateResult updateResult = UpdateChecker.isInitialized() ? UpdateChecker.get().getLastResult() : null;
+            if (updateResult != null) {
+                versionSuffix = ChatColor.WHITE + " (" + (updateResult.requiresUpdate() ? ChatColor.YELLOW + "update available: " + ChatColor.GREEN + updateResult.getNewestVersion() : ChatColor.GREEN + "latest") + ChatColor.WHITE + ")";
+            }
+
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
             sender.sendMessage("");
-            sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Version: " + ChatColor.GRAY  + plugin.getDescription().getVersion());
+            sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Version: " + ChatColor.GRAY  + plugin.getDescription().getVersion() + versionSuffix);
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.GRAY + "Choco " + ChatColor.YELLOW + "( https://choco.wtf/ )");
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Development Page: " + ChatColor.GRAY + "https://www.spigotmc.org/resources/87078/");
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Report Bugs To: " + ChatColor.GRAY + "https://github.com/2008Choco/Alchema/issues/");
-
-            if (UpdateChecker.isInitialized()) {
-                UpdateResult result = UpdateChecker.get().getLastResult();
-                sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "New Version Available: " + (result == null ? ChatColor.YELLOW + "N/A (Unchecked)" : (result.requiresUpdate() ? ChatColor.GREEN + "Yes! " + ChatColor.YELLOW + result.getNewestVersion() : ChatColor.RED + "No")));
-            }
-
             sender.sendMessage("");
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
         }
