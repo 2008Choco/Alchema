@@ -62,7 +62,7 @@ public class AlchemicalCauldron {
 
     private UUID lastInteracted;
 
-    private Block cauldronBlock, fireBlock;
+    private Block cauldronBlock, heatSourceBlock;
     private BoundingBox itemConsumptionBounds;
 
     private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
@@ -76,7 +76,7 @@ public class AlchemicalCauldron {
         Preconditions.checkArgument(block.getType() == Material.CAULDRON, "AlchemicalCauldron block type must be CAULDRON");
 
         this.cauldronBlock = block;
-        this.fireBlock = block.getRelative(BlockFace.DOWN);
+        this.heatSourceBlock = block.getRelative(BlockFace.DOWN);
         this.itemConsumptionBounds = new BoundingBox(
             block.getX() + 0.125, block.getY() + 0.125, block.getZ() + 0.125,
             block.getX() + 1 - 0.125, block.getY() + 1 - 0.125, block.getZ() + 1 - 0.125
@@ -106,6 +106,33 @@ public class AlchemicalCauldron {
     }
 
     /**
+     * Get the x coordinate of this alchemical cauldron.
+     *
+     * @return the x coordinate
+     */
+    public int getX() {
+        return cauldronBlock.getX();
+    }
+
+    /**
+     * Get the y coordinate of this alchemical cauldron.
+     *
+     * @return the y coordinate
+     */
+    public int getY() {
+        return cauldronBlock.getY();
+    }
+
+    /**
+     * Get the z coordinate of this alchemical cauldron.
+     *
+     * @return the z coordinate
+     */
+    public int getZ() {
+        return cauldronBlock.getZ();
+    }
+
+    /**
      * Get the {@link World} in which this cauldron resides.
      *
      * @return the cauldron's world
@@ -119,10 +146,62 @@ public class AlchemicalCauldron {
      * Get the block used to ignite the cauldron (below {@link #getCauldronBlock()}, y-1).
      *
      * @return the fire block
+     *
+     * @deprecated poor naming as heat sources can be more than just fire. See
+     * {@link #getHeatSourceBlock()} instead. This method will be removed in the near future.
      */
     @NotNull
+    @Deprecated
     public Block getFireBlock() {
-        return fireBlock;
+        return heatSourceBlock;
+    }
+
+    /**
+     * Get the block used as the heat source for the cauldron (below {@link #getCauldronBlock()},
+     * block y - 1)
+     *
+     * @return the heat source block
+     */
+    @NotNull
+    public Block getHeatSourceBlock() {
+        return heatSourceBlock;
+    }
+
+    /**
+     * Get the {@link Location} of this cauldron's heat source.
+     *
+     * @return the heat source location
+     */
+    @NotNull
+    public Location getHeatSourceLocation() {
+        return heatSourceBlock.getLocation();
+    }
+
+    /**
+     * Get the x coordinate of this cauldron's heat source.
+     *
+     * @return the x coordinate
+     */
+    public int getHeatSourceX() {
+        return heatSourceBlock.getX();
+    }
+
+    /**
+     * Get the y coordinate of this cauldron's heat source.
+     *
+     * @return the y coordinate
+     */
+    public int getHeatSourceY() {
+        return heatSourceBlock.getY();
+    }
+
+    /**
+     * Get the z coordinate of this cauldron's heat source.
+     *
+     * @return the z coordinate
+     */
+    public int getHeatSourceZ() {
+        return heatSourceBlock.getZ();
     }
 
     /**
@@ -161,8 +240,8 @@ public class AlchemicalCauldron {
      * @return true if a valid heat source is present, false otherwise
      */
     public boolean hasValidHeatSource() {
-        Predicate<@NotNull BlockData> heatSourcePredicate = HEAT_SOURCE_BLOCKS.get(fireBlock.getType());
-        return heatSourcePredicate != null && heatSourcePredicate.test(fireBlock.getBlockData());
+        Predicate<@NotNull BlockData> heatSourcePredicate = HEAT_SOURCE_BLOCKS.get(heatSourceBlock.getType());
+        return heatSourcePredicate != null && heatSourcePredicate.test(heatSourceBlock.getBlockData());
     }
 
     /**
