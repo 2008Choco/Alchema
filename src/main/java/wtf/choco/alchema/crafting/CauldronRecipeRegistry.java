@@ -163,33 +163,7 @@ public class CauldronRecipeRegistry {
     public CompletableFuture<@NotNull RecipeLoadResult> loadCauldronRecipes(@NotNull Alchema plugin, @NotNull File recipesDirectory) {
         long now = System.currentTimeMillis();
 
-        return CompletableFuture.supplyAsync(() -> {
-            int registered = 0;
-
-            for (File recipeFile : recipesDirectory.listFiles((file, name) -> name.endsWith(".json"))) {
-                String fileName = recipeFile.getName();
-                fileName = fileName.substring(0, fileName.indexOf(".json"));
-
-                if (!NamespacedKeyUtil.isValidKey(fileName)) {
-                    plugin.getLogger().warning("Invalid recipe file name, \"" + recipeFile.getName() + "\". Must be alphanumerical, lowercased and separated by underscores.");
-                    continue;
-                }
-
-                NamespacedKey key = new NamespacedKey(plugin, fileName);
-
-                try (BufferedReader reader = Files.newReader(recipeFile, Charset.defaultCharset())) {
-                    JsonObject recipeObject = Alchema.GSON.fromJson(reader, JsonObject.class);
-                    CauldronRecipe recipe = CauldronRecipe.fromJson(key, recipeObject, this);
-
-                    this.registerCauldronRecipe(recipe);
-                    registered++;
-                } catch (IOException | JsonSyntaxException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return registered;
-        })
+        return CompletableFuture.supplyAsync(() -> loadCauldronRecipesFromDirectory(plugin, recipesDirectory, recipesDirectory))
         .thenCompose(nativelyRegistered -> {
             CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
 
@@ -208,6 +182,52 @@ public class CauldronRecipeRegistry {
 
             return registryEventFuture;
         });
+    }
+
+    private int loadCauldronRecipesFromDirectory(@NotNull Alchema plugin, @NotNull File recipesDirectory, File subdirectory) {
+        int registered = 0;
+
+        for (File recipeFile : subdirectory.listFiles(file -> file.isDirectory() || file.getName().endsWith(".json"))) {
+            if (recipeFile.isDirectory()) {
+                registered += loadCauldronRecipesFromDirectory(plugin, recipesDirectory, recipeFile);
+                continue;
+            }
+
+            String fileName = recipeFile.getName();
+            fileName = fileName.substring(0, fileName.indexOf(".json"));
+
+            String joinedRecipeKey = null;
+            if (recipesDirectory.equals(subdirectory)) {
+                joinedRecipeKey = fileName; // The root directory is too short to substring itself + 1
+            } else {
+                /*
+                 * Converts file paths to valid keys. Example:
+                 *
+                 * Given: File#getAbsolutePath() (C:\Users\foo\bar\baz)
+                 * Parsed: bar/baz + / + fileName
+                 */
+                joinedRecipeKey = subdirectory.getAbsolutePath().substring(recipesDirectory.getAbsolutePath().length() + 1).replace('\\', '/') + "/" + fileName;
+            }
+
+            if (!NamespacedKeyUtil.isValidKey(joinedRecipeKey)) {
+                plugin.getLogger().warning("Invalid recipe file name, \"" + recipeFile.getName() + "\". Must be alphanumerical, lowercased and separated by underscores.");
+                continue;
+            }
+
+            NamespacedKey key = new NamespacedKey(plugin, joinedRecipeKey);
+
+            try (BufferedReader reader = Files.newReader(recipeFile, Charset.defaultCharset())) {
+                JsonObject recipeObject = Alchema.GSON.fromJson(reader, JsonObject.class);
+                CauldronRecipe recipe = CauldronRecipe.fromJson(key, recipeObject, this);
+
+                this.registerCauldronRecipe(recipe);
+                registered++;
+            } catch (IOException | JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return registered;
     }
 
 

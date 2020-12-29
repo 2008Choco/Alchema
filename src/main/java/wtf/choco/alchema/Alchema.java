@@ -77,7 +77,7 @@ public final class Alchema extends JavaPlugin {
 
         this.recipesDirectory = new File(getDataFolder(), "recipes");
         if (!recipesDirectory.exists()) {
-            this.saveDefaultDirectory("recipes");
+            this.saveDefaultDirectory("recipes", true);
         }
 
         // Load cauldrons from file
@@ -234,7 +234,7 @@ public final class Alchema extends JavaPlugin {
         return new NamespacedKey(instance, key);
     }
 
-    private void saveDefaultDirectory(@NotNull String directory) {
+    private void saveDefaultDirectory(@NotNull String directory, boolean saveChildDirectories) {
         Preconditions.checkArgument(directory != null, "directory cannot be null");
 
         try (JarFile jar = new JarFile(getFile())) {
@@ -244,7 +244,15 @@ public final class Alchema extends JavaPlugin {
                 JarEntry entry = entries.nextElement();
                 String name = entry.getName();
 
-                if (!name.startsWith(directory + "/") || entry.isDirectory()) {
+                if (!name.startsWith(directory + "/")) {
+                    continue;
+                }
+
+                if (entry.isDirectory()) {
+                    if (saveChildDirectories) {
+                        this.saveDefaultDirectory(entry.getName(), saveChildDirectories);
+                    }
+
                     continue;
                 }
 
