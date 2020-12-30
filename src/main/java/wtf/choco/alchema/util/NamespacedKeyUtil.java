@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;

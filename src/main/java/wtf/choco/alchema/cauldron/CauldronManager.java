@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;

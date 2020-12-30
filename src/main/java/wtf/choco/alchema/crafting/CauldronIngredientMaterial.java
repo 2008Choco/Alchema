@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;

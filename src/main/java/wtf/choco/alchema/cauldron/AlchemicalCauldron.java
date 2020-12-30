@@ -29,7 +29,6 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Item;
 import org.bukkit.util.BoundingBox;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

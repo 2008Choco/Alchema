@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;

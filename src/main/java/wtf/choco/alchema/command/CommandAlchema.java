@@ -19,7 +19,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.util.StringUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +59,7 @@ public final class CommandAlchema implements TabExecutor {
 
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
             sender.sendMessage("");
-            sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Version: " + ChatColor.GRAY  + plugin.getDescription().getVersion() + versionSuffix);
+            sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Version: " + ChatColor.GRAY + plugin.getDescription().getVersion() + versionSuffix);
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Developer / Maintainer: " + ChatColor.GRAY + "Choco " + ChatColor.YELLOW + "( https://choco.wtf/ )");
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Development Page: " + ChatColor.GRAY + "https://www.spigotmc.org/resources/87078/");
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Report Bugs To: " + ChatColor.GRAY + "https://github.com/2008Choco/Alchema/issues/");
