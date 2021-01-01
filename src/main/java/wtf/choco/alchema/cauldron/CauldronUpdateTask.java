@@ -126,8 +126,14 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                     }
 
                     ItemStack itemStack = item.getItemStack();
-                    CauldronIngredient ingredient = new CauldronIngredientItemStack(itemStack, itemStack.getAmount());
 
+                    // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)
+                    int amount = itemStack.getAmount();
+                    if (amount <= 0) {
+                        return;
+                    }
+
+                    CauldronIngredient ingredient = new CauldronIngredientItemStack(itemStack, amount);
                     CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(cauldron, ingredient, item);
 
                     cauldron.addIngredient(ingredientAddEvent.getIngredient());
