@@ -145,7 +145,8 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                     if (EntityEssenceData.isVialOfEntityEssence(itemStack)) {
                         EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
                         if (entityType != null) {
-                            ingredient = new CauldronIngredientEntityEssence(entityType, plugin.getEntityEssenceEffectRegistry());
+                            int essenceAmount = EntityEssenceData.getEntityEssenceAmount(itemStack);
+                            ingredient = new CauldronIngredientEntityEssence(entityType, plugin.getEntityEssenceEffectRegistry(), essenceAmount);
                         }
                     }
 

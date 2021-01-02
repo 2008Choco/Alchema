@@ -95,7 +95,7 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     @NotNull
     @Override
     public CauldronIngredient merge(@NotNull CauldronIngredient other) {
-        Preconditions.checkArgument(other instanceof CauldronIngredientItemStack, "Cannot merge %s with %s", getClass().getName(), other.getClass().getName());
+        Preconditions.checkArgument(other instanceof CauldronIngredientEntityEssence, "Cannot merge %s with %s", getClass().getName(), other.getClass().getName());
 
         return new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, getAmount() + other.getAmount());
     }
