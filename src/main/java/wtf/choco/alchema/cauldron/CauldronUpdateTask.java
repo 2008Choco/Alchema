@@ -71,9 +71,13 @@ public final class CauldronUpdateTask extends BukkitRunnable {
 
         for (AlchemicalCauldron cauldron : cauldronManager.getCauldrons()) {
             Block block = cauldron.getCauldronBlock();
+            World world = block.getWorld();
+            if (!world.isChunkLoaded(block.getX() >> 4, block.getZ() >> 4)) {
+                continue;
+            }
+
             Location location = block.getLocation().add(0.5, 0.25, 0.5);
             Location particleLocation = block.getLocation().add(0.5, 1, 0.5);
-            World world = block.getWorld();
 
             // Unheat if conditions are not met
             if (!cauldron.canHeatUp()) {
