@@ -2,10 +2,14 @@ package wtf.choco.alchema.listener;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
@@ -27,8 +31,18 @@ public final class EntityEssenceLootListener implements Listener {
             return;
         }
 
+        int lootingModifier = 0;
+
+        if (entity instanceof LivingEntity) {
+            Player killer = ((LivingEntity) entity).getKiller();
+            if (killer != null) {
+                ItemStack item = killer.getInventory().getItemInMainHand();
+                lootingModifier = item.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+            }
+        }
+
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        if (random.nextDouble(100) >= 0.1) { // 0.1% chance
+        if (random.nextDouble() * 100.0 >= 0.75 + (lootingModifier * 0.25)) { // 0.75% chance
             return;
         }
 
