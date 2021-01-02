@@ -1,6 +1,10 @@
 package wtf.choco.alchema.listener;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -10,6 +14,14 @@ import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.essence.EntityEssenceData;
 
 public final class VialOfEssenceConsumptionListener implements Listener {
+
+    // TODO: Configurable
+    private static final String[] TASTELESS_THOUGHTS = {
+        "That was rather tasteless... I shouldn't do that again.",
+        "What a waste of essence... I shouldn't drink this stuff.",
+        "Interestingly tasteless, disappointingly wasteful.",
+        "Surely there was a better use for that essence than drinking it."
+    };
 
     private final Alchema plugin;
 
@@ -24,17 +36,23 @@ public final class VialOfEssenceConsumptionListener implements Listener {
             return;
         }
 
+        // TODO: Future PR for 1.16.4
+//        event.setReplacement(EntityEssenceData.createEmptyVial(item.getAmount()));
+
         EntityType type = EntityEssenceData.getEntityEssenceType(item);
         if (type == null) {
             return;
         }
 
         EntityEssenceData essenceData = plugin.getEntityEssenceEffectRegistry().getEntityEssenceData(type);
-        if (essenceData == null || !essenceData.isConsumable()) {
+        if (essenceData == null) {
             return;
         }
 
-        essenceData.applyConsumptionEffectTo(event.getPlayer(), item);
+        Player player = event.getPlayer();
+        if (!essenceData.applyConsumptionEffectTo(player, item)) {
+            player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + TASTELESS_THOUGHTS[ThreadLocalRandom.current().nextInt(TASTELESS_THOUGHTS.length)]);
+        }
     }
 
 }
