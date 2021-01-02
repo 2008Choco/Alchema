@@ -4,6 +4,9 @@ Metrics: true
 Cauldron:
   MillisecondsToHeatUp: 5000
   DamageEntities: true
+  DeathMessages:
+    - "%s has boiled to death in a cauldron."
+    - "%s was cooked in a cauldron."
   Sound:
     AmbientBubbleVolume: 0.45
     ItemSplashVolume: 1.0

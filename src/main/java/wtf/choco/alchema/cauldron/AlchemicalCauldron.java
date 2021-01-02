@@ -1,6 +1,7 @@
 package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,9 +9,12 @@ import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,10 +24,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Item;
 import org.bukkit.util.BoundingBox;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,12 +47,21 @@ import wtf.choco.alchema.util.NamespacedKeyUtil;
  */
 public class AlchemicalCauldron {
 
+    private static final Map<@NotNull Material, @NotNull Predicate<@NotNull BlockData>> HEAT_SOURCE_BLOCKS = new EnumMap<>(Material.class);
+    static {
+        HEAT_SOURCE_BLOCKS.put(Material.FIRE, Predicates.alwaysTrue());
+        HEAT_SOURCE_BLOCKS.put(Material.SOUL_FIRE, Predicates.alwaysTrue());
+        HEAT_SOURCE_BLOCKS.put(Material.CAMPFIRE, blockData -> ((Campfire) blockData).isLit());
+        HEAT_SOURCE_BLOCKS.put(Material.SOUL_CAMPFIRE, blockData -> ((Campfire) blockData).isLit());
+        HEAT_SOURCE_BLOCKS.put(Material.LAVA, Predicates.alwaysTrue());
+    }
+
     private long heatingStartTime;
     private boolean heatingUp = false, bubbling = false;
 
     private UUID lastInteracted;
 
-    private Block cauldronBlock, fireBlock;
+    private Block cauldronBlock, heatSourceBlock;
     private BoundingBox itemConsumptionBounds;
 
     private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
@@ -61,13 +75,22 @@ public class AlchemicalCauldron {
         Preconditions.checkArgument(block.getType() == Material.CAULDRON, "AlchemicalCauldron block type must be CAULDRON");
 
         this.cauldronBlock = block;
-        this.fireBlock = block.getRelative(BlockFace.DOWN);
+        this.heatSourceBlock = block.getRelative(BlockFace.DOWN);
         this.itemConsumptionBounds = new BoundingBox(
             block.getX() + 0.125, block.getY() + 0.125, block.getZ() + 0.125,
             block.getX() + 1 - 0.125, block.getY() + 1 - 0.125, block.getZ() + 1 - 0.125
         );
 
-        this.heatingStartTime = (fireBlock.getType() == Material.FIRE) ? System.currentTimeMillis() : -1;
+        this.heatingStartTime = hasValidHeatSource() ? System.currentTimeMillis() : -1;
+    }
+
+    /**
+     * Check whether or not this cauldron is in a loaded chunk.
+     *
+     * @return true if loaded, false otherwise
+     */
+    public boolean isLoaded() {
+        return cauldronBlock.getWorld().isChunkLoaded(cauldronBlock.getX() >> 4, cauldronBlock.getZ() >> 4);
     }
 
     /**
@@ -91,6 +114,33 @@ public class AlchemicalCauldron {
     }
 
     /**
+     * Get the x coordinate of this alchemical cauldron.
+     *
+     * @return the x coordinate
+     */
+    public int getX() {
+        return cauldronBlock.getX();
+    }
+
+    /**
+     * Get the y coordinate of this alchemical cauldron.
+     *
+     * @return the y coordinate
+     */
+    public int getY() {
+        return cauldronBlock.getY();
+    }
+
+    /**
+     * Get the z coordinate of this alchemical cauldron.
+     *
+     * @return the z coordinate
+     */
+    public int getZ() {
+        return cauldronBlock.getZ();
+    }
+
+    /**
      * Get the {@link World} in which this cauldron resides.
      *
      * @return the cauldron's world
@@ -104,10 +154,62 @@ public class AlchemicalCauldron {
      * Get the block used to ignite the cauldron (below {@link #getCauldronBlock()}, y-1).
      *
      * @return the fire block
+     *
+     * @deprecated poor naming as heat sources can be more than just fire. See
+     * {@link #getHeatSourceBlock()} instead. This method will be removed in the near future.
      */
     @NotNull
+    @Deprecated
     public Block getFireBlock() {
-        return fireBlock;
+        return heatSourceBlock;
+    }
+
+    /**
+     * Get the block used as the heat source for the cauldron (below {@link #getCauldronBlock()},
+     * block y - 1)
+     *
+     * @return the heat source block
+     */
+    @NotNull
+    public Block getHeatSourceBlock() {
+        return heatSourceBlock;
+    }
+
+    /**
+     * Get the {@link Location} of this cauldron's heat source.
+     *
+     * @return the heat source location
+     */
+    @NotNull
+    public Location getHeatSourceLocation() {
+        return heatSourceBlock.getLocation();
+    }
+
+    /**
+     * Get the x coordinate of this cauldron's heat source.
+     *
+     * @return the x coordinate
+     */
+    public int getHeatSourceX() {
+        return heatSourceBlock.getX();
+    }
+
+    /**
+     * Get the y coordinate of this cauldron's heat source.
+     *
+     * @return the y coordinate
+     */
+    public int getHeatSourceY() {
+        return heatSourceBlock.getY();
+    }
+
+    /**
+     * Get the z coordinate of this cauldron's heat source.
+     *
+     * @return the z coordinate
+     */
+    public int getHeatSourceZ() {
+        return heatSourceBlock.getZ();
     }
 
     /**
@@ -141,6 +243,16 @@ public class AlchemicalCauldron {
     }
 
     /**
+     * Check whether or not this cauldron has a valid heat source.
+     *
+     * @return true if a valid heat source is present, false otherwise
+     */
+    public boolean hasValidHeatSource() {
+        Predicate<@NotNull BlockData> heatSourcePredicate = HEAT_SOURCE_BLOCKS.get(heatSourceBlock.getType());
+        return heatSourcePredicate != null && heatSourcePredicate.test(heatSourceBlock.getBlockData());
+    }
+
+    /**
      * Check whether or not this cauldron may be heated up.
      *
      * @return true if heating is possible, false otherwise
@@ -151,7 +263,7 @@ public class AlchemicalCauldron {
         }
 
         Levelled cauldron = (Levelled) cauldronBlock.getBlockData();
-        return cauldron.getLevel() == cauldron.getMaximumLevel() && fireBlock.getType() == Material.FIRE;
+        return cauldron.getLevel() == cauldron.getMaximumLevel() && hasValidHeatSource();
     }
 
     /**

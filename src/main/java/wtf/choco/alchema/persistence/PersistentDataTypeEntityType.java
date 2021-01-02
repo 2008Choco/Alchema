@@ -7,7 +7,6 @@ import org.bukkit.Registry;
 import org.bukkit.entity.EntityType;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
-
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -3,6 +3,7 @@ main: wtf.choco.alchema.Alchema
 version: ${project.version}
 description: ${project.description}
 author: Choco
+website: https://choco.wtf
 api-version: 1.16
 
 commands:
@@ -14,3 +15,6 @@ permissions:
   alchema.command.reload:
     description: Grants access to the /alchema reload subcommand
     default: op
+  alchema.command.integrations:
+    description: Grants access to the /alchema integrations subcommand
+    default: true

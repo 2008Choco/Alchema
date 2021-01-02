@@ -1,21 +1,32 @@
 package wtf.choco.alchema.crafting;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.Files;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
+import wtf.choco.alchema.util.AlchemaEventFactory;
+import wtf.choco.alchema.util.NamespacedKeyUtil;
 
 /**
  * Represents a registry in which recipes and recipe types may be registered.
@@ -135,6 +146,116 @@ public class CauldronRecipeRegistry {
      */
     public void clearIngredientTypes() {
         this.ingredientTypes.clear();
+    }
+
+    /**
+     * Asynchronously load all cauldron recipes from Alchema's file system, as well as any
+     * recipes from third-party plugins listening to the {@link CauldronRecipeRegisterEvent}.
+     * The returned {@link CompletableFuture} instance provides the load result.
+     *
+     * @param plugin the instance of Alchema (for logging purposes)
+     * @param recipesDirectory the directory from which to load recipes
+     *
+     * @return a completable future where the supplied value is the amount of loaded recipes
+     */
+    @NotNull
+    public CompletableFuture<@NotNull RecipeLoadResult> loadCauldronRecipes(@NotNull Alchema plugin, @NotNull File recipesDirectory) {
+        long now = System.currentTimeMillis();
+
+        return CompletableFuture.supplyAsync(() -> loadCauldronRecipesFromDirectory(plugin, recipesDirectory, recipesDirectory))
+        .thenCompose(nativelyRegistered -> {
+            CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
+
+            /*
+             * Events need to be called synchronously.
+             *
+             * This also forces the event to be called AFTER all plugins have finished enabling and registering their listeners.
+             * runTask() is run on the next server tick which is done post-plugin enable.
+             */
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                AlchemaEventFactory.callCauldronRecipeRegisterEvent(this);
+
+                long timeToComplete = System.currentTimeMillis() - now;
+                registryEventFuture.complete(new StandardRecipeLoadResult(nativelyRegistered, timeToComplete));
+            });
+
+            return registryEventFuture;
+        });
+    }
+
+    private int loadCauldronRecipesFromDirectory(@NotNull Alchema plugin, @NotNull File recipesDirectory, File subdirectory) {
+        int registered = 0;
+
+        for (File recipeFile : subdirectory.listFiles(file -> file.isDirectory() || file.getName().endsWith(".json"))) {
+            if (recipeFile.isDirectory()) {
+                registered += loadCauldronRecipesFromDirectory(plugin, recipesDirectory, recipeFile);
+                continue;
+            }
+
+            String fileName = recipeFile.getName();
+            fileName = fileName.substring(0, fileName.indexOf(".json"));
+
+            String joinedRecipeKey = null;
+            if (recipesDirectory.equals(subdirectory)) {
+                joinedRecipeKey = fileName; // The root directory is too short to substring itself + 1
+            } else {
+                /*
+                 * Converts file paths to valid keys. Example:
+                 *
+                 * Given: File#getAbsolutePath() (C:\Users\foo\bar\baz)
+                 * Parsed: bar/baz + / + fileName
+                 */
+                joinedRecipeKey = subdirectory.getAbsolutePath().substring(recipesDirectory.getAbsolutePath().length() + 1).replace('\\', '/') + "/" + fileName;
+            }
+
+            if (!NamespacedKeyUtil.isValidKey(joinedRecipeKey)) {
+                plugin.getLogger().warning("Invalid recipe file name, \"" + recipeFile.getName() + "\". Must be alphanumerical, lowercased and separated by underscores.");
+                continue;
+            }
+
+            NamespacedKey key = new NamespacedKey(plugin, joinedRecipeKey);
+
+            try (BufferedReader reader = Files.newReader(recipeFile, Charset.defaultCharset())) {
+                JsonObject recipeObject = Alchema.GSON.fromJson(reader, JsonObject.class);
+                CauldronRecipe recipe = CauldronRecipe.fromJson(key, recipeObject, this);
+
+                this.registerCauldronRecipe(recipe);
+                registered++;
+            } catch (IOException | JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return registered;
+    }
+
+
+    private class StandardRecipeLoadResult implements RecipeLoadResult {
+
+        private final int nativelyRegistered, thirdPartyRegistered;
+        private final long timeToComplete;
+
+        public StandardRecipeLoadResult(int nativelyRegistered, long timeToComplete) {
+            this.nativelyRegistered = nativelyRegistered;
+            this.thirdPartyRegistered = getRecipes().size() - nativelyRegistered;
+            this.timeToComplete = timeToComplete;
+        }
+
+        @Override
+        public int getNative() {
+            return nativelyRegistered;
+        }
+
+        @Override
+        public int getThirdParty() {
+            return thirdPartyRegistered;
+        }
+
+        @Override
+        public long getTimeToComplete() {
+            return timeToComplete;
+        }
+
     }
 
 }

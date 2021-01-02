@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
@@ -74,10 +73,14 @@ public final class CauldronUpdateTask extends BukkitRunnable {
         float volumeSuccessfulCraft = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_SUCCESSFUL_CRAFT_VOLUME, 0.5);
 
         for (AlchemicalCauldron cauldron : cauldronManager.getCauldrons()) {
+            if (!cauldron.isLoaded()) {
+                continue;
+            }
+
             Block block = cauldron.getCauldronBlock();
+            World world = block.getWorld();
             Location location = block.getLocation().add(0.5, 0.25, 0.5);
             Location particleLocation = block.getLocation().add(0.5, 1, 0.5);
-            World world = block.getWorld();
 
             // Unheat if conditions are not met
             if (!cauldron.canHeatUp()) {
@@ -130,9 +133,15 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                     }
 
                     ItemStack itemStack = item.getItemStack();
-                    CauldronIngredient ingredient = null;
+
+                    // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)
+                    int amount = itemStack.getAmount();
+                    if (amount <= 0) {
+                        return;
+                    }
 
                     // Entity essence
+                    CauldronIngredient ingredient = null;
                     if (EntityEssenceData.isEntityEssence(itemStack)) {
                         EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
                         if (entityType != null) {
@@ -141,7 +150,7 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                     }
 
                     if (ingredient == null) {
-                        ingredient = new CauldronIngredientItemStack(itemStack, itemStack.getAmount());
+                        ingredient = new CauldronIngredientItemStack(itemStack, amount);
                     }
 
                     CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(cauldron, ingredient, item);
@@ -172,18 +181,18 @@ public final class CauldronUpdateTask extends BukkitRunnable {
             });
 
             if (!cauldron.hasIngredients()) {
-                return;
+                continue;
             }
 
             CauldronRecipe activeRecipe = recipeRegistry.getApplicableRecipe(cauldron.getIngredients());
             if (activeRecipe == null) {
-                return;
+                continue;
             }
 
             OfflinePlayer lastInteracted = cauldron.getLastInteracted();
             CauldronItemCraftEvent cauldronCraftEvent = AlchemaEventFactory.callCauldronItemCraftEvent(cauldron, activeRecipe, lastInteracted != null ? lastInteracted.getPlayer() : null);
             if (cauldronCraftEvent.isCancelled()) {
-                break;
+                continue;
             }
 
             ThreadLocalRandom random = ThreadLocalRandom.current();

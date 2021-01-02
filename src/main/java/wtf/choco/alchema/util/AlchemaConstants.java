@@ -32,6 +32,9 @@ public final class AlchemaConstants {
     /** Configuration path, Cauldron.DamageEntities */
     public static final String CONFIG_CAULDRON_DAMAGE_ENTITIES = "Cauldron.DamageEntities";
 
+    /** Configuration path, Cauldron.DeathMessages */
+    public static final String CONFIG_CAULDRON_DEATH_MESSAGES = "Cauldron.DeathMessages";
+
     /** Configuration path, Cauldron.Sound.AmbientBubbleVolume */
     public static final String CONFIG_CAULDRON_SOUND_AMBIENT_BUBBLE_VOLUME = "Cauldron.Sound.AmbientBubbleVolume";
 

@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import org.bukkit.Color;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
