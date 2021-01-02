@@ -10,6 +10,11 @@ commands:
   alchema:
     description: The main command for Alchema
     usage: /<command> <version|reload>
+  givevialofessence:
+    description: Give a vial of essence to a player
+    usage: /<command> <entity> [amount of essence] [player] [amount]
+    aliases: [ givevialsofessence, giveessence ]
+    permission: alchema.command.givevialofessence
 
 permissions:
   alchema.command.reload:
@@ -18,3 +23,7 @@ permissions:
   alchema.command.integrations:
     description: Grants access to the /alchema integrations subcommand
     default: true
+  alchema.command.givevialofessence:
+    description: Grants access to the /givevialofessence command
+    default: op
+

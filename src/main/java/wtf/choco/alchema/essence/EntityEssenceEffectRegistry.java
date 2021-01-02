@@ -2,8 +2,10 @@ package wtf.choco.alchema.essence;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.bukkit.Color;
@@ -82,6 +84,17 @@ public final class EntityEssenceEffectRegistry {
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
 
         return essenceDataByEntityType.get(entityType);
+    }
+
+    /**
+     * Get an unmodifiable Set of {@link EntityType EntityTypes} for which essence data has
+     * been registered in this registry.
+     *
+     * @return the registered entity types
+     */
+    @NotNull
+    public Set<@NotNull EntityType> getRegisteredEntityEssenceTypes() {
+        return Collections.unmodifiableSet(essenceDataByEntityType.keySet());
     }
 
     /**

@@ -32,6 +32,7 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.cauldron.CauldronManager;
 import wtf.choco.alchema.cauldron.CauldronUpdateTask;
 import wtf.choco.alchema.command.CommandAlchema;
+import wtf.choco.alchema.command.CommandGiveVialOfEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
@@ -132,6 +133,7 @@ public final class Alchema extends JavaPlugin {
 
         // Register commands
         this.registerCommandSafely("alchema", new CommandAlchema(this));
+        this.registerCommandSafely("givevialofessence", new CommandGiveVialOfEssence(this));
 
         this.cauldronUpdateTask = CauldronUpdateTask.startTask(this);
 

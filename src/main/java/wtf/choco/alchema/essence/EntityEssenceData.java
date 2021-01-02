@@ -35,7 +35,7 @@ import wtf.choco.alchema.util.ItemBuilder;
 public class EntityEssenceData {
 
     private static final ItemStack EMPTY_VIAL = ItemBuilder.of(Material.GLASS_BOTTLE)
-        .name("Empty Vial")
+        .name(ChatColor.WHITE + "Empty Vial")
         .lore(ChatColor.GRAY.toString() + ChatColor.ITALIC + "Collects entity essence.")
         .build();
 
@@ -228,7 +228,7 @@ public class EntityEssenceData {
         }
 
         String entityName = WordUtils.capitalizeFully(entityType.getKey().getKey().replace("_", " "));
-        meta.setDisplayName("Vial of Essence " + ChatColor.GRAY + "(" + entityName + ")");
+        meta.setDisplayName(ChatColor.WHITE + "Vial of Essence " + ChatColor.GRAY + "(" + entityName + ")");
         meta.setLore(Arrays.asList(
             ChatColor.GRAY.toString() + ChatColor.ITALIC + "Cauldron crafting ingredient."
         ));
