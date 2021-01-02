@@ -112,23 +112,21 @@ public final class EntityEssenceEffectRegistry {
     public static void registerDefaultAlchemaEssences(@NotNull EntityEssenceEffectRegistry registry) {
         Preconditions.checkArgument(registry != null, "registry must not be null");
 
-        register(registry, EntityType.ZOMBIE, 64, 120, 47);
+        register(registry, EntityType.ZOMBIE, 0x40782F);
         // TODO: Register all the other entity types I want
     }
 
-    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int red, int green, int blue, @Nullable EssenceConsumptionCallback consumptionCallback) {
+    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, @Nullable EssenceConsumptionCallback consumptionCallback) {
         // No point in precondition checking the registry. This is done above in the registerDefaultAlchemaEssences() method call.
 
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
-        Preconditions.checkArgument(red >= 0 && red <= 255, "red must not exceed 0 - 255 (inclusive)");
-        Preconditions.checkArgument(green >= 0 && green <= 255, "green must not exceed 0 - 255 (inclusive)");
-        Preconditions.checkArgument(blue >= 0 && blue <= 255, "blue must not exceed 0 - 255 (inclusive)");
+        Preconditions.checkArgument((rgb >> 24) == 0, "rgb data exceeds maximum colour space of 24 bits (3 bytes): ", rgb);
 
-        registry.registerEntityEssenceData(entityType, new EntityEssenceData(entityType, Color.fromRGB(red, green, blue), consumptionCallback), true);
+        registry.registerEntityEssenceData(entityType, new EntityEssenceData(entityType, Color.fromRGB(rgb), consumptionCallback), true);
     }
 
-    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int red, int green, int blue) {
-        register(registry, entityType, red, green, blue, null);
+    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb) {
+        register(registry, entityType, rgb, null);
     }
 
 }

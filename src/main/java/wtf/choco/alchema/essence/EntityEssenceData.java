@@ -244,6 +244,7 @@ public class EntityEssenceData {
         String entityName = WordUtils.capitalizeFully(entityType.getKey().getKey().replace("_", " "));
         meta.setDisplayName(ChatColor.WHITE + "Vial of Essence " + ChatColor.GRAY + "(" + entityName + ")");
         meta.setLore(Arrays.asList(
+            ChatColor.GRAY + "Quantity: " + ChatColor.WHITE + essenceAmount + "/" + MAX_AMOUNT_OF_ESSENCE,
             ChatColor.GRAY.toString() + ChatColor.ITALIC + "Cauldron crafting ingredient."
         ));
 
