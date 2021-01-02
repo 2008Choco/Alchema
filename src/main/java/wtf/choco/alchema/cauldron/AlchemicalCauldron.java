@@ -85,6 +85,15 @@ public class AlchemicalCauldron {
     }
 
     /**
+     * Check whether or not this cauldron is in a loaded chunk.
+     *
+     * @return true if loaded, false otherwise
+     */
+    public boolean isLoaded() {
+        return cauldronBlock.getWorld().isChunkLoaded(cauldronBlock.getX() >> 4, cauldronBlock.getZ() >> 4);
+    }
+
+    /**
      * Get the block at which the cauldron resides.
      *
      * @return the cauldron block

@@ -70,12 +70,12 @@ public final class CauldronUpdateTask extends BukkitRunnable {
         float volumeSuccessfulCraft = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_SUCCESSFUL_CRAFT_VOLUME, 0.5);
 
         for (AlchemicalCauldron cauldron : cauldronManager.getCauldrons()) {
-            Block block = cauldron.getCauldronBlock();
-            World world = block.getWorld();
-            if (!world.isChunkLoaded(block.getX() >> 4, block.getZ() >> 4)) {
+            if (!cauldron.isLoaded()) {
                 continue;
             }
 
+            Block block = cauldron.getCauldronBlock();
+            World world = block.getWorld();
             Location location = block.getLocation().add(0.5, 0.25, 0.5);
             Location particleLocation = block.getLocation().add(0.5, 1, 0.5);
 
