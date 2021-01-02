@@ -6,11 +6,9 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.bukkit.Color;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,7 +116,7 @@ public final class EntityEssenceEffectRegistry {
         // TODO: Register all the other entity types I want
     }
 
-    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int red, int green, int blue, @Nullable Consumer<@NotNull LivingEntity> effectApplier) {
+    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int red, int green, int blue, @Nullable EssenceConsumptionCallback consumptionCallback) {
         // No point in precondition checking the registry. This is done above in the registerDefaultAlchemaEssences() method call.
 
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
@@ -126,7 +124,7 @@ public final class EntityEssenceEffectRegistry {
         Preconditions.checkArgument(green >= 0 && green <= 255, "green must not exceed 0 - 255 (inclusive)");
         Preconditions.checkArgument(blue >= 0 && blue <= 255, "blue must not exceed 0 - 255 (inclusive)");
 
-        registry.registerEntityEssenceData(entityType, new EntityEssenceData(entityType, Color.fromRGB(red, green, blue), effectApplier), true);
+        registry.registerEntityEssenceData(entityType, new EntityEssenceData(entityType, Color.fromRGB(red, green, blue), consumptionCallback), true);
     }
 
     private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int red, int green, int blue) {

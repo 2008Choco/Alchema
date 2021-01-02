@@ -34,8 +34,6 @@ import static wtf.choco.alchema.Alchema.CHAT_PREFIX;
 
 public final class CommandGiveVialOfEssence implements TabExecutor {
 
-    private static final int MAX_AMOUNT_OF_ESSENCE = 1000; // TODO: Configurable
-
     private static final List<String> ARG_AMOUNTS = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     // usage: /<command> <entity> [amount of essence] [player] [amount]
@@ -73,9 +71,9 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         }
 
         // Amount of essence argument
-        int amountOfEssence = (args.length >= 2 ? NumberUtils.toInt(args[1], -1) : MAX_AMOUNT_OF_ESSENCE);
-        if (amountOfEssence <= 0 || amountOfEssence > MAX_AMOUNT_OF_ESSENCE) {
-            sender.sendMessage(CHAT_PREFIX + "Amount of essence must not be zero, negative or exceed " + ChatColor.YELLOW + MAX_AMOUNT_OF_ESSENCE + ChatColor.GRAY + ".");
+        int amountOfEssence = (args.length >= 2 ? NumberUtils.toInt(args[1], -1) : EntityEssenceData.MAX_AMOUNT_OF_ESSENCE);
+        if (amountOfEssence <= 0 || amountOfEssence > EntityEssenceData.MAX_AMOUNT_OF_ESSENCE) {
+            sender.sendMessage(CHAT_PREFIX + "Amount of essence must not be zero, negative or exceed " + ChatColor.YELLOW + EntityEssenceData.MAX_AMOUNT_OF_ESSENCE + ChatColor.GRAY + ".");
             return true;
         }
 
@@ -148,7 +146,7 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
 
             // Suggest factors worth of essence (full, 1/2 or 1/4)
             for (int divisionFactor = 1; divisionFactor <= 4; divisionFactor *= 2) {
-                suggestions.add(String.valueOf(MAX_AMOUNT_OF_ESSENCE / divisionFactor));
+                suggestions.add(String.valueOf(EntityEssenceData.MAX_AMOUNT_OF_ESSENCE / divisionFactor));
             }
 
             if (!suggestions.contains("1")) {

@@ -3,7 +3,6 @@ package wtf.choco.alchema.essence;
 import com.google.common.base.Preconditions;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
@@ -11,7 +10,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,6 +33,8 @@ import wtf.choco.alchema.util.ItemBuilder;
  */
 public class EntityEssenceData {
 
+    public static final int MAX_AMOUNT_OF_ESSENCE = 1000; // TODO: Configurable
+
     private static final ItemStack EMPTY_VIAL = ItemBuilder.of(Material.GLASS_BOTTLE)
         .name(ChatColor.WHITE + "Empty Vial")
         .lore(ChatColor.GRAY.toString() + ChatColor.ITALIC + "Collects entity essence.")
@@ -42,7 +43,7 @@ public class EntityEssenceData {
     private final EntityType entityType;
     private final Color essenceColor;
     private final boolean glowing, consumable;
-    private final Consumer<@NotNull LivingEntity> consumptionEffectApplier;
+    private final EssenceConsumptionCallback consumptionCallback;
 
     /**
      * Construct a new {@link EntityEssenceData}.
@@ -51,9 +52,9 @@ public class EntityEssenceData {
      * @param essenceColor the colour of the essence bottle
      * @param glowing whether or not the essence bottle should glow
      * @param consumable whether or not the essence is consumable by the player
-     * @param consumptionEffectApplier the applier to be run when a player consumes the essence
+     * @param consumptionCallback the applier to be run when a player consumes the essence
      */
-    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean glowing, boolean consumable, @Nullable Consumer<@NotNull LivingEntity> consumptionEffectApplier) {
+    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean glowing, boolean consumable, @Nullable EssenceConsumptionCallback consumptionCallback) {
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
         Preconditions.checkArgument(essenceColor != null, "essenceColor must not be null");
 
@@ -61,7 +62,7 @@ public class EntityEssenceData {
         this.essenceColor = essenceColor;
         this.glowing = glowing;
         this.consumable = consumable;
-        this.consumptionEffectApplier = consumptionEffectApplier;
+        this.consumptionCallback = consumptionCallback;
     }
 
     /**
@@ -70,10 +71,10 @@ public class EntityEssenceData {
      * @param entityType the target entity type
      * @param essenceColor the colour of the essence bottle
      * @param consumable whether or not the essence is consumable by the player
-     * @param consumptionEffectApplier the applier to be run when a player consumes the essence
+     * @param consumptionCallback the applier to be run when a player consumes the essence
      */
-    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean consumable, @Nullable Consumer<@NotNull LivingEntity> consumptionEffectApplier) {
-        this(entityType, essenceColor, false, consumable, consumptionEffectApplier);
+    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean consumable, @Nullable EssenceConsumptionCallback consumptionCallback) {
+        this(entityType, essenceColor, false, consumable, consumptionCallback);
     }
 
     /**
@@ -81,10 +82,10 @@ public class EntityEssenceData {
      *
      * @param entityType the target entity type
      * @param essenceColor the colour of the essence bottle
-     * @param consumptionEffectApplier the applier to be run when a player consumes the essence
+     * @param consumptionCallback the applier to be run when a player consumes the essence
      */
-    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, @Nullable Consumer<@NotNull LivingEntity> consumptionEffectApplier) {
-        this(entityType, essenceColor, false, consumptionEffectApplier != null, consumptionEffectApplier);
+    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, @Nullable EssenceConsumptionCallback consumptionCallback) {
+        this(entityType, essenceColor, false, consumptionCallback != null, consumptionCallback);
     }
 
     /**
@@ -151,27 +152,40 @@ public class EntityEssenceData {
      *
      * @return true if an effect is applied, false otherwise
      */
-    public boolean hasConsumptionEffect() {
-        return consumptionEffectApplier != null;
+    public boolean hasConsumptionCallback() {
+        return consumptionCallback != null;
     }
 
     /**
      * Apply the consumption effect for this entity essence to the provided living entity.
      * If this essence data does not have any consumption effect (such that
-     * {@link #hasConsumptionEffect()} is {@code false}), this method will do nothing and
+     * {@link #hasConsumptionCallback()} is {@code false}), this method will do nothing and
      * return false.
      *
-     * @param entity the entity to which the effect should be applied
+     * @param player the player to which the effect should be applied
+     * @param item the vial that was consumed
      *
      * @return true if an effect was applied, false otherwise
      */
-    public boolean applyConsumptionEffectTo(@NotNull LivingEntity entity) {
-        if (consumptionEffectApplier == null) {
+    public boolean applyConsumptionEffectTo(@NotNull Player player, @NotNull ItemStack item) {
+        if (consumptionCallback == null) {
             return false;
         }
 
-        this.consumptionEffectApplier.accept(entity);
+        Preconditions.checkArgument(isVialOfEntityEssence(item), "tried to consume item that is not a vial of essence. " + item.toString());
+
+        int amountOfEssence = getEntityEssenceAmount(item);
+        this.consumptionCallback.consume(player, this, item, amountOfEssence, amountOfEssence / (float) MAX_AMOUNT_OF_ESSENCE);
         return true;
+    }
+
+    /**
+     * Get the consumption callback.
+     *
+     * @return the consumption callback
+     */
+    public EssenceConsumptionCallback getConsumptionCallback() {
+        return consumptionCallback;
     }
 
     /**
@@ -276,7 +290,7 @@ public class EntityEssenceData {
      *
      * @return true if it is essence, false otherwise
      */
-    public static boolean isEntityEssence(@Nullable ItemStack item) {
+    public static boolean isVialOfEntityEssence(@Nullable ItemStack item) {
         return getEntityEssenceType(item) != null;
     }
 
@@ -307,7 +321,7 @@ public class EntityEssenceData {
      * Get the {@link EntityType} for which the provided {@link ItemStack} represents.
      * <p>
      * This method acts under the assumption that the provided ItemStack is a vial of entity
-     * essence (i.e. {@link #isEntityEssence(ItemStack)} is true). If this is not the case,
+     * essence (i.e. {@link #isVialOfEntityEssence(ItemStack)} is true). If this is not the case,
      * this method will return null.
      *
      * @param item the item to check
