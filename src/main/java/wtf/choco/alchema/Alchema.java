@@ -37,6 +37,7 @@ import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
+import wtf.choco.alchema.listener.UpdateReminderListener;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 
@@ -120,6 +121,7 @@ public final class Alchema extends JavaPlugin {
         PluginManager manager = Bukkit.getPluginManager();
         manager.registerEvents(new CauldronDeathMessageListener(this), this);
         manager.registerEvents(new CauldronManipulationListener(this), this);
+        manager.registerEvents(new UpdateReminderListener(this), this);
 
         // Register commands
         this.registerCommandSafely("alchema", new CommandAlchema(this));

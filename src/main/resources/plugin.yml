@@ -25,3 +25,7 @@ permissions:
   alchema.command.integrations:
     description: Grants access to the /alchema integrations subcommand
     default: true
+
+  alchema.updatenotify:
+    description: Grants the ability to see update notifications on join
+    default: op
