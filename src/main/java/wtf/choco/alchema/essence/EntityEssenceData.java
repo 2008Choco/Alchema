@@ -36,7 +36,7 @@ public class EntityEssenceData {
 
     private final EntityType entityType;
     private final Color essenceColor;
-    private final boolean glowing, consumable;
+    private final boolean glowing;
     private final EssenceConsumptionCallback consumptionCallback;
 
     /**
@@ -45,30 +45,16 @@ public class EntityEssenceData {
      * @param entityType the target entity type
      * @param essenceColor the colour of the essence bottle
      * @param glowing whether or not the essence bottle should glow
-     * @param consumable whether or not the essence is consumable by the player
      * @param consumptionCallback the applier to be run when a player consumes the essence
      */
-    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean glowing, boolean consumable, @Nullable EssenceConsumptionCallback consumptionCallback) {
+    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean glowing, @Nullable EssenceConsumptionCallback consumptionCallback) {
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
         Preconditions.checkArgument(essenceColor != null, "essenceColor must not be null");
 
         this.entityType = entityType;
         this.essenceColor = essenceColor;
         this.glowing = glowing;
-        this.consumable = consumable;
         this.consumptionCallback = consumptionCallback;
-    }
-
-    /**
-     * Construct a new {@link EntityEssenceData} with {@code glowing} set to false.
-     *
-     * @param entityType the target entity type
-     * @param essenceColor the colour of the essence bottle
-     * @param consumable whether or not the essence is consumable by the player
-     * @param consumptionCallback the applier to be run when a player consumes the essence
-     */
-    public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean consumable, @Nullable EssenceConsumptionCallback consumptionCallback) {
-        this(entityType, essenceColor, false, consumable, consumptionCallback);
     }
 
     /**
@@ -79,7 +65,7 @@ public class EntityEssenceData {
      * @param consumptionCallback the applier to be run when a player consumes the essence
      */
     public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, @Nullable EssenceConsumptionCallback consumptionCallback) {
-        this(entityType, essenceColor, false, consumptionCallback != null, consumptionCallback);
+        this(entityType, essenceColor, false, consumptionCallback);
     }
 
     /**
@@ -90,7 +76,7 @@ public class EntityEssenceData {
      * @param glowing whether or not the essence bottle should glow
      */
     public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor, boolean glowing) {
-        this(entityType, essenceColor, glowing, false, null);
+        this(entityType, essenceColor, glowing, null);
     }
 
     /**
@@ -100,7 +86,7 @@ public class EntityEssenceData {
      * @param essenceColor the colour of the essence bottle
      */
     public EntityEssenceData(@NotNull EntityType entityType, @NotNull Color essenceColor) {
-        this(entityType, essenceColor, false, false, null);
+        this(entityType, essenceColor, false, null);
     }
 
     /**
@@ -130,15 +116,6 @@ public class EntityEssenceData {
      */
     public boolean isGlowing() {
         return glowing;
-    }
-
-    /**
-     * Check whether or not the essence bottle is consumable by players.
-     *
-     * @return true if consumable, false otherwise
-     */
-    public boolean isConsumable() {
-        return consumable;
     }
 
     /**

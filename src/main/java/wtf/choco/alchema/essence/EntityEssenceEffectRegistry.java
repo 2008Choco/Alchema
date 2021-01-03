@@ -204,7 +204,7 @@ public final class EntityEssenceEffectRegistry {
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
         Preconditions.checkArgument((rgb >> 24) == 0, "rgb data exceeds maximum colour space of 24 bits (3 bytes): ", rgb);
 
-        registry.registerEntityEssenceData(new EntityEssenceData(entityType, Color.fromRGB(rgb), glowing, consumptionCallback != null, consumptionCallback), true);
+        registry.registerEntityEssenceData(new EntityEssenceData(entityType, Color.fromRGB(rgb), glowing, consumptionCallback), true);
     }
 
     private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, boolean glowing) {
