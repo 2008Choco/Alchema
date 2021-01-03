@@ -23,6 +23,7 @@ permissions:
     children:
       alchema.command.reload: true
       alchema.command.integrations: false
+      alchema.command.givevialofessence: true
 
   alchema.command.reload:
     description: Grants access to the /alchema reload subcommand
@@ -33,4 +34,3 @@ permissions:
   alchema.command.givevialofessence:
     description: Grants access to the /givevialofessence command
     default: op
-
