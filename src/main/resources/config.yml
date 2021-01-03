@@ -32,7 +32,7 @@ VialOfEssence:
     Empty:
       Name: "&fEmpty Vial"
       Lore:
-      - "Collects entity essence."
+      - "&7&oCollects entity essence."
       CustomModelData: 1
     Filled:
       Name: "&fVial of Essence &7(%entity%)"
