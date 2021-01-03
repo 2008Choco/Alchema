@@ -16,7 +16,7 @@ public final class AlchemaPersistentDataTypes {
     /**
      * An {@link EntityType} {@link PersistentDataType}.
      */
-    public static final PersistentDataType<@NotNull String, @NotNull EntityType> ENTITY_TYPE = new PersistentDataTypeEntityType(EntityType.PLAYER);
+    public static final PersistentDataType<@NotNull String, @NotNull EntityType> ENTITY_TYPE = new PersistentDataTypeEntityType(EntityType.UNKNOWN);
 
     /**
      * A {@link NamespacedKey} {@link PersistentDataType}.
