@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.persistence.AlchemaPersistentDataTypes;
 import wtf.choco.alchema.util.AlchemaConstants;
-import wtf.choco.alchema.util.ItemBuilder;
 
 /**
  * Represents information about entity essence bottles and its properties.
@@ -34,11 +33,6 @@ import wtf.choco.alchema.util.ItemBuilder;
 public class EntityEssenceData {
 
     public static final int MAX_AMOUNT_OF_ESSENCE = 1000; // TODO: Configurable
-
-    private static final ItemStack EMPTY_VIAL = ItemBuilder.of(Material.GLASS_BOTTLE)
-        .name(ChatColor.WHITE + "Empty Vial")
-        .lore(ChatColor.GRAY.toString() + ChatColor.ITALIC + "Collects entity essence.")
-        .build();
 
     private final EntityType entityType;
     private final Color essenceColor;
@@ -396,7 +390,17 @@ public class EntityEssenceData {
      * @return true if it is an empty vial, false otherwise
      */
     public static boolean isEmptyVial(@Nullable ItemStack item) {
-        return EMPTY_VIAL.isSimilar(item);
+        if (item == null) {
+            return false;
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return false;
+        }
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        return container.has(AlchemaConstants.NBT_KEY_EMPTY_VIAL, PersistentDataType.BYTE) && container.get(AlchemaConstants.NBT_KEY_EMPTY_VIAL, PersistentDataType.BYTE) == 1;
     }
 
     /**
@@ -408,7 +412,22 @@ public class EntityEssenceData {
      */
     @NotNull
     public static ItemStack createEmptyVial(int amount) {
-        ItemStack item = EMPTY_VIAL.clone();
+        ItemStack item = new ItemStack(Material.GLASS_BOTTLE);
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            throw new IllegalStateException("trap"); // Theoretically impossible
+        }
+
+        meta.setDisplayName(ChatColor.WHITE + "Empty Vial");
+        meta.setLore(Arrays.asList(
+            ChatColor.GRAY.toString() + ChatColor.ITALIC + "Collects entity essence."
+        ));
+
+        // Apply custom NBT data
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(AlchemaConstants.NBT_KEY_EMPTY_VIAL, PersistentDataType.BYTE, (byte) 1);
+
+        item.setItemMeta(meta);
         item.setAmount(amount);
         return item;
     }
