@@ -29,6 +29,10 @@ public final class AlchemaConstants {
     public static final NamespacedKey NBT_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
 
 
+    /** A {@link NamespacedKey} used as a key for the empty vial crafting recipe */
+    public static final NamespacedKey RECIPE_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
+
+
     /** Configuration path, Cauldron.MillisecondsToHeatUp */
     public static final String CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP = "Cauldron.MillisecondsToHeatUp";
 

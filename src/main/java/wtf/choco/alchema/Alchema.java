@@ -20,10 +20,12 @@ import java.util.jar.JarFile;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +39,14 @@ import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
+import wtf.choco.alchema.listener.EmptyVialRecipeDiscoverListener;
 import wtf.choco.alchema.listener.EntityEssenceLootListener;
 import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 
@@ -130,12 +135,16 @@ public final class Alchema extends JavaPlugin {
         PluginManager manager = Bukkit.getPluginManager();
         manager.registerEvents(new CauldronDeathMessageListener(this), this);
         manager.registerEvents(new CauldronManipulationListener(this), this);
+        manager.registerEvents(new EmptyVialRecipeDiscoverListener(), this);
         manager.registerEvents(new EntityEssenceLootListener(this), this);
         manager.registerEvents(new VialOfEssenceConsumptionListener(this), this);
 
         // Register commands
         this.registerCommandSafely("alchema", new CommandAlchema(this));
         this.registerCommandSafely("givevialofessence", new CommandGiveVialOfEssence(this));
+
+        // Register crafting recipes
+        Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', Material.GLASS_PANE));
 
         this.cauldronUpdateTask = CauldronUpdateTask.startTask(this);
 
