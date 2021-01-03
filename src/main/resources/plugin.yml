@@ -12,6 +12,13 @@ commands:
     usage: /<command> <version|reload>
 
 permissions:
+  alchema.command.*:
+    description: Grants access to all commands provided by Alchema
+    default: op
+    children:
+      alchema.command.reload: true
+      alchema.command.integrations: false
+
   alchema.command.reload:
     description: Grants access to the /alchema reload subcommand
     default: op
