@@ -73,6 +73,8 @@ public final class Alchema extends JavaPlugin {
 
     private CauldronUpdateTask cauldronUpdateTask;
 
+    private EntityEssenceLootListener entityEssenceLootListener;
+
     @Override
     public void onLoad() {
         instance = this;
@@ -136,7 +138,7 @@ public final class Alchema extends JavaPlugin {
         manager.registerEvents(new CauldronDeathMessageListener(this), this);
         manager.registerEvents(new CauldronManipulationListener(this), this);
         manager.registerEvents(new EmptyVialRecipeDiscoverListener(), this);
-        manager.registerEvents(new EntityEssenceLootListener(this), this);
+        manager.registerEvents(this.entityEssenceLootListener = new EntityEssenceLootListener(this), this);
         manager.registerEvents(new VialOfEssenceConsumptionListener(this), this);
 
         // Register commands
@@ -239,6 +241,13 @@ public final class Alchema extends JavaPlugin {
     @NotNull
     public File getRecipesDirectory() {
         return recipesDirectory;
+    }
+
+    /**
+     * Refresh the entity blacklists from the configuration loaded into memory.
+     */
+    public void refreshEntityBlacklists() {
+        this.entityEssenceLootListener.refreshBlacklist();
     }
 
     /**

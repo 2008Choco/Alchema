@@ -77,4 +77,8 @@ public final class EntityEssenceLootListener implements Listener {
         event.getDrops().add(essenceData.createItemStack(entityDropEssenceEvent.getAmountOfEssence()));
     }
 
+    public void refreshBlacklist() {
+        this.entityBlacklist.refresh();
+    }
+
 }
