@@ -2,12 +2,14 @@ package wtf.choco.alchema.essence;
 
 import com.google.common.base.Preconditions;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,6 +24,7 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.persistence.AlchemaPersistentDataTypes;
 import wtf.choco.alchema.util.AlchemaConstants;
 
@@ -31,8 +34,6 @@ import wtf.choco.alchema.util.AlchemaConstants;
  * @author Parker Hawke - Choco
  */
 public class EntityEssenceData {
-
-    public static final int MAX_AMOUNT_OF_ESSENCE = 1000; // TODO: Configurable
 
     private final EntityType entityType;
     private final Color essenceColor;
@@ -146,7 +147,9 @@ public class EntityEssenceData {
         Preconditions.checkArgument(isVialOfEntityEssence(item), "tried to consume item that is not a vial of essence. " + item.toString());
 
         int amountOfEssence = getEntityEssenceAmount(item);
-        this.consumptionCallback.consume(player, this, item, amountOfEssence, amountOfEssence / (float) MAX_AMOUNT_OF_ESSENCE);
+        int maximumEssence = Alchema.getInstance().getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
+
+        this.consumptionCallback.consume(player, this, item, amountOfEssence, amountOfEssence / (float) maximumEssence);
         return true;
     }
 
@@ -212,13 +215,37 @@ public class EntityEssenceData {
             throw new IllegalStateException("trap"); // Theoretically impossible
         }
 
+        FileConfiguration config = Alchema.getInstance().getConfig();
+        int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
+        int customModelData = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_CUSTOM_MODEL_DATA, 0);
+
         String entityName = WordUtils.capitalizeFully(entityType.getKey().getKey().replace("_", " "));
-        meta.setDisplayName(ChatColor.WHITE + "Vial of Essence " + ChatColor.GRAY + "(" + entityName + ")");
-        meta.setLore(Arrays.asList(
-            ChatColor.GRAY + "Quantity: " + ChatColor.WHITE + essenceAmount + "/" + MAX_AMOUNT_OF_ESSENCE,
-            "",
-            ChatColor.GRAY.toString() + ChatColor.ITALIC + "Cauldron crafting ingredient."
-        ));
+        String itemName = config.getString(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_NAME);
+        if (itemName == null) {
+            itemName = ChatColor.WHITE + "Vial of Essence " + ChatColor.GRAY + "(" + entityName + ")";
+        }
+
+        itemName = ChatColor.translateAlternateColorCodes('&', itemName
+            .replace("%entity%", entityName)
+            .replace("%quantity%", String.valueOf(essenceAmount))
+            .replace("%max_quantity%", String.valueOf(maximumEssence))
+        );
+
+        @SuppressWarnings("null")
+        List<String> itemLore = config.getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_LORE).stream()
+            .map(line -> ChatColor.translateAlternateColorCodes('&', line
+                .replace("%entity%", entityName)
+                .replace("%quantity%", String.valueOf(essenceAmount))
+                .replace("%max_quantity%", String.valueOf(maximumEssence))
+            ))
+            .collect(Collectors.toList());
+
+        meta.setDisplayName(itemName);
+        meta.setLore(itemLore);
+
+        if (customModelData != 0) {
+            meta.setCustomModelData(customModelData);
+        }
 
         meta.setBasePotionData(new PotionData(PotionType.UNCRAFTABLE));
         meta.setColor(essenceColor);
@@ -395,10 +422,26 @@ public class EntityEssenceData {
             throw new IllegalStateException("trap"); // Theoretically impossible
         }
 
-        meta.setDisplayName(ChatColor.WHITE + "Empty Vial");
-        meta.setLore(Arrays.asList(
-            ChatColor.GRAY.toString() + ChatColor.ITALIC + "Collects entity essence."
-        ));
+        FileConfiguration config = Alchema.getInstance().getConfig();
+        int customModelData = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_CUSTOM_MODEL_DATA, 0);
+        String itemName = config.getString(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_NAME);
+        if (itemName == null) {
+            itemName = ChatColor.WHITE + "Empty Vial";
+        }
+
+        itemName = ChatColor.translateAlternateColorCodes('&', itemName);
+
+        @SuppressWarnings("null")
+        List<String> itemLore = config.getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_LORE).stream()
+            .map(line -> ChatColor.translateAlternateColorCodes('&', line))
+            .collect(Collectors.toList());
+
+        meta.setDisplayName(itemName);
+        meta.setLore(itemLore);
+
+        if (customModelData != 0) {
+            meta.setCustomModelData(customModelData);
+        }
 
         // Apply custom NBT data
         PersistentDataContainer container = meta.getPersistentDataContainer();

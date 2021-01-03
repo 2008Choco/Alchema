@@ -2,8 +2,10 @@ package wtf.choco.alchema.listener;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,20 +17,35 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.entity.EntityDropEssenceEvent;
 import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
+import wtf.choco.alchema.util.EntityBlacklist;
 
 public final class EntityEssenceLootListener implements Listener {
 
     private final Alchema plugin;
+    private final EntityBlacklist entityBlacklist;
 
     public EntityEssenceLootListener(@NotNull Alchema plugin) {
         this.plugin = plugin;
+        this.entityBlacklist = new EntityBlacklist(() -> plugin.getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BLACKLIST));
     }
 
     @EventHandler
     private void onEntityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
-        EntityEssenceData essenceData = plugin.getEntityEssenceEffectRegistry().getEntityEssenceData(entity.getType());
+        EntityType type = entity.getType();
+        if (entityBlacklist.contains(type)) {
+            return;
+        }
+
+        FileConfiguration config = plugin.getConfig();
+        double baseDropChance = config.getDouble(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BASE_DROP_CHANCE, 0.75);
+        if (baseDropChance <= 0.0) {
+            return;
+        }
+
+        EntityEssenceData essenceData = plugin.getEntityEssenceEffectRegistry().getEntityEssenceData(type);
         if (essenceData == null) {
             return;
         }
@@ -44,12 +61,15 @@ public final class EntityEssenceLootListener implements Listener {
         }
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        if (random.nextDouble() * 100.0 >= 0.75 + (lootingModifier * 0.25)) { // 0.75% chance
+        if (random.nextDouble() * 100.0 >= baseDropChance + (lootingModifier * 0.25)) { // 0.75% chance
             return;
         }
 
-        // TODO: Make this amount of essence configurable and slightly random
-        EntityDropEssenceEvent entityDropEssenceEvent = AlchemaEventFactory.callEntityDropEssenceEvent(entity, essenceData, 50);
+        int minimumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MIN, 50);
+        int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MAX, 250);
+        int amountOfEssence = random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
+
+        EntityDropEssenceEvent entityDropEssenceEvent = AlchemaEventFactory.callEntityDropEssenceEvent(entity, essenceData, amountOfEssence);
         if (entityDropEssenceEvent.isCancelled()) {
             return;
         }

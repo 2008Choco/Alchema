@@ -51,6 +51,45 @@ public final class AlchemaConstants {
     /** Configuration path, Cauldron.Sound.SuccessfulCraftVolume */
     public static final String CONFIG_CAULDRON_SOUND_SUCCESSFUL_CRAFT_VOLUME = "Cauldron.Sound.SuccessfulCraftVolume";
 
+    /** Configuration path, VialOfEssence.MaximumEssence */
+    public static final String CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE = "VialOfEssence.MaximumEssence";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnDeath.BaseDropChance */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BASE_DROP_CHANCE = "VialOfEssence.FromEntities.OnDeath.BaseDropChance";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnDeath.Max */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MAX = "VialOfEssence.FromEntities.OnDeath.Max";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnDeath.Min */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MIN = "VialOfEssence.FromEntities.OnDeath.Min";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnDeath.Blacklist */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BLACKLIST = "VialOfEssence.FromEntities.OnDeath.Blacklist";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnInteract.Blacklist */ // TODO: Currently unused
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_BLACKLIST = "VialOfEssence.FromEntities.OnInteract.Blacklist";
+
+    /** Configuration path, VialOfEssence.Consumption.TastelessThoughts */
+    public static final String CONFIG_VIAL_OF_ESSENCE_CONSUMPTION_TASTELESS_THOUGHTS = "VialOfEssence.Consumption.TastelessThoughts";
+
+    /** Configuration path, VialOfEssence.Item.Empty.Name */
+    public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_NAME = "VialOfEssence.Item.Empty.Name";
+
+    /** Configuration path, VialOfEssence.Item.Empty.Lore */
+    public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_LORE = "VialOfEssence.Item.Empty.Lore";
+
+    /** Configuration path, VialOfEssence.Item.Empty.CustomModelData */
+    public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_CUSTOM_MODEL_DATA = "VialOfEssence.Item.Empty.CustomModelData";
+
+    /** Configuration path, VialOfEssence.Item.Filled.Name */
+    public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_NAME = "VialOfEssence.Item.Filled.Name";
+
+    /** Configuration path, VialOfEssence.Item.Filled.Lore */
+    public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_LORE = "VialOfEssence.Item.Filled.Lore";
+
+    /** Configuration path, VialOfEssence.Item.Filled.CustomModelData */
+    public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_CUSTOM_MODEL_DATA = "VialOfEssence.Item.Filled.CustomModelData";
+
     private AlchemaConstants() { }
 
 }

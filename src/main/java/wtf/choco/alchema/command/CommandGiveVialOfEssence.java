@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.NamespacedKeyUtil;
 
 import static wtf.choco.alchema.Alchema.CHAT_PREFIX;
@@ -71,9 +72,10 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         }
 
         // Amount of essence argument
-        int amountOfEssence = (args.length >= 2 ? NumberUtils.toInt(args[1], -1) : EntityEssenceData.MAX_AMOUNT_OF_ESSENCE);
-        if (amountOfEssence <= 0 || amountOfEssence > EntityEssenceData.MAX_AMOUNT_OF_ESSENCE) {
-            sender.sendMessage(CHAT_PREFIX + "Amount of essence must not be zero, negative or exceed " + ChatColor.YELLOW + EntityEssenceData.MAX_AMOUNT_OF_ESSENCE + ChatColor.GRAY + ".");
+        int maximumEssence = plugin.getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
+        int amountOfEssence = (args.length >= 2 ? NumberUtils.toInt(args[1], -1) : maximumEssence);
+        if (amountOfEssence <= 0 || amountOfEssence > maximumEssence) {
+            sender.sendMessage(CHAT_PREFIX + "Amount of essence must not be zero, negative or exceed " + ChatColor.YELLOW + maximumEssence + ChatColor.GRAY + ".");
             return true;
         }
 
@@ -144,9 +146,11 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         else if (args.length == 2 && args[1].isEmpty()) {
             List<String> suggestions = new ArrayList<>();
 
+            int maximumEssence = plugin.getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
+
             // Suggest factors worth of essence (full, 1/2 or 1/4)
             for (int divisionFactor = 1; divisionFactor <= 4; divisionFactor *= 2) {
-                suggestions.add(String.valueOf(EntityEssenceData.MAX_AMOUNT_OF_ESSENCE / divisionFactor));
+                suggestions.add(String.valueOf(maximumEssence / divisionFactor));
             }
 
             if (!suggestions.contains("1")) {
