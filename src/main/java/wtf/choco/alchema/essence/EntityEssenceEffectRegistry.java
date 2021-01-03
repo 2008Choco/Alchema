@@ -28,7 +28,6 @@ public final class EntityEssenceEffectRegistry {
      * <strong>NOTE:</strong> The EntityType to which the data is being registered MUST match
      * that of {@link EntityEssenceData#getEntityType()}.
      *
-     * @param entityType the entity type for which to register essence data
      * @param essenceData the essence data to register
      * @param override whether or not to override an existing entry (if one exists)
      *
@@ -37,11 +36,10 @@ public final class EntityEssenceEffectRegistry {
      *
      * @throws IllegalArgumentException if {@code entityType != essenceData.getEntityType()}
      */
-    public boolean registerEntityEssenceData(@NotNull EntityType entityType, @NotNull EntityEssenceData essenceData, boolean override) {
-        Preconditions.checkArgument(entityType != null, "entityType must not be null");
+    public boolean registerEntityEssenceData(@NotNull EntityEssenceData essenceData, boolean override) {
         Preconditions.checkArgument(essenceData != null, "essenceData must not be null");
-        Preconditions.checkArgument(entityType == essenceData.getEntityType(), "essenceData.getEntityType() must match the entityType to which it is registered.");
 
+        EntityType entityType = essenceData.getEntityType();
         if (!override && essenceDataByEntityType.containsKey(entityType)) {
             return false;
         }
@@ -58,7 +56,6 @@ public final class EntityEssenceEffectRegistry {
      * <strong>NOTE:</strong> The EntityType to which the data is being registered MUST match
      * that of {@link EntityEssenceData#getEntityType()}.
      *
-     * @param entityType the entity type for which to register essence data
      * @param essenceData the essence data to register
      *
      * @return true if registered successfully. false if an entry already exists for the given
@@ -66,8 +63,8 @@ public final class EntityEssenceEffectRegistry {
      *
      * @throws IllegalArgumentException if {@code entityType != essenceData.getEntityType()}
      */
-    public boolean registerEntityEssenceData(@NotNull EntityType entityType, @NotNull EntityEssenceData essenceData) {
-        return registerEntityEssenceData(entityType, essenceData, false);
+    public boolean registerEntityEssenceData(@NotNull EntityEssenceData essenceData) {
+        return registerEntityEssenceData(essenceData, false);
     }
 
     /**
@@ -207,7 +204,7 @@ public final class EntityEssenceEffectRegistry {
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
         Preconditions.checkArgument((rgb >> 24) == 0, "rgb data exceeds maximum colour space of 24 bits (3 bytes): ", rgb);
 
-        registry.registerEntityEssenceData(entityType, new EntityEssenceData(entityType, Color.fromRGB(rgb), glowing, consumptionCallback != null, consumptionCallback), true);
+        registry.registerEntityEssenceData(new EntityEssenceData(entityType, Color.fromRGB(rgb), glowing, consumptionCallback != null, consumptionCallback), true);
     }
 
     private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, boolean glowing) {
