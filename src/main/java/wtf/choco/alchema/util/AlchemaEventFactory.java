@@ -3,6 +3,7 @@ package wtf.choco.alchema.util;
 import java.util.Collection;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -15,10 +16,13 @@ import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
+import wtf.choco.alchema.api.event.entity.EntityDropEssenceEvent;
+import wtf.choco.alchema.api.event.player.PlayerConsumeEntityEssenceEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.crafting.CauldronIngredient;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceData;
 
 /**
  * A utility class to more easily call the various events in Alchema.
@@ -40,6 +44,36 @@ public final class AlchemaEventFactory {
      */
     public static EntityDamageByCauldronEvent callEntityDamageByCauldronEvent(@NotNull LivingEntity entity, @NotNull AlchemicalCauldron cauldron, double damage) {
         EntityDamageByCauldronEvent event = new EntityDamageByCauldronEvent(entity, cauldron, damage);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
+
+    /**
+     * Call and return the {@link EntityDropEssenceEvent}.
+     *
+     * @param entity the entity dropping the essence
+     * @param essenceData the essence data of the entity
+     * @param amountOfEssence the amount of essence to drop
+     *
+     * @return the event
+     */
+    public static EntityDropEssenceEvent callEntityDropEssenceEvent(@NotNull Entity entity, @NotNull EntityEssenceData essenceData, int amountOfEssence) {
+        EntityDropEssenceEvent event = new EntityDropEssenceEvent(entity, essenceData, amountOfEssence);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
+
+    /**
+     * Call and return the {@link PlayerConsumeEntityEssenceEvent}.
+     *
+     * @param player the player that consumed the essence
+     * @param item the vial of entity essence vial
+     * @param essenceData the essence data that was consumed
+     *
+     * @return true if not cancelled, false if cancelled
+     */
+    public static PlayerConsumeEntityEssenceEvent handlePlayerConsumeEntityEssenceEvent(@NotNull Player player, @NotNull ItemStack item, @NotNull EntityEssenceData essenceData) {
+        PlayerConsumeEntityEssenceEvent event = new PlayerConsumeEntityEssenceEvent(player, item, essenceData);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }

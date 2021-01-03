@@ -13,7 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.api.event.entity.EntityDropEssenceEvent;
 import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.util.AlchemaEventFactory;
 
 public final class EntityEssenceLootListener implements Listener {
 
@@ -47,7 +49,12 @@ public final class EntityEssenceLootListener implements Listener {
         }
 
         // TODO: Make this amount of essence configurable and slightly random
-        event.getDrops().add(essenceData.createItemStack(50));
+        EntityDropEssenceEvent entityDropEssenceEvent = AlchemaEventFactory.callEntityDropEssenceEvent(entity, essenceData, 50);
+        if (entityDropEssenceEvent.isCancelled()) {
+            return;
+        }
+
+        event.getDrops().add(essenceData.createItemStack(entityDropEssenceEvent.getAmountOfEssence()));
     }
 
 }

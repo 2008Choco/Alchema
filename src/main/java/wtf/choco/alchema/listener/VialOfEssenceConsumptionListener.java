@@ -11,7 +11,9 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.api.event.player.PlayerConsumeEntityEssenceEvent;
 import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.util.AlchemaEventFactory;
 
 public final class VialOfEssenceConsumptionListener implements Listener {
 
@@ -50,7 +52,15 @@ public final class VialOfEssenceConsumptionListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (!essenceData.applyConsumptionEffectTo(player, item)) {
+        PlayerConsumeEntityEssenceEvent playerConsumeEntityEssenceEvent = AlchemaEventFactory.handlePlayerConsumeEntityEssenceEvent(player, item, essenceData);
+
+        if (playerConsumeEntityEssenceEvent.isCancelled()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        boolean applyEffect = playerConsumeEntityEssenceEvent.shouldApplyEffect();
+        if (!applyEffect || (applyEffect && !essenceData.applyConsumptionEffectTo(player, item))) {
             player.sendMessage(ChatColor.GRAY.toString() + ChatColor.ITALIC + TASTELESS_THOUGHTS[ThreadLocalRandom.current().nextInt(TASTELESS_THOUGHTS.length)]);
         }
     }
