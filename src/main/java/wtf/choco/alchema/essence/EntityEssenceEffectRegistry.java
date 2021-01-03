@@ -211,6 +211,10 @@ public final class EntityEssenceEffectRegistry {
         register(registry, entityType, rgb, glowing, null);
     }
 
+    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, @Nullable EssenceConsumptionCallback consumptionCallback) {
+        register(registry, entityType, rgb, false, consumptionCallback);
+    }
+
     private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb) {
         register(registry, entityType, rgb, false, null);
     }
