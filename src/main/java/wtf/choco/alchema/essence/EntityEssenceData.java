@@ -295,29 +295,6 @@ public class EntityEssenceData {
     }
 
     /**
-     * Set the {@link EntityType} of the essence for the provided {@link ItemStack}.
-     *
-     * @param item the item to update
-     * @param type the type of entity to set
-     *
-     * @return the item stack instance for convenience
-     */
-    @NotNull
-    public static ItemStack setEntityEssenceType(@NotNull ItemStack item, @NotNull EntityType type) {
-        Preconditions.checkArgument(item != null, "item must not be null");
-        Preconditions.checkArgument(type != null, "type must not be null");
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return item;
-        }
-
-        meta.getPersistentDataContainer().set(AlchemaConstants.NBT_KEY_ESSENCE_TYPE, AlchemaPersistentDataTypes.ENTITY_TYPE, type);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    /**
      * Get the {@link EntityType} for which the provided {@link ItemStack} represents.
      * <p>
      * This method acts under the assumption that the provided ItemStack is a vial of entity
@@ -340,29 +317,6 @@ public class EntityEssenceData {
         }
 
         return meta.getPersistentDataContainer().get(AlchemaConstants.NBT_KEY_ESSENCE_TYPE, AlchemaPersistentDataTypes.ENTITY_TYPE);
-    }
-
-    /**
-     * Set the amount of essence for the provided {@link ItemStack}.
-     *
-     * @param item the item to update
-     * @param amount the amount of essence to set
-     *
-     * @return the item stack instance for convenience
-     */
-    @NotNull
-    public static ItemStack setEntityEssenceAmount(@NotNull ItemStack item, int amount) {
-        Preconditions.checkArgument(item != null, "item must not be null");
-        Preconditions.checkArgument(amount > 0, "amount must be > 0");
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return item;
-        }
-
-        meta.getPersistentDataContainer().set(AlchemaConstants.NBT_KEY_ESSENCE_AMOUNT, PersistentDataType.INTEGER, amount);
-        item.setItemMeta(meta);
-        return item;
     }
 
     /**

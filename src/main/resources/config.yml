@@ -21,6 +21,10 @@ VialOfEssence:
       Max: 250
       Blacklist: []
     OnInteract:
+      Enabled: true
+      TimeoutSeconds: 300
+      Min: 10
+      Max: 25
       Blacklist: []
   Consumption:
     TastelessThoughts:

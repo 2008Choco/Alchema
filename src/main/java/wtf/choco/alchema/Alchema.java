@@ -44,7 +44,7 @@ import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
 import wtf.choco.alchema.listener.EmptyVialRecipeDiscoverListener;
-import wtf.choco.alchema.listener.EntityEssenceLootListener;
+import wtf.choco.alchema.listener.EntityEssenceCollectionListener;
 import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.UpdateChecker;
@@ -73,7 +73,7 @@ public final class Alchema extends JavaPlugin {
 
     private CauldronUpdateTask cauldronUpdateTask;
 
-    private EntityEssenceLootListener entityEssenceLootListener;
+    private EntityEssenceCollectionListener entityEssenceLootListener;
 
     @Override
     public void onLoad() {
@@ -138,7 +138,7 @@ public final class Alchema extends JavaPlugin {
         manager.registerEvents(new CauldronDeathMessageListener(this), this);
         manager.registerEvents(new CauldronManipulationListener(this), this);
         manager.registerEvents(new EmptyVialRecipeDiscoverListener(), this);
-        manager.registerEvents(this.entityEssenceLootListener = new EntityEssenceLootListener(this), this);
+        manager.registerEvents(this.entityEssenceLootListener = new EntityEssenceCollectionListener(this), this);
         manager.registerEvents(new VialOfEssenceConsumptionListener(this), this);
 
         // Register commands
@@ -247,7 +247,7 @@ public final class Alchema extends JavaPlugin {
      * Refresh the entity blacklists from the configuration loaded into memory.
      */
     public void refreshEntityBlacklists() {
-        this.entityEssenceLootListener.refreshBlacklist();
+        this.entityEssenceLootListener.refreshBlacklists();
     }
 
     /**

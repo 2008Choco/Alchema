@@ -18,6 +18,9 @@ public final class AlchemaConstants {
     /** A metadata key used by Alchema to denote that an item entity was recently crafted by a cauldron */
     public static final String METADATA_KEY_CAULDRON_CRAFTED = "alchema:cauldron_crafted";
 
+    /** A metadata key used by Alchema to denote that an entity was interacted with by a player and a vial of essence */
+    public static final String METADATA_KEY_INTERACTED_WITH_VIAL = "alchema:interacted_with_vial";
+
 
     /** A {@link NamespacedKey} used as an NBT key for entity essence items. Determines the type of entity essence */
     public static final NamespacedKey NBT_KEY_ESSENCE_TYPE = Alchema.key("essence_type");
@@ -57,16 +60,28 @@ public final class AlchemaConstants {
     /** Configuration path, VialOfEssence.FromEntities.OnDeath.BaseDropChance */
     public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BASE_DROP_CHANCE = "VialOfEssence.FromEntities.OnDeath.BaseDropChance";
 
-    /** Configuration path, VialOfEssence.FromEntities.OnDeath.Max */
-    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MAX = "VialOfEssence.FromEntities.OnDeath.Max";
-
     /** Configuration path, VialOfEssence.FromEntities.OnDeath.Min */
     public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MIN = "VialOfEssence.FromEntities.OnDeath.Min";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnDeath.Max */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MAX = "VialOfEssence.FromEntities.OnDeath.Max";
 
     /** Configuration path, VialOfEssence.FromEntities.OnDeath.Blacklist */
     public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BLACKLIST = "VialOfEssence.FromEntities.OnDeath.Blacklist";
 
-    /** Configuration path, VialOfEssence.FromEntities.OnInteract.Blacklist */ // TODO: Currently unused
+    /** Configuration path, VialOfEssence.FromEntities.OnInteract.Enabled */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_ENABLED = "VialOfEssence.FromEntities.OnInteract.Enabled";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnInteract.TimeoutSeconds */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_TIMEOUT_SECONDS = "VialOfEssence.FromEntities.OnInteract.TimeoutSeconds";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnInteract.Min */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MIN = "VialOfEssence.FromEntities.OnInteract.Min";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnInteract.Max */
+    public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX = "VialOfEssence.FromEntities.OnInteract.Max";
+
+    /** Configuration path, VialOfEssence.FromEntities.OnInteract.Blacklist */
     public static final String CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_BLACKLIST = "VialOfEssence.FromEntities.OnInteract.Blacklist";
 
     /** Configuration path, VialOfEssence.Consumption.TastelessThoughts */
