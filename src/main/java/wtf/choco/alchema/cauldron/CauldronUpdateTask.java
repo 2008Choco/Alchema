@@ -2,10 +2,7 @@ package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -87,19 +84,7 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                 cauldron.stopHeatingUp();
                 cauldron.setBubbling(false);
 
-                // Drop ingredients if any
-                if (!cauldron.hasIngredients()) {
-                    continue;
-                }
-
-                List<ItemStack> items = cauldron.getIngredients().stream().map(CauldronIngredient::asItemStack).filter(Objects::nonNull).collect(Collectors.toList());
-                CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(cauldron, items, null, CauldronIngredientsDropEvent.Reason.UNHEATED);
-                if (ingredientsDropEvent.isCancelled()) {
-                    continue;
-                }
-
-                ingredientsDropEvent.getItems().forEach(item -> world.dropItem(location, item));
-                cauldron.clearIngredients();
+                cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.UNHEATED, null);
                 continue;
             }
 

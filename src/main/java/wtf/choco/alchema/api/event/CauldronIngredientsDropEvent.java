@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public class CauldronIngredientsDropEvent extends BlockEvent implements Cancella
     private boolean cancelled = false;
 
     private final AlchemicalCauldron cauldron;
-    private final List<@NotNull ItemStack> items;
+    private final List<@NotNull Item> items;
     private final Player player;
     private final Reason reason;
 
@@ -40,7 +40,7 @@ public class CauldronIngredientsDropEvent extends BlockEvent implements Cancella
      * @param player the player
      * @param reason the reason for this event
      */
-    public CauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull ItemStack> items, @Nullable Player player, @NotNull Reason reason) {
+    public CauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull Reason reason) {
         super(cauldron.getCauldronBlock());
 
         Preconditions.checkArgument(cauldron != null, "cauldron must not be null");
@@ -64,14 +64,14 @@ public class CauldronIngredientsDropEvent extends BlockEvent implements Cancella
     }
 
     /**
-     * Get the {@link ItemStack ItemStacks} to be dropped by the cauldron. The returned
-     * list is mutable. Any changes made to the returned collection will directly affect
-     * which items are dropped after this event has been processed.
+     * Get the {@link Item Items} to be dropped by the cauldron. The returned list is
+     * mutable. Any changes made to the returned collection will directly affect which
+     * items are dropped after this event has been processed.
      *
      * @return the list of items to drop
      */
     @NotNull
-    public List<@NotNull ItemStack> getItems() {
+    public List<@NotNull Item> getItems() {
         return items;
     }
 

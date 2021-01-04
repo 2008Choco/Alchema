@@ -105,7 +105,7 @@ public final class AlchemaEventFactory {
      * @return the event
      */
     @NotNull
-    public static CauldronIngredientsDropEvent callCauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, Collection<@NotNull ItemStack> items, @Nullable Player player, @NotNull CauldronIngredientsDropEvent.Reason reason) {
+    public static CauldronIngredientsDropEvent callCauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, Collection<@NotNull Item> items, @Nullable Player player, @NotNull CauldronIngredientsDropEvent.Reason reason) {
         CauldronIngredientsDropEvent event = new CauldronIngredientsDropEvent(cauldron, items, player, reason);
         Bukkit.getPluginManager().callEvent(event);
         return event;

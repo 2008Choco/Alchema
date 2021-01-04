@@ -4,16 +4,25 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.NamespacedKeyUtil;
 
 /**
@@ -79,7 +88,7 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     @Override
     public ItemStack asItemStack() {
         EntityEssenceData essenceData = essenceEffectRegistry.getEntityEssenceData(entityType);
-        return essenceData != null ? essenceData.createItemStack(amount) : EntityEssenceData.createEmptyVial();
+        return essenceData != null ? essenceData.createItemStack(getAmount()) : EntityEssenceData.createEmptyVial();
     }
 
     @Override
@@ -106,6 +115,28 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
         Preconditions.checkArgument(amount < getAmount(), "amount must be < getAmount(), %d", getAmount());
 
         return new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, getAmount() + amount);
+    }
+
+    @NotNull
+    @Override
+    public List<@NotNull Item> drop(@NotNull AlchemicalCauldron cauldron, @NotNull World world, @NotNull Location location) {
+        List<@NotNull Item> drops = new ArrayList<>();
+
+        FileConfiguration config = Alchema.getInstance().getConfig();
+        int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
+
+        EntityEssenceData essenceData = essenceEffectRegistry.getEntityEssenceData(entityType);
+        if (essenceData == null) {
+            drops.add(world.dropItem(location, EntityEssenceData.createEmptyVial((getAmount() / maximumEssence) + 1)));
+            return drops;
+        }
+
+        for (int essenceToDrop = getAmount(); essenceToDrop > 0; essenceToDrop -= maximumEssence) {
+            ItemStack itemStack = essenceData.createItemStack(Math.min(essenceToDrop, maximumEssence));
+            drops.add(world.dropItem(location, itemStack));
+        }
+
+        return drops;
     }
 
     @NotNull

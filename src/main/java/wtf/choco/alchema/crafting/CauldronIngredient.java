@@ -2,9 +2,15 @@ package wtf.choco.alchema.crafting;
 
 import com.google.gson.JsonObject;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,6 +90,25 @@ public interface CauldronIngredient {
      */
     @NotNull
     public CauldronIngredient adjustAmountBy(int amount);
+
+    /**
+     * Drop this ingredient as one or more {@link Item} from the provided cauldron.
+     * <p>
+     * Default implementation of this method will, if not null, drop the result of
+     * {@link #asItemStack()}.
+     *
+     * @param cauldron the cauldron from which to drop the ingredients
+     * @param world the world in which the cauldron resides
+     * @param location the location at which the items should be dropped
+     *
+     * @return the list of Item entities that were dropped. If none, the returned
+     * list should be empty, never null
+     */
+    @NotNull
+    public default List<@NotNull Item> drop(@NotNull AlchemicalCauldron cauldron, @NotNull World world, @NotNull Location location) {
+        ItemStack itemStack = asItemStack();
+        return itemStack != null ? Arrays.asList(world.dropItem(location, itemStack)) : Collections.emptyList();
+    }
 
     /**
      * Serialize this ingredient to a {@link JsonObject}.
