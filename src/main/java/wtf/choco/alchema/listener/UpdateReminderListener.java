@@ -32,7 +32,7 @@ public final class UpdateReminderListener implements Listener {
         }
 
         UpdateResult result = UpdateChecker.get().getLastResult();
-        if (result == null /*|| !result.requiresUpdate()*/) {
+        if (result == null || !result.requiresUpdate()) {
             return;
         }
 
