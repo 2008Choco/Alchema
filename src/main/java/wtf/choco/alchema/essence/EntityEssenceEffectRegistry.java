@@ -109,93 +109,110 @@ public final class EntityEssenceEffectRegistry {
     public static void registerDefaultAlchemaEssences(@NotNull EntityEssenceEffectRegistry registry) {
         Preconditions.checkArgument(registry != null, "registry must not be null");
 
-        // Not yet configured
-        register(registry, EntityType.BAT, 0x3C2F17);
-        register(registry, EntityType.BEE, 0xFBD367);
-        register(registry, EntityType.BLAZE, 0xB76D00);
+        // B
+        register(registry, EntityType.BAT, 0x3C2F17, DefaultEntityEffects.BAT);
+        register(registry, EntityType.BEE, 0xFBD367, DefaultEntityEffects.BEE);
+        register(registry, EntityType.BLAZE, 0xB76D00, DefaultEntityEffects.BLAZE);
 
-        register(registry, EntityType.CAT, 0x937155);
-        register(registry, EntityType.CAVE_SPIDER, 0x002D31);
-        register(registry, EntityType.CHICKEN, 0xB90000);
-        register(registry, EntityType.COD, 0x453834);
-        register(registry, EntityType.COW, 0x2E231A);
-        register(registry, EntityType.CREEPER, 0x52A044);
+        // C
+        register(registry, EntityType.CAT, 0x937155, DefaultEntityEffects.CAT);
+        register(registry, EntityType.CAVE_SPIDER, 0x002D31, DefaultEntityEffects.CAVE_SPIDER);
+        register(registry, EntityType.CHICKEN, 0xB90000, DefaultEntityEffects.CHICKEN);
+        register(registry, EntityType.COD, 0x453834, DefaultEntityEffects.COD);
+        register(registry, EntityType.COW, 0x2E231A, DefaultEntityEffects.COW);
+        register(registry, EntityType.CREEPER, 0x52A044, DefaultEntityEffects.CREEPER);
 
-        register(registry, EntityType.DONKEY, 0x897766);
-        register(registry, EntityType.DOLPHIN, 0xC1CFE0);
-        register(registry, EntityType.DROWNED, 0x386A5D);
+        // D
+        register(registry, EntityType.DONKEY, 0x897766, DefaultEntityEffects.DONKEY);
+        register(registry, EntityType.DOLPHIN, 0xC1CFE0, DefaultEntityEffects.DOLPHIN);
+        register(registry, EntityType.DROWNED, 0x386A5D, DefaultEntityEffects.DROWNED);
 
-        register(registry, EntityType.ELDER_GUARDIAN, 0x9A988E);
-        register(registry, EntityType.ENDERMAN, 0xC140D6);
-        register(registry, EntityType.ENDERMITE, 0x3F2F53);
-        register(registry, EntityType.EVOKER, 0xC5B26A);
+        // E
+        register(registry, EntityType.ELDER_GUARDIAN, 0x9A988E, DefaultEntityEffects.ELDER_GUARDIAN);
+        register(registry, EntityType.ENDERMAN, 0xC140D6, DefaultEntityEffects.ENDERMAN);
+        register(registry, EntityType.ENDERMITE, 0x3F2F53, DefaultEntityEffects.ENDERMITE);
+        register(registry, EntityType.EVOKER, 0xC5B26A, DefaultEntityEffects.EVOKER);
 
-        register(registry, EntityType.FOX, 0xE48D40);
+        // F
+        register(registry, EntityType.FOX, 0xE48D40, DefaultEntityEffects.FOX);
 
-        register(registry, EntityType.GHAST, 0xAFAFAF);
-        register(registry, EntityType.GUARDIAN, 0x699381);
+        // G
+        register(registry, EntityType.GHAST, 0xAFAFAF, DefaultEntityEffects.GHAST);
+        register(registry, EntityType.GUARDIAN, 0x699381, DefaultEntityEffects.GUARDIAN);
 
-        register(registry, EntityType.HOGLIN, 0xE59E73);
-        register(registry, EntityType.HORSE, 0xBA9979);
-        register(registry, EntityType.HUSK, 0x937E52);
+        // H
+        register(registry, EntityType.HOGLIN, 0xE59E73, DefaultEntityEffects.HOGLIN);
+        register(registry, EntityType.HORSE, 0xBA9979, DefaultEntityEffects.HORSE);
+        register(registry, EntityType.HUSK, 0x937E52, DefaultEntityEffects.HUSK);
 
-        register(registry, EntityType.ILLUSIONER, 0x0E406B);
-        register(registry, EntityType.IRON_GOLEM, 0x909696);
+        // I
+        register(registry, EntityType.ILLUSIONER, 0x0E406B, DefaultEntityEffects.ILLUSIONER);
+        register(registry, EntityType.IRON_GOLEM, 0x909696, DefaultEntityEffects.IRON_GOLEM);
 
-        register(registry, EntityType.LLAMA, 0xB8AB90);
+        // L
+        register(registry, EntityType.LLAMA, 0xB8AB90, DefaultEntityEffects.LLAMA);
 
-        register(registry, EntityType.MAGMA_CUBE, 0x942C05);
-        register(registry, EntityType.MULE, 0x4F2B1A);
-        register(registry, EntityType.MUSHROOM_COW, 0x7A0C0D);
+        // M
+        register(registry, EntityType.MAGMA_CUBE, 0x942C05, DefaultEntityEffects.MAGMA_CUBE);
+        register(registry, EntityType.MULE, 0x4F2B1A, DefaultEntityEffects.MULE);
+        register(registry, EntityType.MUSHROOM_COW, 0x7A0C0D, DefaultEntityEffects.MUSHROOM_COW);
 
-        register(registry, EntityType.OCELOT, 0xEEB162);
+        // O
+        register(registry, EntityType.OCELOT, 0xEEB162, DefaultEntityEffects.OCELOT);
 
-        register(registry, EntityType.PANDA, 0xE4E4E4);
-        register(registry, EntityType.PARROT, 0x0054B0);
-        register(registry, EntityType.PHANTOM, 0x4F60A2);
-        register(registry, EntityType.PIG, 0xEBA3A2);
-        register(registry, EntityType.PIGLIN, 0xA97454);
-        register(registry, EntityType.PIGLIN_BRUTE, 0x131316);
-        register(registry, EntityType.PILLAGER, 0x6D7171);
-        register(registry, EntityType.PLAYER, 0xB48B64, true); // Skin coloured
-        register(registry, EntityType.POLAR_BEAR, 0xF3F3F3);
-        register(registry, EntityType.PUFFERFISH, 0xF8A50C);
+        // P
+        register(registry, EntityType.PANDA, 0xE4E4E4, DefaultEntityEffects.PANDA);
+        register(registry, EntityType.PARROT, 0x0054B0, DefaultEntityEffects.PARROT);
+        register(registry, EntityType.PHANTOM, 0x4F60A2, DefaultEntityEffects.PHANTOM);
+        register(registry, EntityType.PIG, 0xEBA3A2, DefaultEntityEffects.PIG);
+        register(registry, EntityType.PIGLIN, 0xA97454, DefaultEntityEffects.PIGLIN);
+        register(registry, EntityType.PIGLIN_BRUTE, 0x131316, DefaultEntityEffects.PIGLIN_BRUTE);
+        register(registry, EntityType.PILLAGER, 0x6D7171, DefaultEntityEffects.PILLAGER);
+        register(registry, EntityType.PLAYER, 0xB48B64, true, DefaultEntityEffects.PLAYER);
+        register(registry, EntityType.POLAR_BEAR, 0xF3F3F3, DefaultEntityEffects.POLAR_BEAR);
+        register(registry, EntityType.PUFFERFISH, 0xF8A50C, DefaultEntityEffects.PUFFERFISH);
 
-        register(registry, EntityType.RABBIT, 0xA28B72);
-        register(registry, EntityType.RAVAGER, 0x555552);
+        // R
+        register(registry, EntityType.RABBIT, 0xA28B72, DefaultEntityEffects.RABBIT);
+        register(registry, EntityType.RAVAGER, 0x555552, DefaultEntityEffects.RAVAGER);
 
-        register(registry, EntityType.SALMON, 0xBC3E3C);
-        register(registry, EntityType.SHEEP, 0xA8A8A8);
-        register(registry, EntityType.SHULKER, 0x895F89);
-        register(registry, EntityType.SILVERFISH, 0x768C98);
-        register(registry, EntityType.SKELETON, 0xFFFFFF);
-        register(registry, EntityType.SKELETON_HORSE, 0x707070);
-        register(registry, EntityType.SLIME, 0x75BF65);
-        register(registry, EntityType.SNOWMAN, 0xADC8C8);
-        register(registry, EntityType.SPIDER, 0x241F1C);
-        register(registry, EntityType.SQUID, 0x3D4f5D);
-        register(registry, EntityType.STRAY, 0x475657);
-        register(registry, EntityType.STRIDER, 0x913032);
+        // S
+        register(registry, EntityType.SALMON, 0xBC3E3C, DefaultEntityEffects.SALMON);
+        register(registry, EntityType.SHEEP, 0xA8A8A8, DefaultEntityEffects.SHEEP);
+        register(registry, EntityType.SHULKER, 0x895F89, DefaultEntityEffects.SHULKER);
+        register(registry, EntityType.SILVERFISH, 0x768C98, DefaultEntityEffects.SILVERFISH);
+        register(registry, EntityType.SKELETON, 0xFFFFFF, DefaultEntityEffects.SKELETON);
+        register(registry, EntityType.SKELETON_HORSE, 0x707070, DefaultEntityEffects.SKELETON_HORSE);
+        register(registry, EntityType.SLIME, 0x75BF65, DefaultEntityEffects.SLIME);
+        register(registry, EntityType.SNOWMAN, 0xADC8C8, DefaultEntityEffects.SNOWMAN);
+        register(registry, EntityType.SPIDER, 0x241F1C, DefaultEntityEffects.SPIDER);
+        register(registry, EntityType.SQUID, 0x3D4f5D, DefaultEntityEffects.SQUID);
+        register(registry, EntityType.STRAY, 0x475657, DefaultEntityEffects.STRAY);
+        register(registry, EntityType.STRIDER, 0x913032, DefaultEntityEffects.STRIDER);
 
-        register(registry, EntityType.TRADER_LLAMA, 0x38507A);
-        register(registry, EntityType.TROPICAL_FISH, 0xD85F13);
-        register(registry, EntityType.TURTLE, 0x46BD49);
+        // T
+        register(registry, EntityType.TRADER_LLAMA, 0x38507A, DefaultEntityEffects.TRADER_LLAMA);
+        register(registry, EntityType.TROPICAL_FISH, 0xD85F13, DefaultEntityEffects.TROPICAL_FISH);
+        register(registry, EntityType.TURTLE, 0x46BD49, DefaultEntityEffects.TURTLE);
 
-        register(registry, EntityType.VEX, 0x798EA2);
-        register(registry, EntityType.VILLAGER, 0xB48B64);
-        register(registry, EntityType.VINDICATOR, 0x6C7171);
+        // V
+        register(registry, EntityType.VEX, 0x798EA2, DefaultEntityEffects.VEX);
+        register(registry, EntityType.VILLAGER, 0xB48B64, DefaultEntityEffects.VILLAGER);
+        register(registry, EntityType.VINDICATOR, 0x6C7171, DefaultEntityEffects.VINDICATOR);
 
-        register(registry, EntityType.WANDERING_TRADER, 0x435F91);
-        register(registry, EntityType.WITCH, 0x351757);
-        register(registry, EntityType.WITHER, 0x262626);
-        register(registry, EntityType.WITHER_SKELETON, 0x1E1E1E);
-        register(registry, EntityType.WOLF, 0xAEA8A5);
+        // W
+        register(registry, EntityType.WANDERING_TRADER, 0x435F91, DefaultEntityEffects.WANDERING_TRADER);
+        register(registry, EntityType.WITCH, 0x351757, DefaultEntityEffects.WITCH);
+        register(registry, EntityType.WITHER, 0x262626, DefaultEntityEffects.WITHER);
+        register(registry, EntityType.WITHER_SKELETON, 0x1E1E1E, DefaultEntityEffects.WITHER_SKELETON);
+        register(registry, EntityType.WOLF, 0xAEA8A5, DefaultEntityEffects.WOLF);
 
-        register(registry, EntityType.ZOGLIN, 0xE68E87);
-        register(registry, EntityType.ZOMBIE, 0x40782F);
-        register(registry, EntityType.ZOMBIE_HORSE, 0x4D7342);
-        register(registry, EntityType.ZOMBIE_VILLAGER, 0x40782F);
-        register(registry, EntityType.ZOMBIFIED_PIGLIN, 0xBC4F4C);
+        // Z
+        register(registry, EntityType.ZOGLIN, 0xE68E87, DefaultEntityEffects.ZOGLIN);
+        register(registry, EntityType.ZOMBIE, 0x40782F, DefaultEntityEffects.ZOMBIE);
+        register(registry, EntityType.ZOMBIE_HORSE, 0x4D7342, DefaultEntityEffects.ZOMBIE_HORSE);
+        register(registry, EntityType.ZOMBIE_VILLAGER, 0x40782F, DefaultEntityEffects.ZOMBIE_VILLAGER);
+        register(registry, EntityType.ZOMBIFIED_PIGLIN, 0xBC4F4C, DefaultEntityEffects.ZOMBIFIED_PIGLIN);
     }
 
     private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, boolean glowing, @Nullable EssenceConsumptionCallback consumptionCallback) {
@@ -207,16 +224,8 @@ public final class EntityEssenceEffectRegistry {
         registry.registerEntityEssenceData(new EntityEssenceData(entityType, Color.fromRGB(rgb), glowing, consumptionCallback), true);
     }
 
-    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, boolean glowing) {
-        register(registry, entityType, rgb, glowing, null);
-    }
-
     private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb, @Nullable EssenceConsumptionCallback consumptionCallback) {
         register(registry, entityType, rgb, false, consumptionCallback);
-    }
-
-    private static void register(@NotNull EntityEssenceEffectRegistry registry, @NotNull EntityType entityType, int rgb) {
-        register(registry, entityType, rgb, false, null);
     }
 
 }
