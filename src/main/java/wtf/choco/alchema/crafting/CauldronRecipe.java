@@ -9,10 +9,12 @@ import com.google.gson.JsonParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
@@ -25,6 +27,8 @@ import wtf.choco.alchema.util.NamespacedKeyUtil;
  * @author Parker Hawke - Choco
  */
 public class CauldronRecipe {
+
+    private Optional<@NotNull String> comment = Optional.empty();
 
     private final NamespacedKey key;
     private final ItemStack result;
@@ -100,6 +104,29 @@ public class CauldronRecipe {
     @NotNull
     public ItemStack getResult() {
         return result.clone();
+    }
+
+    /**
+     * Set the comment for this recipe.
+     *
+     * @param comment the comment to set or null
+     */
+    public void setComment(@Nullable Optional<@NotNull String> comment) {
+        if (comment == null) {
+            comment = Optional.empty();
+        }
+
+        this.comment = comment;
+    }
+
+    /**
+     * Get the comment for this recipe if one is set.
+     *
+     * @return the comment
+     */
+    @NotNull
+    public Optional<@NotNull String> getComment() {
+        return comment;
     }
 
     /**
@@ -233,7 +260,14 @@ public class CauldronRecipe {
             ingredients.add(ingredient);
         }
 
-        return new CauldronRecipe(key, result, ingredients);
+        Optional<@NotNull String> comment = Optional.empty();
+        if (object.has("comment")) {
+            comment = Optional.ofNullable(object.get("comment").getAsString());
+        }
+
+        CauldronRecipe recipe = new CauldronRecipe(key, result, ingredients);
+        recipe.setComment(comment);
+        return recipe;
     }
 
 }
