@@ -12,8 +12,8 @@ commands:
     usage: /<command> <version|reload>
   givevialofessence:
     description: Give a vial of essence to a player
-    usage: /<command> <entity> [amount of essence] [player] [amount]
-    aliases: [ givevialsofessence, giveessence ]
+    usage: /<command> [player] [amount] [entity] [amount of essence]
+    aliases: [ givevialsofessence, giveessence, givevials, givevial ]
     permission: alchema.command.givevialofessence
 
 permissions:

@@ -37,7 +37,7 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
 
     private static final List<String> ARG_AMOUNTS = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9");
 
-    // usage: /<command> <entity> [amount of essence] [player] [amount]
+    // usage: /<command> [player] [amount] [entity] [amount of essence]
 
     private final Alchema plugin;
 
@@ -47,42 +47,15 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
-        if (args.length < 1) {
-            sender.sendMessage(CHAT_PREFIX + "Which type of entity essence would you like to give? " + ChatColor.YELLOW + "/" + label + " <entity> [amount of essence] [player] [amount]");
-            return true;
-        }
-
-        // Entity type argument
-        NamespacedKey entityTypeKey = NamespacedKeyUtil.fromString(args[0], null);
-        if (entityTypeKey == null) {
-            sender.sendMessage(CHAT_PREFIX + "Invalid entity type id. Expected format, " + ChatColor.YELLOW + "minecraft:entity_id");
-            return true;
-        }
-
-        EntityType type = Registry.ENTITY_TYPE.get(entityTypeKey);
-        if (type == null) {
-            sender.sendMessage(CHAT_PREFIX + "Could not find an entity with the id " + ChatColor.YELLOW + entityTypeKey + ChatColor.GRAY + ". Does it exist?");
-            return true;
-        }
-
-        EntityEssenceData essenceData = plugin.getEntityEssenceEffectRegistry().getEntityEssenceData(type);
-        if (essenceData == null) {
-            sender.sendMessage(CHAT_PREFIX + ChatColor.YELLOW + entityTypeKey + ChatColor.GRAY + " does not have any essence registered with " + plugin.getName() + ".");
-            return true;
-        }
-
-        // Amount of essence argument
-        int maximumEssence = plugin.getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
-        int amountOfEssence = (args.length >= 2 ? NumberUtils.toInt(args[1], -1) : maximumEssence);
-        if (amountOfEssence <= 0 || amountOfEssence > maximumEssence) {
-            sender.sendMessage(CHAT_PREFIX + "Amount of essence must not be zero, negative or exceed " + ChatColor.YELLOW + maximumEssence + ChatColor.GRAY + ".");
+        if (args.length < 1 && !(sender instanceof Player)) {
+            sender.sendMessage("You must specify a player when running this command from the console.");
             return true;
         }
 
         // Target selector argument
         List<Player> targets = (sender instanceof Player) ? Arrays.asList((Player) sender) : Collections.emptyList();
-        if (args.length >= 3) {
-            targets = Bukkit.selectEntities(sender, args[2]).stream()
+        if (args.length >= 1) {
+            targets = Bukkit.selectEntities(sender, args[0]).stream()
                 .filter(entity -> entity instanceof Player)
                 .map(entity -> (Player) entity)
                 .distinct()
@@ -100,29 +73,71 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         }
 
         // Item amount argument
-        int itemAmount = (args.length >= 4 ? NumberUtils.toInt(args[3], -1) : 1);
+        int itemAmount = (args.length >= 2 ? NumberUtils.toInt(args[1], -1) : 1);
         if (itemAmount <= 0) {
             sender.sendMessage(CHAT_PREFIX + "Item amout must not be zero or negative.");
             return true;
         }
 
-        ItemStack vialOfEssence = essenceData.createItemStack(amountOfEssence);
+        int maximumEssence = plugin.getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
+        NamespacedKey entityTypeKey = null;
+        EntityEssenceData essenceData = null;
+
+        // Entity type argument
+        if (args.length >= 3) {
+            entityTypeKey = NamespacedKeyUtil.fromString(args[2], null);
+            if (entityTypeKey == null) {
+                sender.sendMessage(CHAT_PREFIX + "Invalid entity type id. Expected format, " + ChatColor.YELLOW + "minecraft:entity_id");
+                return true;
+            }
+
+            EntityType type = Registry.ENTITY_TYPE.get(entityTypeKey);
+            if (type == null) {
+                sender.sendMessage(CHAT_PREFIX + "Could not find an entity with the id " + ChatColor.YELLOW + entityTypeKey + ChatColor.GRAY + ". Does it exist?");
+                return true;
+            }
+
+            essenceData = plugin.getEntityEssenceEffectRegistry().getEntityEssenceData(type);
+            if (essenceData == null) {
+                sender.sendMessage(CHAT_PREFIX + ChatColor.YELLOW + entityTypeKey + ChatColor.GRAY + " does not have any essence registered with " + plugin.getName() + ".");
+                return true;
+            }
+        }
+
+        // Amount of essence argument
+        int amountOfEssence = (args.length >= 4 ? NumberUtils.toInt(args[3], -1) : maximumEssence);
+        if (amountOfEssence <= 0 || amountOfEssence > maximumEssence) {
+            sender.sendMessage(CHAT_PREFIX + "Amount of essence must not be zero, negative or exceed " + ChatColor.YELLOW + maximumEssence + ChatColor.GRAY + ".");
+            return true;
+        }
+
+        ItemStack vialOfEssence = essenceData != null ? essenceData.createItemStack(amountOfEssence) : EntityEssenceData.createEmptyVial(itemAmount);
         ItemMeta vialOfEssenceMeta = vialOfEssence.getItemMeta();
-        String itemName = vialOfEssenceMeta != null ? vialOfEssenceMeta.getDisplayName() : "vials of " + entityTypeKey.getKey().replace('_', ' ') + " essence";
+        String itemName = vialOfEssenceMeta != null ? vialOfEssenceMeta.getDisplayName() : "vials of " + (entityTypeKey != null ? entityTypeKey.getKey().replace('_', ' ') : "null") + " essence";
+
+        boolean isEntityEssence = essenceData != null;
 
         targets.forEach(player -> {
             World world = player.getWorld();
             Location location = player.getLocation();
             Inventory inventory = player.getInventory();
 
-            for (int i = 0; i < itemAmount; i++) {
+            if (isEntityEssence) {
+                // We want to treat entity essence a little differently because they shouldn't stack. Give them individually
+                for (int i = 0; i < itemAmount; i++) {
+                    inventory.addItem(vialOfEssence).forEach((slot, item) -> world.dropItem(location, item));
+                }
+            }
+            else {
                 inventory.addItem(vialOfEssence).forEach((slot, item) -> world.dropItem(location, item));
             }
 
             player.sendMessage(CHAT_PREFIX + "You were given " + ChatColor.YELLOW + itemAmount + "x " + itemName + ChatColor.GRAY + ".");
         });
 
-        sender.sendMessage(CHAT_PREFIX + "You have given " + ChatColor.GREEN + (targets.size() == 1 ? targets.get(0).getName() : targets.size() + " players") + ChatColor.YELLOW + " " + itemAmount + "x " + itemName + ChatColor.GRAY + ".");
+        if (targets.size() > 1 || (targets.size() == 1 && targets.get(0) != sender)) {
+            sender.sendMessage(CHAT_PREFIX + "You have given " + ChatColor.GREEN + (targets.size() == 1 ? targets.get(0).getName() : targets.size() + " players") + ChatColor.YELLOW + " " + itemAmount + "x " + itemName + ChatColor.GRAY + ".");
+        }
         return true;
     }
 
@@ -130,13 +145,12 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
         if (args.length == 1) {
-            Set<@NotNull EntityType> essenceTypes = plugin.getEntityEssenceEffectRegistry().getRegisteredEntityEssenceTypes();
-            List<String> suggestions = new ArrayList<>(essenceTypes.size());
+            String arg = args[0];
+            List<String> suggestions = StringUtil.copyPartialMatches(arg, Arrays.asList("@a", "@p", "@r", "@s"), new ArrayList<>());
 
-            essenceTypes.forEach(type -> {
-                NamespacedKey key = type.getKey();
-                if (key.getKey().startsWith(args[0]) || key.toString().startsWith(args[0])) {
-                    suggestions.add(type.getKey().toString());
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                if (arg.isEmpty() || player.getName().toLowerCase().startsWith(arg.toLowerCase())) {
+                    suggestions.add(player.getName());
                 }
             });
 
@@ -144,6 +158,26 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         }
 
         else if (args.length == 2 && args[1].isEmpty()) {
+            return ARG_AMOUNTS;
+        }
+
+        else if (args.length == 3) {
+            String arg = args[2];
+
+            Set<@NotNull EntityType> essenceTypes = plugin.getEntityEssenceEffectRegistry().getRegisteredEntityEssenceTypes();
+            List<String> suggestions = new ArrayList<>(essenceTypes.size());
+
+            essenceTypes.forEach(type -> {
+                NamespacedKey key = type.getKey();
+                if (key.getKey().startsWith(arg) || key.toString().startsWith(arg)) {
+                    suggestions.add(type.getKey().toString());
+                }
+            });
+
+            return suggestions;
+        }
+
+        else if (args.length == 4 && args[3].isEmpty()) {
             List<String> suggestions = new ArrayList<>();
 
             int maximumEssence = plugin.getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_MAXIMUM_ESSENCE, 1000);
@@ -158,23 +192,6 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
             }
 
             return suggestions;
-        }
-
-        else if (args.length == 3) {
-            String arg = args[2];
-            List<String> suggestions = StringUtil.copyPartialMatches(arg, Arrays.asList("@a", "@p", "@r", "@s"), new ArrayList<>());
-
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                if (arg.isEmpty() || player.getName().toLowerCase().startsWith(arg.toLowerCase())) {
-                    suggestions.add(player.getName());
-                }
-            });
-
-            return suggestions;
-        }
-
-        else if (args.length == 4 && args[3].isEmpty()) {
-            return ARG_AMOUNTS;
         }
 
         return Collections.emptyList();
