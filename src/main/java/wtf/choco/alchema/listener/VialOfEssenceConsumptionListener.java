@@ -46,7 +46,7 @@ public final class VialOfEssenceConsumptionListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        PlayerConsumeEntityEssenceEvent playerConsumeEntityEssenceEvent = AlchemaEventFactory.handlePlayerConsumeEntityEssenceEvent(player, item, essenceData);
+        PlayerConsumeEntityEssenceEvent playerConsumeEntityEssenceEvent = AlchemaEventFactory.callPlayerConsumeEntityEssenceEvent(player, item, essenceData);
 
         if (playerConsumeEntityEssenceEvent.isCancelled()) {
             event.setCancelled(true);

@@ -27,6 +27,13 @@ public class PlayerConsumeEntityEssenceEvent extends PlayerEvent implements Canc
     private final ItemStack item;
     private final EntityEssenceData essenceData;
 
+    /**
+     * Construct a new {@link PlayerConsumeEntityEssenceEvent}.
+     *
+     * @param player the player that consumed the essence
+     * @param item the item that was consumed
+     * @param essenceData the essence data that was consumed
+     */
     public PlayerConsumeEntityEssenceEvent(@NotNull Player player, @NotNull ItemStack item, @NotNull EntityEssenceData essenceData) {
         super(player);
 

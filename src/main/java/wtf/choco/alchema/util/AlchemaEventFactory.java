@@ -7,6 +7,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +19,7 @@ import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
 import wtf.choco.alchema.api.event.entity.EntityDropEssenceEvent;
 import wtf.choco.alchema.api.event.player.PlayerConsumeEntityEssenceEvent;
+import wtf.choco.alchema.api.event.player.PlayerEssenceCollectEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.crafting.CauldronIngredient;
 import wtf.choco.alchema.crafting.CauldronRecipe;
@@ -70,10 +72,28 @@ public final class AlchemaEventFactory {
      * @param item the vial of entity essence vial
      * @param essenceData the essence data that was consumed
      *
-     * @return true if not cancelled, false if cancelled
+     * @return the event
      */
-    public static PlayerConsumeEntityEssenceEvent handlePlayerConsumeEntityEssenceEvent(@NotNull Player player, @NotNull ItemStack item, @NotNull EntityEssenceData essenceData) {
+    public static PlayerConsumeEntityEssenceEvent callPlayerConsumeEntityEssenceEvent(@NotNull Player player, @NotNull ItemStack item, @NotNull EntityEssenceData essenceData) {
         PlayerConsumeEntityEssenceEvent event = new PlayerConsumeEntityEssenceEvent(player, item, essenceData);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
+
+    /**
+     * Call and return the {@link PlayerEssenceCollectEvent}.
+     *
+     * @param player the player collecting the essence
+     * @param hand the hand used to collect the essence
+     * @param item the item used to collect the essence
+     * @param entity the entity from which the essence was collected
+     * @param essenceData the essence data being collected
+     * @param essenceAmount the amount of essence being collected
+     *
+     * @return the event
+     */
+    public static PlayerEssenceCollectEvent callPlayerEssenceCollectEvent(@NotNull Player player, @NotNull EquipmentSlot hand, @NotNull ItemStack item, @NotNull Entity entity, @NotNull EntityEssenceData essenceData, int essenceAmount) {
+        PlayerEssenceCollectEvent event = new PlayerEssenceCollectEvent(player, hand, item, entity, essenceData, essenceAmount);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }

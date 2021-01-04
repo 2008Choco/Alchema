@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.entity.EntityDropEssenceEvent;
+import wtf.choco.alchema.api.event.player.PlayerEssenceCollectEvent;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
@@ -125,6 +126,13 @@ public final class EntityEssenceCollectionListener implements Listener {
             int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX, 25);
             int amountOfEssence = random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
 
+            PlayerEssenceCollectEvent playerEssenceCollectEvent = AlchemaEventFactory.callPlayerEssenceCollectEvent(player, hand, item, entity, essenceData, amountOfEssence);
+            if (playerEssenceCollectEvent.isCancelled()) {
+                return;
+            }
+
+            amountOfEssence = playerEssenceCollectEvent.getEssenceAmount();
+
             if (player.getGameMode() != GameMode.CREATIVE) {
                 item.setAmount(item.getAmount() - 1);
                 inventory.setItem(hand, item);
@@ -164,6 +172,13 @@ public final class EntityEssenceCollectionListener implements Listener {
             int minimumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MIN, 10);
             int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX, 25);
             int amountOfEssence = random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
+
+            PlayerEssenceCollectEvent playerEssenceCollectEvent = AlchemaEventFactory.callPlayerEssenceCollectEvent(player, hand, item, entity, essenceData, amountOfEssence);
+            if (playerEssenceCollectEvent.isCancelled()) {
+                return;
+            }
+
+            amountOfEssence = playerEssenceCollectEvent.getEssenceAmount();
 
             if (item.getAmount() == 1) {
                 item = essenceData.applyTo(item, Math.min(currentEssence + amountOfEssence, maximumTotalEssence));
