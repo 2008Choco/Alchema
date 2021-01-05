@@ -45,6 +45,7 @@ import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
 import wtf.choco.alchema.listener.EmptyVialRecipeDiscoverListener;
 import wtf.choco.alchema.listener.EntityEssenceCollectionListener;
+import wtf.choco.alchema.listener.UpdateReminderListener;
 import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.UpdateChecker;
@@ -139,6 +140,7 @@ public final class Alchema extends JavaPlugin {
         manager.registerEvents(new CauldronManipulationListener(this), this);
         manager.registerEvents(new EmptyVialRecipeDiscoverListener(), this);
         manager.registerEvents(this.entityEssenceLootListener = new EntityEssenceCollectionListener(this), this);
+        manager.registerEvents(new UpdateReminderListener(this), this);
         manager.registerEvents(new VialOfEssenceConsumptionListener(this), this);
 
         // Register commands

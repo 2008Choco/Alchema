@@ -34,3 +34,7 @@ permissions:
   alchema.command.givevialofessence:
     description: Grants access to the /givevialofessence command
     default: op
+
+  alchema.updatenotify:
+    description: Grants the ability to see update notifications on join
+    default: op

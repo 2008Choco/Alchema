@@ -53,7 +53,7 @@ public final class CommandAlchema implements TabExecutor {
             String versionSuffix = "";
 
             UpdateResult updateResult = UpdateChecker.isInitialized() ? UpdateChecker.get().getLastResult() : null;
-            if (updateResult != null) {
+            if (updateResult != null && sender.hasPermission("alchema.updatenotify")) {
                 versionSuffix = ChatColor.WHITE + " (" + (updateResult.requiresUpdate() ? ChatColor.YELLOW + "update available: " + ChatColor.GREEN + updateResult.getNewestVersion() : ChatColor.GREEN + "latest") + ChatColor.WHITE + ")";
             }
 
