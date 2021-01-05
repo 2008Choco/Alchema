@@ -1,6 +1,9 @@
 package wtf.choco.alchema.crafting;
 
 import java.io.File;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
 
@@ -32,6 +35,14 @@ public interface RecipeLoadResult {
     public default int getTotal() {
         return getNative() + getThirdParty();
     }
+
+    /**
+     * Get an immutable List of all recipes that failed to load, if any.
+     *
+     * @return the failures. If none, an empty list is returned
+     */
+    @NotNull
+    public List<@NotNull RecipeLoadFailureReport> getFailures();
 
     /**
      * Get the time, in milliseconds, it took for this process to complete.

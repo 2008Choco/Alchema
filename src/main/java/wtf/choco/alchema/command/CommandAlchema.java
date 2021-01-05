@@ -12,9 +12,11 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredListener;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
+import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
 
@@ -78,15 +81,29 @@ public final class CommandAlchema implements TabExecutor {
 
             this.plugin.getRecipeRegistry().loadCauldronRecipes(plugin, plugin.getRecipesDirectory()).whenComplete((result, exception) -> {
                 if (exception != null) {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.RED + "Something went wrong while loading recipes... check the console and report any errors to the developer of " + plugin.getName() + ".");
                     exception.printStackTrace();
-                    sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.RED + "Something went wrong while loading recipes... check the console for errors.");
                     return;
                 }
 
                 sender.sendMessage(Alchema.CHAT_PREFIX + "Loaded " + ChatColor.YELLOW + "(" + result.getTotal() + ") " + ChatColor.GRAY + "cauldron recipes" + (result.getNative() != result.getTotal()
                     ? ChatColor.YELLOW + ". (" + result.getNative() + ") " + ChatColor.GRAY + "internal recipes and " + ChatColor.YELLOW + "(" + result.getThirdParty() + ") " + ChatColor.GRAY + "third-party recipes (other plugins)."
                     : ".")
-                        + " Took " + result.getTimeToComplete() + "ms.");
+                        + " Took " + ChatColor.AQUA + result.getTimeToComplete() + "ms" + ChatColor.GRAY + ".");
+
+                List<@NotNull RecipeLoadFailureReport> failures = result.getFailures();
+                if (!failures.isEmpty()) {
+                    sender.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "(!) " + ChatColor.RED + "Failed to load " + ChatColor.YELLOW + "(" + failures.size() + ") " + ChatColor.RED + "recipes. See the console for errors.");
+
+                    if (sender instanceof Player) { // Oh how I miss smart casting :(
+                        Player player = (Player) sender;
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.05F);
+                    }
+                }
+
+                failures.forEach(failureReport -> {
+                    this.plugin.getLogger().warning("Failed to load recipe " + failureReport.getRecipeKey() + ". Reason: " + failureReport.getReason());
+                });
             });
 
             sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.GREEN + "Successfully reloaded the configuration file.");

@@ -115,6 +115,10 @@ public final class Alchema extends JavaPlugin {
             if (result.getTotal() > 0) {
                 this.getLogger().info("Registered " + result.getTotal() + " cauldron recipes. (" + result.getThirdParty() + " third-party). Completed in " + result.getTimeToComplete() + "ms");
             }
+
+            result.getFailures().forEach(failureReport -> {
+                this.getLogger().warning("Failed to load recipe " + failureReport.getRecipeKey() + ". Reason: " + failureReport.getReason());
+            });
         });
 
         // Register listeners

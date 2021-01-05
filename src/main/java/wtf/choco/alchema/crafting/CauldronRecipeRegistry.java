@@ -7,9 +7,10 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,8 +163,8 @@ public class CauldronRecipeRegistry {
     public CompletableFuture<@NotNull RecipeLoadResult> loadCauldronRecipes(@NotNull Alchema plugin, @NotNull File recipesDirectory) {
         long now = System.currentTimeMillis();
 
-        return CompletableFuture.supplyAsync(() -> loadCauldronRecipesFromDirectory(plugin, recipesDirectory, recipesDirectory))
-        .thenCompose(nativelyRegistered -> {
+        return CompletableFuture.supplyAsync(() -> loadCauldronRecipesFromDirectory(plugin, new StandardRecipeLoadResult(), recipesDirectory, recipesDirectory))
+        .thenCompose(result -> {
             CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
 
             /*
@@ -176,19 +177,21 @@ public class CauldronRecipeRegistry {
                 AlchemaEventFactory.callCauldronRecipeRegisterEvent(this);
 
                 long timeToComplete = System.currentTimeMillis() - now;
-                registryEventFuture.complete(new StandardRecipeLoadResult(nativelyRegistered, timeToComplete));
+
+                result.setThirdParty(getRecipes().size() - result.getNative());
+                result.setTimeToComplete(timeToComplete);
+
+                registryEventFuture.complete(result);
             });
 
             return registryEventFuture;
         });
     }
 
-    private int loadCauldronRecipesFromDirectory(@NotNull Alchema plugin, @NotNull File recipesDirectory, File subdirectory) {
-        int registered = 0;
-
+    private StandardRecipeLoadResult loadCauldronRecipesFromDirectory(@NotNull Alchema plugin, @NotNull StandardRecipeLoadResult result, @NotNull File recipesDirectory, File subdirectory) throws JsonSyntaxException {
         for (File recipeFile : subdirectory.listFiles(file -> file.isDirectory() || file.getName().endsWith(".json"))) {
             if (recipeFile.isDirectory()) {
-                registered += loadCauldronRecipesFromDirectory(plugin, recipesDirectory, recipeFile);
+                this.loadCauldronRecipesFromDirectory(plugin, result, recipesDirectory, recipeFile);
                 continue;
             }
 
@@ -220,25 +223,27 @@ public class CauldronRecipeRegistry {
                 CauldronRecipe recipe = CauldronRecipe.fromJson(key, recipeObject, this);
 
                 this.registerCauldronRecipe(recipe);
-                registered++;
-            } catch (IOException | JsonSyntaxException e) {
-                e.printStackTrace();
+                result.setNative(result.getNative() + 1);
+            } catch (Exception e) {
+                result.addFailureInfo(new RecipeLoadFailureReport(key, e));
             }
         }
 
-        return registered;
+        return result;
     }
 
 
     private class StandardRecipeLoadResult implements RecipeLoadResult {
 
-        private final int nativelyRegistered, thirdPartyRegistered;
-        private final long timeToComplete;
+        private int nativelyRegistered, thirdPartyRegistered;
+        private long timeToComplete;
 
-        public StandardRecipeLoadResult(int nativelyRegistered, long timeToComplete) {
+        private final List<@NotNull RecipeLoadFailureReport> failures = new ArrayList<>();
+
+        StandardRecipeLoadResult() { }
+
+        private void setNative(int nativelyRegistered) {
             this.nativelyRegistered = nativelyRegistered;
-            this.thirdPartyRegistered = getRecipes().size() - nativelyRegistered;
-            this.timeToComplete = timeToComplete;
         }
 
         @Override
@@ -246,14 +251,32 @@ public class CauldronRecipeRegistry {
             return nativelyRegistered;
         }
 
+        private void setThirdParty(int thirdPartyRegistered) {
+            this.thirdPartyRegistered = thirdPartyRegistered;
+        }
+
         @Override
         public int getThirdParty() {
             return thirdPartyRegistered;
         }
 
+        private void setTimeToComplete(long timeToComplete) {
+            this.timeToComplete = timeToComplete;
+        }
+
         @Override
         public long getTimeToComplete() {
             return timeToComplete;
+        }
+
+        private void addFailureInfo(@NotNull RecipeLoadFailureReport report) {
+            this.failures.add(report);
+        }
+
+        @NotNull
+        @Override
+        public List<@NotNull RecipeLoadFailureReport> getFailures() {
+            return Collections.unmodifiableList(failures);
         }
 
     }
