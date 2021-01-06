@@ -1,0 +1,18 @@
+{
+    "result": {
+        "item": "minecraft:honeycomb",
+        "amount": 4
+    },
+    "ingredients": [
+        {
+            "type": "alchema:material",
+            "item": "minecraft:honey_bottle",
+            "amount": 1
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:sugar",
+            "amount": 1
+        }
+    ]
+}

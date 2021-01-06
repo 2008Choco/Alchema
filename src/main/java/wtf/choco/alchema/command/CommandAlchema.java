@@ -12,9 +12,11 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredListener;
@@ -24,10 +26,13 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
+import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
 
 public final class CommandAlchema implements TabExecutor {
+
+    private static final List<String> RELOAD_ARGS = Arrays.asList("verbose");
 
     private static final Map<@NotNull String, @Nullable String> BASE_ARGS = new HashMap<>();
     static {
@@ -45,7 +50,7 @@ public final class CommandAlchema implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length == 0) {
-            sender.sendMessage(Alchema.CHAT_PREFIX + "Insufficient arguments. " + ChatColor.YELLOW + "/" + label + " <" + String.join(" | ", getArgsFor(sender)) + ">");
+            sender.sendMessage(Alchema.CHAT_PREFIX + "Insufficient arguments. " + ChatColor.YELLOW + "/" + label + " <" + String.join(" | ", getBaseArgsFor(sender)) + ">");
             return true;
         }
 
@@ -73,21 +78,54 @@ public final class CommandAlchema implements TabExecutor {
                 return true;
             }
 
+            boolean verbose = args.length >= 2 && args[1].equalsIgnoreCase("verbose");
+            boolean isPlayer = sender instanceof Player;
+
             this.plugin.getRecipeRegistry().clearRecipes();
             this.plugin.reloadConfig();
             this.plugin.refreshEntityBlacklists();
 
             this.plugin.getRecipeRegistry().loadCauldronRecipes(plugin, plugin.getRecipesDirectory()).whenComplete((result, exception) -> {
                 if (exception != null) {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.RED + "Something went wrong while loading recipes... check the console and report any errors to the developer of " + plugin.getName() + ".");
                     exception.printStackTrace();
-                    sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.RED + "Something went wrong while loading recipes... check the console for errors.");
                     return;
                 }
 
                 sender.sendMessage(Alchema.CHAT_PREFIX + "Loaded " + ChatColor.YELLOW + "(" + result.getTotal() + ") " + ChatColor.GRAY + "cauldron recipes" + (result.getNative() != result.getTotal()
                     ? ChatColor.YELLOW + ". (" + result.getNative() + ") " + ChatColor.GRAY + "internal recipes and " + ChatColor.YELLOW + "(" + result.getThirdParty() + ") " + ChatColor.GRAY + "third-party recipes (other plugins)."
                     : ".")
-                        + " Took " + result.getTimeToComplete() + "ms.");
+                        + " Took " + ChatColor.AQUA + result.getTimeToComplete() + "ms" + ChatColor.GRAY + ".");
+
+                List<@NotNull RecipeLoadFailureReport> failures = result.getFailures();
+                if (!failures.isEmpty()) {
+                    String errorMessage = ChatColor.RED.toString() + ChatColor.BOLD + "(!) " + ChatColor.RED + "Failed to load " + ChatColor.YELLOW + "(" + failures.size() + ") " + ChatColor.RED + "recipes.";
+
+                    if (isPlayer) {
+                        Player player = (Player) sender;
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.05F);
+
+                        if (!verbose) {
+                            errorMessage += " See the console for errors";
+
+                            if (sender.hasPermission("alchema.command.reload.verbose")) {
+                                errorMessage += " or use " + ChatColor.YELLOW + "/" + label + " " + args[0] + " verbose " + ChatColor.RED + "for more information";
+                            }
+
+                            errorMessage += ".";
+                        }
+                    }
+
+                    sender.sendMessage(errorMessage);
+                }
+
+                failures.forEach(failureReport -> {
+                    this.plugin.getLogger().warning("Failed to load recipe " + failureReport.getRecipeKey() + ". Reason: " + failureReport.getReason());
+
+                    if (verbose && isPlayer) {
+                        sender.sendMessage(" - " + ChatColor.YELLOW + failureReport.getRecipeKey() + ": " + ChatColor.WHITE + failureReport.getReason());
+                    }
+                });
             });
 
             sender.sendMessage(Alchema.CHAT_PREFIX + ChatColor.GREEN + "Successfully reloaded the configuration file.");
@@ -135,11 +173,19 @@ public final class CommandAlchema implements TabExecutor {
     @Override
     @Nullable
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
-        return args.length == 1 ? StringUtil.copyPartialMatches(args[0], getArgsFor(sender), new ArrayList<>()) : Collections.emptyList();
+        if (args.length == 1) {
+            return StringUtil.copyPartialMatches(args[0], getBaseArgsFor(sender), new ArrayList<>());
+        }
+
+        else if (args.length == 2 && args[0].equalsIgnoreCase("reload")) {
+            return StringUtil.copyPartialMatches(args[1], RELOAD_ARGS, new ArrayList<>());
+        }
+
+        return Collections.emptyList();
     }
 
     @NotNull
-    private List<String> getArgsFor(@NotNull CommandSender sender) {
+    private List<String> getBaseArgsFor(@NotNull CommandSender sender) {
         Preconditions.checkArgument(sender != null, "sender must not be null");
 
         List<String> args = new ArrayList<>(BASE_ARGS.size());

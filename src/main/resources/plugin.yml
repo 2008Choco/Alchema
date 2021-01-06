@@ -28,11 +28,17 @@ permissions:
   alchema.command.reload:
     description: Grants access to the /alchema reload subcommand
     default: op
+    children:
+      alchema.command.reload.verbose: true
   alchema.command.integrations:
     description: Grants access to the /alchema integrations subcommand
     default: true
   alchema.command.givevialofessence:
     description: Grants access to the /givevialofessence command
+    default: op
+
+  alchema.command.reload.verbose:
+    description: Grants access to the /alchema reload verbose subcommand
     default: op
 
   alchema.updatenotify:
