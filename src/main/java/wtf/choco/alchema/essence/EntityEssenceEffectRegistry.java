@@ -33,8 +33,6 @@ public final class EntityEssenceEffectRegistry {
      *
      * @return true if registered successfully. false if override is false and an entry already
      * exists for the given EntityType
-     *
-     * @throws IllegalArgumentException if {@code entityType != essenceData.getEntityType()}
      */
     public boolean registerEntityEssenceData(@NotNull EntityEssenceData essenceData, boolean override) {
         Preconditions.checkArgument(essenceData != null, "essenceData must not be null");
@@ -60,8 +58,6 @@ public final class EntityEssenceEffectRegistry {
      *
      * @return true if registered successfully. false if an entry already exists for the given
      * EntityType
-     *
-     * @throws IllegalArgumentException if {@code entityType != essenceData.getEntityType()}
      */
     public boolean registerEntityEssenceData(@NotNull EntityEssenceData essenceData) {
         return registerEntityEssenceData(essenceData, false);
