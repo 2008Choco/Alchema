@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "minecraft:ink_sac",
+        "amount": 1
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:squid",
+            "amount": 25
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:black_dye"
+        }
+    ]
+}

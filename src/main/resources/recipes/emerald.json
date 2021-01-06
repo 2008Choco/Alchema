@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "minecraft:emerald",
+        "amount": 1
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:villager",
+            "amount": 500
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:diamond"
+        }
+    ]
+}

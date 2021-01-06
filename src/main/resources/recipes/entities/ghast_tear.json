@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "minecraft:ghast_tear",
+        "amount": 1
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:ghast",
+            "amount": 250
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:iron_nugget"
+        }
+    ]
+}
