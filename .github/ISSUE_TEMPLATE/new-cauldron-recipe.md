@@ -2,7 +2,7 @@
 name: New cauldron recipe
 about: Suggest one or more new default cauldron recipe(s)
 title: ''
-labels: enhancement
+labels: enhancement, recipes
 assignees: ''
 
 ---
