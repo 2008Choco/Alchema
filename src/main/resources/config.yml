@@ -14,7 +14,7 @@ Cauldron:
 
 VialOfEssence:
   MaximumEssence: 1000
-  FromEntites:
+  FromEntities:
     OnDeath:
       BaseDropChance: 0.75
       Min: 50
