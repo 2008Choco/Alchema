@@ -61,6 +61,7 @@ public final class Alchema extends JavaPlugin {
     /** The chat prefix used by Alchema */
     public static final String CHAT_PREFIX = ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Alchema | " + ChatColor.GRAY;
 
+    /** The GSON instance provided by Alchema */
     public static final Gson GSON = new Gson();
 
     private static Alchema instance;

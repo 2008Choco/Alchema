@@ -40,6 +40,13 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     private final EntityEssenceEffectRegistry essenceEffectRegistry;
     private final int amount;
 
+    /**
+     * Construct a new {@link CauldronIngredientEntityEssence} with a given amount.
+     *
+     * @param entityType the type of entity essence
+     * @param essenceEffectRegistry the effect registry
+     * @param amount the amount of essence
+     */
     public CauldronIngredientEntityEssence(@NotNull EntityType entityType, @NotNull EntityEssenceEffectRegistry essenceEffectRegistry, int amount) {
         Preconditions.checkArgument(entityType != null, "entityType must not be null");
         Preconditions.checkArgument(essenceEffectRegistry != null, "essenceEffectRegistry must not be null");
@@ -50,11 +57,27 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
         this.amount = amount;
     }
 
-    public CauldronIngredientEntityEssence(@NotNull EntityType essenceData, @NotNull EntityEssenceEffectRegistry essenceEffectRegistry) {
-        this(essenceData, essenceEffectRegistry, 1);
+    /**
+     * Construct a new {@link CauldronIngredientEntityEssence} with an amount of 1
+     *
+     * @param entityType the type of entity essence
+     * @param essenceEffectRegistry the effect registry
+     */
+    public CauldronIngredientEntityEssence(@NotNull EntityType entityType, @NotNull EntityEssenceEffectRegistry essenceEffectRegistry) {
+        this(entityType, essenceEffectRegistry, 1);
     }
 
+    /**
+     * Construct a new {@link CauldronIngredientItemStack} deserialized from the
+     * provided {@link JsonObject}.
+     *
+     * @param object the object from which to deserialize
+     * @param essenceEffectRegistry the effect registry
+     */
     public CauldronIngredientEntityEssence(@NotNull JsonObject object, @NotNull EntityEssenceEffectRegistry essenceEffectRegistry) {
+        Preconditions.checkArgument(object != null, "object must not be null");
+        Preconditions.checkArgument(essenceEffectRegistry != null, "essenceEffectRegistry must not be null");
+
         if (!object.has("entity")) {
             throw new JsonParseException("object does not contain item.");
         }
