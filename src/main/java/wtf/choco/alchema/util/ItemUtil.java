@@ -111,6 +111,10 @@ public final class ItemUtil {
             object.addProperty("unbreakable", meta.isUnbreakable());
         }
 
+        if (meta.hasCustomModelData()) {
+            object.addProperty("custom_model_data", meta.getCustomModelData());
+        }
+
         Multimap<Attribute, AttributeModifier> attributeModifiers = meta.getAttributeModifiers();
         if (attributeModifiers != null && attributeModifiers.size() > 0) {
             JsonObject attributeModifiersObject = new JsonObject();
@@ -458,6 +462,10 @@ public final class ItemUtil {
 
         if (object.has("unbreakable")) {
             meta.setUnbreakable(object.get("unbreakable").getAsBoolean());
+        }
+
+        if (object.has("custom_model_data")) {
+            meta.setCustomModelData(object.get("custom_model_data").getAsInt());
         }
 
         if (object.has("attribute_modifiers")) {
