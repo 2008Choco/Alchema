@@ -12,6 +12,7 @@ import wtf.choco.alchema.Alchema;
  */
 public final class AlchemaConstants {
 
+    // Metadata keys
     /** A metadata key used by Alchema to denote that an entity was damaged by a cauldron */
     public static final String METADATA_KEY_DAMAGED_BY_CAULDRON = "alchema:damaged_by_cauldron";
 
@@ -22,6 +23,7 @@ public final class AlchemaConstants {
     public static final String METADATA_KEY_INTERACTED_WITH_VIAL = "alchema:interacted_with_vial";
 
 
+    // NBT keys
     /** A {@link NamespacedKey} used as an NBT key for entity essence items. Determines the type of entity essence */
     public static final NamespacedKey NBT_KEY_ESSENCE_TYPE = Alchema.key("essence_type");
 
@@ -32,10 +34,12 @@ public final class AlchemaConstants {
     public static final NamespacedKey NBT_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
 
 
+    // Recipe keys
     /** A {@link NamespacedKey} used as a key for the empty vial crafting recipe */
     public static final NamespacedKey RECIPE_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
 
 
+    // Configuration keys
     /** Configuration path, Cauldron.MillisecondsToHeatUp */
     public static final String CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP = "Cauldron.MillisecondsToHeatUp";
 
@@ -104,6 +108,23 @@ public final class AlchemaConstants {
 
     /** Configuration path, VialOfEssence.Item.Filled.CustomModelData */
     public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_CUSTOM_MODEL_DATA = "VialOfEssence.Item.Filled.CustomModelData";
+
+
+    // Permission nodes
+    /** Permission node, alchema.command.reload, grants access to /alchema reload */
+    public static final String PERMISSION_COMMAND_RELOAD = "alchema.command.reload";
+
+    /** Permission node, alchema.command.integrations, grants access to /alchema integrations */
+    public static final String PERMISSION_COMMAND_INTEGRATIONS = "alchema.command.integrations";
+
+    /** Permission node, alchema.command.givevialofessence, grants access to /givevialofessence */
+    public static final String PERMISSION_COMMAND_GIVE_VIAL_OF_ESSENCE = "alchema.command.givevialofessence";
+
+    /** Permission node, alchema.command.reload.verbose, grants access to /alchema reload verbose */
+    public static final String PERMISSION_COMMAND_RELOAD_VERBOSE = "alchema.command.reload.verbose";
+
+    /** Permission node, alchema.updatenotify, grants access to update notifications */
+    public static final String PERMISSION_UPDATE_NOTIFY = "alchema.updatenotify";
 
     private AlchemaConstants() { }
 

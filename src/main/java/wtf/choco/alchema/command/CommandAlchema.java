@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
@@ -38,8 +39,8 @@ public final class CommandAlchema implements TabExecutor {
     private static final Map<@NotNull String, @Nullable String> BASE_ARGS = new HashMap<>();
     static {
         BASE_ARGS.put("version", null);
-        BASE_ARGS.put("reload", "alchema.command.reload");
-        BASE_ARGS.put("integrations", "alchema.command.integrations");
+        BASE_ARGS.put("reload", AlchemaConstants.PERMISSION_COMMAND_RELOAD);
+        BASE_ARGS.put("integrations", AlchemaConstants.PERMISSION_COMMAND_INTEGRATIONS);
     }
 
     private final Alchema plugin;
@@ -59,7 +60,7 @@ public final class CommandAlchema implements TabExecutor {
             String versionSuffix = "";
 
             UpdateResult updateResult = UpdateChecker.isInitialized() ? UpdateChecker.get().getLastResult() : null;
-            if (updateResult != null && sender.hasPermission("alchema.updatenotify")) {
+            if (updateResult != null && sender.hasPermission(AlchemaConstants.PERMISSION_UPDATE_NOTIFY)) {
                 StringBuilder versionSuffixBuilder = new StringBuilder(" ").append(ChatColor.WHITE).append('(');
 
                 UpdateReason reason = updateResult.getReason();
@@ -91,7 +92,7 @@ public final class CommandAlchema implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("reload")) {
-            if (!sender.hasPermission("alchema.command.reload")) {
+            if (!sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_RELOAD)) {
                 sender.sendMessage(Alchema.CHAT_PREFIX + "You have insufficient permissions to run this command.");
                 return true;
             }
@@ -126,7 +127,7 @@ public final class CommandAlchema implements TabExecutor {
                         if (!verbose) {
                             errorMessage += " See the console for errors";
 
-                            if (sender.hasPermission("alchema.command.reload.verbose")) {
+                            if (sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_RELOAD_VERBOSE)) {
                                 errorMessage += " or use " + ChatColor.YELLOW + "/" + label + " " + args[0] + " verbose " + ChatColor.RED + "for more information";
                             }
 
@@ -150,7 +151,7 @@ public final class CommandAlchema implements TabExecutor {
         }
 
         else if (args[0].equalsIgnoreCase("integrations")) {
-            if (!sender.hasPermission("alchema.command.integrations")) {
+            if (!sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_INTEGRATIONS)) {
                 sender.sendMessage(Alchema.CHAT_PREFIX + "You have insufficient permissions to run this command.");
                 return true;
             }
@@ -195,7 +196,7 @@ public final class CommandAlchema implements TabExecutor {
             return StringUtil.copyPartialMatches(args[0], getBaseArgsFor(sender), new ArrayList<>());
         }
 
-        else if (args.length == 2 && args[0].equalsIgnoreCase("reload") && sender.hasPermission("alchema.command.reload.verbose")) {
+        else if (args.length == 2 && args[0].equalsIgnoreCase("reload") && sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_RELOAD_VERBOSE)) {
             return StringUtil.copyPartialMatches(args[1], RELOAD_ARGS, new ArrayList<>());
         }
 
