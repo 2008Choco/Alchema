@@ -177,7 +177,7 @@ public final class CommandAlchema implements TabExecutor {
             return StringUtil.copyPartialMatches(args[0], getBaseArgsFor(sender), new ArrayList<>());
         }
 
-        else if (args.length == 2 && args[0].equalsIgnoreCase("reload")) {
+        else if (args.length == 2 && args[0].equalsIgnoreCase("reload") && sender.hasPermission("alchema.command.reload.verbose")) {
             return StringUtil.copyPartialMatches(args[1], RELOAD_ARGS, new ArrayList<>());
         }
 
