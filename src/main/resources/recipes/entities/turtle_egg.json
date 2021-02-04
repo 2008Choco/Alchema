@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "minecraft:turtle_egg",
+        "amount": 2
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:turtle",
+            "amount": 100
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:egg"
+        }
+    ]
+}

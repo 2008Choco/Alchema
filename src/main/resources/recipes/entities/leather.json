@@ -1,0 +1,18 @@
+{
+    "result": {
+        "item": "minecraft:leather",
+        "amount": 3
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:cow",
+            "amount": 250
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:rotten_flesh",
+            "amount": 4
+        }
+    ]
+}

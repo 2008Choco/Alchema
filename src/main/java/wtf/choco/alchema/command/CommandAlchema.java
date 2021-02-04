@@ -83,6 +83,7 @@ public final class CommandAlchema implements TabExecutor {
 
             this.plugin.getRecipeRegistry().clearRecipes();
             this.plugin.reloadConfig();
+            this.plugin.refreshEntityBlacklists();
 
             this.plugin.getRecipeRegistry().loadCauldronRecipes(plugin, plugin.getRecipesDirectory()).whenComplete((result, exception) -> {
                 if (exception != null) {

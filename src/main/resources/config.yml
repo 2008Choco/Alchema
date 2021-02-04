@@ -11,3 +11,37 @@ Cauldron:
     AmbientBubbleVolume: 0.45
     ItemSplashVolume: 1.0
     SuccessfulCraftVolume: 0.5
+
+VialOfEssence:
+  MaximumEssence: 1000
+  FromEntities:
+    OnDeath:
+      BaseDropChance: 0.75
+      Min: 50
+      Max: 250
+      Blacklist: []
+    OnInteract:
+      Enabled: true
+      TimeoutSeconds: 300
+      Min: 10
+      Max: 25
+      Blacklist: []
+  Consumption:
+    TastelessThoughts:
+    - "That was rather tasteless... I shouldn't do that again."
+    - "What a waste of essence... I shouldn't drink this stuff."
+    - "Interestingly tasteless, disappointingly wasteful."
+    - "Surely there was a better use for that essence than drinking it."
+  Item:
+    Empty:
+      Name: "&fEmpty Vial"
+      Lore:
+      - "&7&oCollects entity essence."
+      CustomModelData: 1
+    Filled:
+      Name: "&fVial of Essence &7(%entity%)"
+      Lore:
+      - "&7Quantity: &f%quantity%/%max_quantity%"
+      - ""
+      - "&7&oCauldron crafting ingredient."
+      CustomModelData: 2

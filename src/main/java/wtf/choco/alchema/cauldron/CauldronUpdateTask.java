@@ -2,10 +2,7 @@ package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -14,6 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -28,9 +26,11 @@ import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
 import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
 import wtf.choco.alchema.crafting.CauldronIngredient;
+import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
 
@@ -84,19 +84,7 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                 cauldron.stopHeatingUp();
                 cauldron.setBubbling(false);
 
-                // Drop ingredients if any
-                if (!cauldron.hasIngredients()) {
-                    continue;
-                }
-
-                List<ItemStack> items = cauldron.getIngredients().stream().map(CauldronIngredient::asItemStack).filter(Objects::nonNull).collect(Collectors.toList());
-                CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(cauldron, items, null, CauldronIngredientsDropEvent.Reason.UNHEATED);
-                if (ingredientsDropEvent.isCancelled()) {
-                    continue;
-                }
-
-                ingredientsDropEvent.getItems().forEach(item -> world.dropItem(location, item));
-                cauldron.clearIngredients();
+                cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.UNHEATED, null);
                 continue;
             }
 
@@ -137,7 +125,20 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                         return;
                     }
 
-                    CauldronIngredient ingredient = new CauldronIngredientItemStack(itemStack, amount);
+                    // Entity essence
+                    CauldronIngredient ingredient = null;
+                    if (EntityEssenceData.isVialOfEntityEssence(itemStack)) {
+                        EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
+                        if (entityType != null) {
+                            int essenceAmount = EntityEssenceData.getEntityEssenceAmount(itemStack);
+                            ingredient = new CauldronIngredientEntityEssence(entityType, plugin.getEntityEssenceEffectRegistry(), essenceAmount);
+                        }
+                    }
+
+                    if (ingredient == null) {
+                        ingredient = new CauldronIngredientItemStack(itemStack, amount);
+                    }
+
                     CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(cauldron, ingredient, item);
 
                     cauldron.addIngredient(ingredientAddEvent.getIngredient());

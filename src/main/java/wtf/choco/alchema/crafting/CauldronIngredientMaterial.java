@@ -57,6 +57,8 @@ public class CauldronIngredientMaterial implements CauldronIngredient {
      * @param object the object from which to deserialize
      */
     public CauldronIngredientMaterial(@NotNull JsonObject object) {
+        Preconditions.checkArgument(object != null, "object must not be null");
+
         if (!object.has("item")) {
             throw new JsonParseException("object does not contain item.");
         }

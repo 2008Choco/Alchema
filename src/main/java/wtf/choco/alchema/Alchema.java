@@ -20,10 +20,12 @@ import java.util.jar.JarFile;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -32,12 +34,20 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.cauldron.CauldronManager;
 import wtf.choco.alchema.cauldron.CauldronUpdateTask;
 import wtf.choco.alchema.command.CommandAlchema;
+import wtf.choco.alchema.command.CommandGiveVialOfEssence;
+import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
+import wtf.choco.alchema.listener.EmptyVialRecipeDiscoverListener;
+import wtf.choco.alchema.listener.EntityEssenceCollectionListener;
 import wtf.choco.alchema.listener.UpdateReminderListener;
+import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.UpdateChecker;
 import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 
@@ -51,17 +61,21 @@ public final class Alchema extends JavaPlugin {
     /** The chat prefix used by Alchema */
     public static final String CHAT_PREFIX = ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Alchema | " + ChatColor.GRAY;
 
+    /** The GSON instance provided by Alchema */
     public static final Gson GSON = new Gson();
 
     private static Alchema instance;
 
     private final CauldronManager cauldronManager = new CauldronManager();
     private final CauldronRecipeRegistry recipeRegistry = new CauldronRecipeRegistry();
+    private final EntityEssenceEffectRegistry entityEssenceEffectRegistry = new EntityEssenceEffectRegistry();
 
     private File cauldronFile;
     private File recipesDirectory;
 
     private CauldronUpdateTask cauldronUpdateTask;
+
+    private EntityEssenceCollectionListener entityEssenceLootListener;
 
     @Override
     public void onLoad() {
@@ -69,6 +83,7 @@ public final class Alchema extends JavaPlugin {
 
         this.recipeRegistry.registerIngredientType(CauldronIngredientItemStack.KEY, CauldronIngredientItemStack::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientMaterial.KEY, CauldronIngredientMaterial::new);
+        this.recipeRegistry.registerIngredientType(CauldronIngredientEntityEssence.KEY, object -> new CauldronIngredientEntityEssence(object, entityEssenceEffectRegistry));
     }
 
     @Override
@@ -121,14 +136,24 @@ public final class Alchema extends JavaPlugin {
             });
         });
 
+        // Register entity essence effects
+        EntityEssenceEffectRegistry.registerDefaultAlchemaEssences(entityEssenceEffectRegistry);
+
         // Register listeners
         PluginManager manager = Bukkit.getPluginManager();
         manager.registerEvents(new CauldronDeathMessageListener(this), this);
         manager.registerEvents(new CauldronManipulationListener(this), this);
+        manager.registerEvents(new EmptyVialRecipeDiscoverListener(), this);
+        manager.registerEvents(this.entityEssenceLootListener = new EntityEssenceCollectionListener(this), this);
         manager.registerEvents(new UpdateReminderListener(this), this);
+        manager.registerEvents(new VialOfEssenceConsumptionListener(this), this);
 
         // Register commands
         this.registerCommandSafely("alchema", new CommandAlchema(this));
+        this.registerCommandSafely("givevialofessence", new CommandGiveVialOfEssence(this));
+
+        // Register crafting recipes
+        Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', Material.GLASS_PANE));
 
         this.cauldronUpdateTask = CauldronUpdateTask.startTask(this);
 
@@ -179,6 +204,7 @@ public final class Alchema extends JavaPlugin {
         this.cauldronManager.clearCauldrons();
         this.recipeRegistry.clearRecipes();
         this.recipeRegistry.clearIngredientTypes();
+        this.entityEssenceEffectRegistry.clearEntityEssenceData();
 
         if (cauldronUpdateTask != null) {
             this.cauldronUpdateTask.cancel();
@@ -206,6 +232,15 @@ public final class Alchema extends JavaPlugin {
     }
 
     /**
+     * Get the {@link EntityEssenceEffectRegistry} instance.
+     *
+     * @return the entity essence effect registry
+     */
+    public EntityEssenceEffectRegistry getEntityEssenceEffectRegistry() {
+        return entityEssenceEffectRegistry;
+    }
+
+    /**
      * Get the directory from which Alchema's recipes are loaded.
      *
      * @return the recipes directory
@@ -213,6 +248,13 @@ public final class Alchema extends JavaPlugin {
     @NotNull
     public File getRecipesDirectory() {
         return recipesDirectory;
+    }
+
+    /**
+     * Refresh the entity blacklists from the configuration loaded into memory.
+     */
+    public void refreshEntityBlacklists() {
+        this.entityEssenceLootListener.refreshBlacklists();
     }
 
     /**

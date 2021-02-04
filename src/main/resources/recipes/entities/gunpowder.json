@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "minecraft:gunpowder",
+        "amount": 2
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:creeper",
+            "amount": 50
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:redstone"
+        }
+    ]
+}

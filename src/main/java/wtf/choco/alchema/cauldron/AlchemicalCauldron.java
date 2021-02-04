@@ -28,14 +28,17 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.crafting.CauldronIngredient;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.util.AlchemaEventFactory;
 import wtf.choco.alchema.util.NamespacedKeyUtil;
 
 /**
@@ -395,6 +398,33 @@ public class AlchemicalCauldron {
     @NotNull
     public List<@NotNull CauldronIngredient> getIngredients() {
         return Collections.unmodifiableList(ingredients);
+    }
+
+    /**
+     * Clear all ingredients from this cauldron and drop them into the world.
+     *
+     * @param reason the reason for the items to be dropped. null if none
+     * @param player the player that caused the ingredients to drop. null if none
+     *
+     * @return true if ingredients were cleared, false if cancelled by the
+     * {@link CauldronIngredientsDropEvent}
+     */
+    public boolean dropIngredients(@Nullable CauldronIngredientsDropEvent.Reason reason, @Nullable Player player) {
+        if (!hasIngredients()) {
+            return true;
+        }
+
+        List<@NotNull Item> items = new ArrayList<>();
+        this.getIngredients().forEach(ingredient -> items.addAll(ingredient.drop(this, getWorld(), getLocation().add(0.5, 0.5, 0.5))));
+
+        CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(this, items, player, reason);
+        if (ingredientsDropEvent.isCancelled()) {
+            items.forEach(Item::remove);
+            return false;
+        }
+
+        this.ingredients.clear();
+        return true;
     }
 
     /**
