@@ -64,6 +64,7 @@ public class EntityDropEssenceEvent extends EntityEvent implements Cancellable {
      *
      * @return the entity essence data
      */
+    @NotNull
     public EntityEssenceData getEssenceData() {
         return essenceData;
     }

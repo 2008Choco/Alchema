@@ -236,6 +236,7 @@ public final class Alchema extends JavaPlugin {
      *
      * @return the entity essence effect registry
      */
+    @NotNull
     public EntityEssenceEffectRegistry getEntityEssenceEffectRegistry() {
         return entityEssenceEffectRegistry;
     }

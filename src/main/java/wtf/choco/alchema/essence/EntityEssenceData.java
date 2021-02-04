@@ -158,6 +158,7 @@ public class EntityEssenceData {
      *
      * @return the consumption callback
      */
+    @Nullable
     public EssenceConsumptionCallback getConsumptionCallback() {
         return consumptionCallback;
     }

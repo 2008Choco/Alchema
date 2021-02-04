@@ -69,6 +69,7 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
         return item.getAmount();
     }
 
+    @NotNull
     @Override
     public ItemStack asItemStack() {
         return item.clone();

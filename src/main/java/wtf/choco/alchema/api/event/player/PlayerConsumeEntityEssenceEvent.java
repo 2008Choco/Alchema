@@ -47,6 +47,7 @@ public class PlayerConsumeEntityEssenceEvent extends PlayerEvent implements Canc
      *
      * @return the item
      */
+    @NotNull
     public ItemStack getItem() {
         return item.clone();
     }
@@ -56,6 +57,7 @@ public class PlayerConsumeEntityEssenceEvent extends PlayerEvent implements Canc
      *
      * @return the essence data
      */
+    @NotNull
     public EntityEssenceData getEssenceData() {
         return essenceData;
     }

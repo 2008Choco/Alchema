@@ -82,6 +82,7 @@ public class CauldronIngredientMaterial implements CauldronIngredient {
         return amount;
     }
 
+    @NotNull
     @Override
     public ItemStack asItemStack() {
         return new ItemStack(material, amount);

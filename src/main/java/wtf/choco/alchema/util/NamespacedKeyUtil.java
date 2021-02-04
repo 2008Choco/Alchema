@@ -74,8 +74,8 @@ public final class NamespacedKeyUtil {
      *
      * @return true if valid, false otherwise
      */
-    public static boolean isValidKey(String string) {
-        return VALID_KEY.matcher(string).matches();
+    public static boolean isValidKey(@NotNull String string) {
+        return string != null && VALID_KEY.matcher(string).matches();
     }
 
 }

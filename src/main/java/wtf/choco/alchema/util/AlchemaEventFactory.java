@@ -44,6 +44,7 @@ public final class AlchemaEventFactory {
      *
      * @return the event
      */
+    @NotNull
     public static EntityDamageByCauldronEvent callEntityDamageByCauldronEvent(@NotNull LivingEntity entity, @NotNull AlchemicalCauldron cauldron, double damage) {
         EntityDamageByCauldronEvent event = new EntityDamageByCauldronEvent(entity, cauldron, damage);
         Bukkit.getPluginManager().callEvent(event);
@@ -59,6 +60,7 @@ public final class AlchemaEventFactory {
      *
      * @return the event
      */
+    @NotNull
     public static EntityDropEssenceEvent callEntityDropEssenceEvent(@NotNull Entity entity, @NotNull EntityEssenceData essenceData, int amountOfEssence) {
         EntityDropEssenceEvent event = new EntityDropEssenceEvent(entity, essenceData, amountOfEssence);
         Bukkit.getPluginManager().callEvent(event);
@@ -74,6 +76,7 @@ public final class AlchemaEventFactory {
      *
      * @return the event
      */
+    @NotNull
     public static PlayerConsumeEntityEssenceEvent callPlayerConsumeEntityEssenceEvent(@NotNull Player player, @NotNull ItemStack item, @NotNull EntityEssenceData essenceData) {
         PlayerConsumeEntityEssenceEvent event = new PlayerConsumeEntityEssenceEvent(player, item, essenceData);
         Bukkit.getPluginManager().callEvent(event);
@@ -92,6 +95,7 @@ public final class AlchemaEventFactory {
      *
      * @return the event
      */
+    @NotNull
     public static PlayerEssenceCollectEvent callPlayerEssenceCollectEvent(@NotNull Player player, @NotNull EquipmentSlot hand, @NotNull ItemStack item, @NotNull Entity entity, @NotNull EntityEssenceData essenceData, int essenceAmount) {
         PlayerEssenceCollectEvent event = new PlayerEssenceCollectEvent(player, hand, item, entity, essenceData, essenceAmount);
         Bukkit.getPluginManager().callEvent(event);
@@ -125,7 +129,7 @@ public final class AlchemaEventFactory {
      * @return the event
      */
     @NotNull
-    public static CauldronIngredientsDropEvent callCauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, Collection<@NotNull Item> items, @Nullable Player player, @NotNull CauldronIngredientsDropEvent.Reason reason) {
+    public static CauldronIngredientsDropEvent callCauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull CauldronIngredientsDropEvent.Reason reason) {
         CauldronIngredientsDropEvent event = new CauldronIngredientsDropEvent(cauldron, items, player, reason);
         Bukkit.getPluginManager().callEvent(event);
         return event;

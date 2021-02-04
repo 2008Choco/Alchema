@@ -113,7 +113,7 @@ public class CauldronRecipeRegistry {
      * @param key the ingredient key. Should match that of {@link CauldronIngredient#getKey()}
      * @param ingredientProvider the ingredient provider
      */
-    public void registerIngredientType(@NotNull NamespacedKey key, Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient> ingredientProvider) {
+    public void registerIngredientType(@NotNull NamespacedKey key, @NotNull Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient> ingredientProvider) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(ingredientProvider != null, "ingredientProvider must not be null");
 
