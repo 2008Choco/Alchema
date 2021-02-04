@@ -24,9 +24,6 @@ public final class EntityEssenceEffectRegistry {
 
     /**
      * Register an {@link EntityEssenceData} for the given {@link EntityType}.
-     * <p>
-     * <strong>NOTE:</strong> The EntityType to which the data is being registered MUST match
-     * that of {@link EntityEssenceData#getEntityType()}.
      *
      * @param essenceData the essence data to register
      * @param override whether or not to override an existing entry (if one exists)
@@ -50,9 +47,6 @@ public final class EntityEssenceEffectRegistry {
      * Register an {@link EntityEssenceData} for the given {@link EntityType}. If essence data
      * has already been registered for the given EntityType, this method will not attempt to
      * override, fail silently and return false.
-     * <p>
-     * <strong>NOTE:</strong> The EntityType to which the data is being registered MUST match
-     * that of {@link EntityEssenceData#getEntityType()}.
      *
      * @param essenceData the essence data to register
      *
