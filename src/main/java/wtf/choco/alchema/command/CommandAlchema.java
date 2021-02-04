@@ -28,6 +28,7 @@ import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
 import wtf.choco.alchema.util.UpdateChecker;
+import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
 import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
 
 public final class CommandAlchema implements TabExecutor {
@@ -59,7 +60,24 @@ public final class CommandAlchema implements TabExecutor {
 
             UpdateResult updateResult = UpdateChecker.isInitialized() ? UpdateChecker.get().getLastResult() : null;
             if (updateResult != null && sender.hasPermission("alchema.updatenotify")) {
-                versionSuffix = ChatColor.WHITE + " (" + (updateResult.requiresUpdate() ? ChatColor.YELLOW + "update available: " + ChatColor.GREEN + updateResult.getNewestVersion() : ChatColor.GREEN + "latest") + ChatColor.WHITE + ")";
+                StringBuilder versionSuffixBuilder = new StringBuilder(" ").append(ChatColor.WHITE).append('(');
+
+                UpdateReason reason = updateResult.getReason();
+                if (updateResult.requiresUpdate()) {
+                    versionSuffixBuilder.append(ChatColor.YELLOW).append("update available: ").append(ChatColor.GREEN).append(updateResult.getNewestVersion());
+                }
+                else if (reason == UpdateReason.UNRELEASED_VERSION) {
+                    versionSuffixBuilder.append(ChatColor.AQUA).append("dev build");
+                }
+                else if (reason == UpdateReason.COULD_NOT_CONNECT || reason == UpdateReason.INVALID_JSON || reason == UpdateReason.UNAUTHORIZED_QUERY || reason == UpdateReason.UNKNOWN_ERROR) {
+                    versionSuffixBuilder.append(ChatColor.RED).append("failed to check");
+                }
+                else {
+                    versionSuffixBuilder.append(ChatColor.GREEN).append("latest");
+                }
+
+                versionSuffixBuilder.append(ChatColor.WHITE).append(')');
+                versionSuffix = versionSuffixBuilder.toString();
             }
 
             sender.sendMessage(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
