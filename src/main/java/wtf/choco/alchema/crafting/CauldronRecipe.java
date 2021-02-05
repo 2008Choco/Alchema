@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,10 @@ public class CauldronRecipe {
      * @param result the result of the recipe
      * @param experience the experience to reward the player
      * @param ingredients the set of ingredients
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
         this(key, result, experience);
         this.ingredients.addAll(ingredients);
@@ -58,7 +62,10 @@ public class CauldronRecipe {
      * @param result the result of the recipe
      * @param experience the experience to reward the player
      * @param ingredients the set of ingredients
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient... ingredients) {
         this(key, result, experience);
 
@@ -75,7 +82,10 @@ public class CauldronRecipe {
      * @param result the result of the recipe
      * @param experience the experience to reward the player
      * @param ingredient the recipe ingredient
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient ingredient) {
         this(key, result, experience);
         this.ingredients.add(ingredient);
@@ -88,7 +98,10 @@ public class CauldronRecipe {
      * @param key the unique recipe key
      * @param result the result of the recipe
      * @param ingredients the set of ingredients
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull List<@NotNull CauldronIngredient> ingredients) {
         this(key, result, 0, ingredients);
     }
@@ -100,7 +113,10 @@ public class CauldronRecipe {
      * @param key the unique recipe key
      * @param result the result of the recipe
      * @param ingredients the set of ingredients
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient... ingredients) {
         this(key, result, 0, ingredients);
     }
@@ -111,7 +127,10 @@ public class CauldronRecipe {
      * @param key the unique recipe key
      * @param result the result of the recipe
      * @param ingredient the recipe ingredient
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient ingredient) {
         this(key, result, 0, ingredient);
     }
@@ -175,7 +194,10 @@ public class CauldronRecipe {
      * Set the comment for this recipe.
      *
      * @param comment the comment to set or null
+     *
+     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
+    @Deprecated
     public void setComment(@Nullable String comment) {
         this.comment = Optional.<String>ofNullable(comment); // Nullability annotations are funny sometimes ;p
     }
@@ -266,6 +288,22 @@ public class CauldronRecipe {
     }
 
     /**
+     * Create a new CauldronRecipe builder instance.
+     *
+     * @param key the recipe key
+     * @param result the result of the cauldron recipe
+     *
+     * @return the builder instance
+     */
+    @NotNull
+    public static CauldronRecipe.Builder builder(@NotNull NamespacedKey key, @NotNull ItemStack result) {
+        Preconditions.checkArgument(key != null, "key must not be null");
+        Preconditions.checkArgument(result != null, "result must not be null");
+
+        return new CauldronRecipe.Builder(key, result);
+    }
+
+    /**
      * Read the contents of the provided {@link JsonObject} into a new {@link CauldronRecipe}
      * instance.
      *
@@ -327,6 +365,86 @@ public class CauldronRecipe {
         CauldronRecipe recipe = new CauldronRecipe(key, result, experience, ingredients);
         recipe.setComment(comment);
         return recipe;
+    }
+
+    /**
+     * A builder for immutable {@link CauldronRecipe} instances.
+     */
+    public static final class Builder {
+
+        private String comment = null;
+        private int experience = 0;
+
+        private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
+
+        private final NamespacedKey key;
+        private final ItemStack result;
+
+        private Builder(NamespacedKey key, ItemStack result) {
+            Preconditions.checkArgument(key != null, "key must not be null");
+            Preconditions.checkArgument(result != null, "result must not be null");
+
+            this.key = key;
+            this.result = result;
+        }
+
+        /**
+         * Add an ingredient to the recipe.
+         *
+         * @param ingredient the ingredient to add
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder addIngredient(@NotNull CauldronIngredient ingredient) {
+            Preconditions.checkArgument(ingredient != null, "ingredient must not be null");
+
+            this.ingredients.add(ingredient);
+            return this;
+        }
+
+        /**
+         * Set the experience to be yielded from crafting this recipe. The experience set is
+         * directly proportional to {@link ExperienceOrb#setExperience(int)}.
+         *
+         * @param experience the experience to set. Must be positive or 0
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder setExperience(int experience) {
+            Preconditions.checkArgument(experience >= 0, "experience must be positive or 0");
+
+            this.experience = experience;
+            return this;
+        }
+
+        /**
+         * Set the comment for this recipe. Comments are purely aesthetic.
+         *
+         * @param comment the comment to set
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder setComment(@Nullable String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        /**
+         * Build a new {@link CauldronRecipe} instance.
+         *
+         * @return the cauldron recipe
+         */
+        @NotNull
+        public CauldronRecipe build() {
+            // TODO: In future versions, construct a new instance of the implementation rather than using this deprecated constructor
+            CauldronRecipe recipe = new CauldronRecipe(key, result, experience, ingredients);
+            recipe.setComment(comment);
+            return recipe;
+        }
+
     }
 
 }
