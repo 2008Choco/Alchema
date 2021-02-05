@@ -79,9 +79,7 @@ public final class EntityEssenceCollectionListener implements Listener {
             return;
         }
 
-        int minimumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MIN, 50);
-        int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MAX, 250);
-        int amountOfEssence = random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
+        int amountOfEssence = getRandomEssenceAmount(random, config, AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MIN, 50, AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_MAX, 250);
 
         EntityDropEssenceEvent entityDropEssenceEvent = AlchemaEventFactory.callEntityDropEssenceEvent(entity, essenceData, amountOfEssence);
         if (entityDropEssenceEvent.isCancelled()) {
@@ -121,10 +119,7 @@ public final class EntityEssenceCollectionListener implements Listener {
                 return;
             }
 
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-            int minimumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MIN, 10);
-            int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX, 25);
-            int amountOfEssence = random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
+            int amountOfEssence = getRandomEssenceAmount(config, AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MIN, 10, AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX, 25);
 
             PlayerEssenceCollectEvent playerEssenceCollectEvent = AlchemaEventFactory.callPlayerEssenceCollectEvent(player, hand, item, entity, essenceData, amountOfEssence);
             if (playerEssenceCollectEvent.isCancelled()) {
@@ -168,10 +163,7 @@ public final class EntityEssenceCollectionListener implements Listener {
                 return;
             }
 
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-            int minimumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MIN, 10);
-            int maximumEssence = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX, 25);
-            int amountOfEssence = random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
+            int amountOfEssence = getRandomEssenceAmount(config, AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MIN, 10, AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_MAX, 25);
 
             PlayerEssenceCollectEvent playerEssenceCollectEvent = AlchemaEventFactory.callPlayerEssenceCollectEvent(player, hand, item, entity, essenceData, amountOfEssence);
             if (playerEssenceCollectEvent.isCancelled()) {
@@ -222,6 +214,17 @@ public final class EntityEssenceCollectionListener implements Listener {
 
         long secondsSinceLastInteraction = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastInteractedWith);
         return secondsSinceLastInteraction >= timeoutSeconds;
+    }
+
+    private int getRandomEssenceAmount(ThreadLocalRandom random, FileConfiguration config, String minPath, int minDefault, String maxPath, int maxDefault) {
+        int minimumEssence = config.getInt(minPath, minDefault);
+        int maximumEssence = config.getInt(maxPath, maxDefault);
+
+        return random.nextInt(maximumEssence - minimumEssence) + minimumEssence;
+    }
+
+    private int getRandomEssenceAmount(FileConfiguration config, String minPath, int minDefault, String maxPath, int maxDefault) {
+        return getRandomEssenceAmount(ThreadLocalRandom.current(), config, minPath, minDefault, maxPath, maxDefault);
     }
 
     public void refreshBlacklists() {
