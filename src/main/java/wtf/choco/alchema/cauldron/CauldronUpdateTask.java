@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -183,12 +184,20 @@ public final class CauldronUpdateTask extends BukkitRunnable {
 
             ThreadLocalRandom random = ThreadLocalRandom.current();
             Vector itemVelocity = new Vector(random.nextDouble() / 10.0, 0.10 + (random.nextDouble() / 3), random.nextDouble() / 10.0);
+            Location resultSpawnLocation = block.getLocation().add(0.5, 1.1, 0.5);
 
+            // Item result
             ItemStack result = cauldronCraftEvent.getResult();
             if (result != null) {
-                Item item = world.dropItem(block.getLocation().add(0.5, 1.1, 0.5), result);
+                Item item = world.dropItem(resultSpawnLocation, result);
                 item.setVelocity(itemVelocity);
                 item.setMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED, new FixedMetadataValue(plugin, true));
+            }
+
+            // Experience
+            int experience = cauldronCraftEvent.getExperience();
+            if (experience > 0) {
+                world.spawn(resultSpawnLocation, ExperienceOrb.class, orb -> orb.setExperience(experience));
             }
 
             cauldron.removeIngredients(activeRecipe);

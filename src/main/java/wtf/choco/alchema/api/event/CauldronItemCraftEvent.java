@@ -24,6 +24,7 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
 
     private boolean cancelled = false;
     private ItemStack result;
+    private int experience;
 
     private final AlchemicalCauldron cauldron;
     private final CauldronRecipe recipe;
@@ -37,8 +38,9 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
      * @param player the player that caused this craft event. Can be null
      * @param result the result of the recipe. May not necessarily be equal to
      * {@link CauldronRecipe#getResult()}
+     * @param experience the experience yielded from the recipe
      */
-    public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player, @Nullable ItemStack result) {
+    public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player, @Nullable ItemStack result, int experience) {
         super(cauldron.getCauldronBlock());
 
         Preconditions.checkArgument(cauldron != null, "cauldron must not be null");
@@ -47,7 +49,9 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
         this.cauldron = cauldron;
         this.recipe = recipe;
         this.player = player;
+
         this.result = result;
+        this.experience = experience;
     }
 
     /**
@@ -58,7 +62,7 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
      * @param player the player that caused this craft event. Can be null
      */
     public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player) {
-        this(cauldron, recipe, player, recipe.getResult());
+        this(cauldron, recipe, player, recipe.getResult(), recipe.getExperience());
     }
 
     /**
@@ -108,6 +112,25 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
     @Nullable
     public ItemStack getResult() {
         return result != null ? result.clone() : null;
+    }
+
+    /**
+     * Set the experience yielded from this craft.
+     *
+     * @param experience the experience to set. Must be 0 or positive
+     */
+    public void setExperience(int experience) {
+        Preconditions.checkArgument(experience >= 0, "experience must not be negative");
+        this.experience = experience;
+    }
+
+    /**
+     * Get the experience yielded from this craft.
+     *
+     * @return the experience
+     */
+    public int getExperience() {
+        return experience;
     }
 
     @Override

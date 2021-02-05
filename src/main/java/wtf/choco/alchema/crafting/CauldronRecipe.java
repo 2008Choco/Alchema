@@ -32,8 +32,54 @@ public class CauldronRecipe {
 
     private final NamespacedKey key;
     private final ItemStack result;
+    private final int experience;
 
     private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
+
+    /**
+     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
+     * required ingredients
+     *
+     * @param key the unique recipe key
+     * @param result the result of the recipe
+     * @param experience the experience to reward the player
+     * @param ingredients the set of ingredients
+     */
+    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
+        this(key, result, experience);
+        this.ingredients.addAll(ingredients);
+    }
+
+    /**
+     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
+     * required ingredients
+     *
+     * @param key the unique recipe key
+     * @param result the result of the recipe
+     * @param experience the experience to reward the player
+     * @param ingredients the set of ingredients
+     */
+    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient... ingredients) {
+        this(key, result, experience);
+
+        Preconditions.checkState(ingredients.length > 0, "Recipes contain at least one ingredient (excluding the catalyst)");
+        for (CauldronIngredient ingredient : ingredients) {
+            this.ingredients.add(ingredient);
+        }
+    }
+
+    /**
+     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result and a single ingredient.
+     *
+     * @param key the unique recipe key
+     * @param result the result of the recipe
+     * @param experience the experience to reward the player
+     * @param ingredient the recipe ingredient
+     */
+    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient ingredient) {
+        this(key, result, experience);
+        this.ingredients.add(ingredient);
+    }
 
     /**
      * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
@@ -44,8 +90,7 @@ public class CauldronRecipe {
      * @param ingredients the set of ingredients
      */
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull List<@NotNull CauldronIngredient> ingredients) {
-        this(key, result);
-        this.ingredients.addAll(ingredients);
+        this(key, result, 0, ingredients);
     }
 
     /**
@@ -57,33 +102,28 @@ public class CauldronRecipe {
      * @param ingredients the set of ingredients
      */
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient... ingredients) {
-        this(key, result);
-
-        Preconditions.checkState(ingredients.length > 0, "Recipes contain at least one ingredient (excluding the catalyst)");
-        for (CauldronIngredient ingredient : ingredients) {
-            this.ingredients.add(ingredient);
-        }
+        this(key, result, 0, ingredients);
     }
 
     /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} resultand a single ingredient.
+     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result and a single ingredient.
      *
      * @param key the unique recipe key
      * @param result the result of the recipe
      * @param ingredient the recipe ingredient
      */
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient ingredient) {
-        this(key, result);
-        this.ingredients.add(ingredient);
+        this(key, result, 0, ingredient);
     }
 
     // Convenience constructor
-    private CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result) {
+    private CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(result != null, "result must not be null");
 
         this.key = key;
         this.result = result;
+        this.experience = experience;
     }
 
     /**
@@ -104,6 +144,15 @@ public class CauldronRecipe {
     @NotNull
     public ItemStack getResult() {
         return result.clone();
+    }
+
+    /**
+     * Get the experience yielded from this recipe.
+     *
+     * @return the experience
+     */
+    public int getExperience() {
+        return experience;
     }
 
     /**
@@ -272,12 +321,10 @@ public class CauldronRecipe {
             ingredients.add(ingredient);
         }
 
-        Optional<@NotNull String> comment = Optional.empty();
-        if (object.has("comment")) {
-            comment = Optional.ofNullable(object.get("comment").getAsString());
-        }
+        int experience = object.has("experience") ? object.get("experience").getAsInt() : 0;
+        String comment = object.has("comment") ? object.get("comment").getAsString() : null;
 
-        CauldronRecipe recipe = new CauldronRecipe(key, result, ingredients);
+        CauldronRecipe recipe = new CauldronRecipe(key, result, experience, ingredients);
         recipe.setComment(comment);
         return recipe;
     }
