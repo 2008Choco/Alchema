@@ -2,6 +2,7 @@ package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Location;
@@ -26,14 +27,17 @@ import wtf.choco.alchema.api.event.CauldronIngredientAddEvent;
 import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
 import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
+import wtf.choco.alchema.api.event.entity.EntityDeathByCauldronEvent;
 import wtf.choco.alchema.crafting.CauldronIngredient;
 import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
+import wtf.choco.alchema.util.MathUtil;
 
 /**
  * An implementation of {@link BukkitRunnable} that handles the updating and ticking of
@@ -61,16 +65,26 @@ public final class CauldronUpdateTask extends BukkitRunnable {
     public void run() {
         this.currentTick++;
 
+        Collection<@NotNull AlchemicalCauldron> cauldrons = cauldronManager.getCauldrons();
+        if (cauldrons.isEmpty()) {
+            return;
+        }
+
         // Pull configuration values every tick, but only once for every cauldron iteration
         FileConfiguration config = plugin.getConfig();
         int millisecondsToHeatUp = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP, 5000), 0);
-        boolean damageEntities = config.getBoolean(AlchemaConstants.CONFIG_CAULDRON_DAMAGE_ENTITIES, true);
+
+        boolean damageEntities = config.getBoolean(AlchemaConstants.CONFIG_CAULDRON_ENTITIES_DAMAGE, true);
+        int minEssenceOnDeath = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_ENTITIES_MIN_ESSENCE_ON_DEATH, 50), 0);
+        int maxEssenceOnDeath = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_ENTITIES_MAX_ESSENCE_ON_DEATH, 100), minEssenceOnDeath);
 
         float volumeAmbientBubble = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_AMBIENT_BUBBLE_VOLUME, 0.45);
         float volumeItemSplash = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_ITEM_SPLASH_VOLUME, 1.0);
         float volumeSuccessfulCraft = (float) config.getDouble(AlchemaConstants.CONFIG_CAULDRON_SOUND_SUCCESSFUL_CRAFT_VOLUME, 0.5);
 
-        for (AlchemicalCauldron cauldron : cauldronManager.getCauldrons()) {
+        EntityEssenceEffectRegistry essenceEffectRegistry = plugin.getEntityEssenceEffectRegistry();
+
+        for (AlchemicalCauldron cauldron : cauldrons) {
             if (!cauldron.isLoaded()) {
                 continue;
             }
@@ -132,7 +146,7 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                         EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
                         if (entityType != null) {
                             int essenceAmount = EntityEssenceData.getEntityEssenceAmount(itemStack);
-                            ingredient = new CauldronIngredientEntityEssence(entityType, plugin.getEntityEssenceEffectRegistry(), essenceAmount);
+                            ingredient = new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, essenceAmount);
                         }
                     }
 
@@ -153,7 +167,7 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                 }
                 else if (damageEntities && entity instanceof LivingEntity) {
                     LivingEntity livingEntity = (LivingEntity) entity;
-                    if (currentTick % 20 == 0) {
+                    if (currentTick % 20 == 0 && !livingEntity.isDead()) {
                         EntityDamageByCauldronEvent entityDamageByCauldronEvent = AlchemaEventFactory.callEntityDamageByCauldronEvent(livingEntity, cauldron, 1.0);
 
                         double damage = entityDamageByCauldronEvent.getDamage();
@@ -161,8 +175,22 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                             return;
                         }
 
-                        livingEntity.damage(damage);
                         livingEntity.setMetadata(AlchemaConstants.METADATA_KEY_DAMAGED_BY_CAULDRON, new FixedMetadataValue(plugin, System.currentTimeMillis()));
+                        livingEntity.damage(damage);
+
+                        // Entity died due to cauldron damage. Insert essence into the cauldron
+                        if (livingEntity.isDead()) {
+                            EntityType type = livingEntity.getType();
+                            boolean hasEntityEssenceData = essenceEffectRegistry.hasEntityEssenceData(type);
+
+                            int amountOfEssence = hasEntityEssenceData ? MathUtil.generateNumberBetween(minEssenceOnDeath, maxEssenceOnDeath) : 0;
+                            EntityDeathByCauldronEvent entityDeathByCauldronEvent = AlchemaEventFactory.callEntityDeathByCauldronEvent(livingEntity, cauldron, amountOfEssence);
+                            amountOfEssence = entityDeathByCauldronEvent.getEssence();
+
+                            if (hasEntityEssenceData && amountOfEssence > 0) {
+                                cauldron.addIngredient(new CauldronIngredientEntityEssence(type, essenceEffectRegistry, amountOfEssence));
+                            }
+                        }
                     }
                 }
             });

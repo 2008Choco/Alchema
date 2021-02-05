@@ -72,6 +72,20 @@ public final class EntityEssenceEffectRegistry {
     }
 
     /**
+     * Check whether or not the given {@link EntityType} has {@link EntityEssenceData}
+     * registered.
+     *
+     * @param entityType the entity type to check
+     *
+     * @return true if registered, false otherwise
+     */
+    public boolean hasEntityEssenceData(@NotNull EntityType entityType) {
+        Preconditions.checkArgument(entityType != null, "entityType must not be null");
+
+        return essenceDataByEntityType.containsKey(entityType);
+    }
+
+    /**
      * Get an unmodifiable Set of {@link EntityType EntityTypes} for which essence data has
      * been registered in this registry.
      *

@@ -43,8 +43,14 @@ public final class AlchemaConstants {
     /** Configuration path, Cauldron.MillisecondsToHeatUp */
     public static final String CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP = "Cauldron.MillisecondsToHeatUp";
 
-    /** Configuration path, Cauldron.DamageEntities */
-    public static final String CONFIG_CAULDRON_DAMAGE_ENTITIES = "Cauldron.DamageEntities";
+    /** Configuration path, Cauldron.Entities.Damage */
+    public static final String CONFIG_CAULDRON_ENTITIES_DAMAGE = "Cauldron.Entities.Damage";
+
+    /** Configuration path, Cauldron.Entities.MinEssenceOnDeath */
+    public static final String CONFIG_CAULDRON_ENTITIES_MIN_ESSENCE_ON_DEATH = "Cauldron.Entities.MinEssenceOnDeath";
+
+    /** Configuration path, Cauldron.Entities.MaxEssenceOnDeath */
+    public static final String CONFIG_CAULDRON_ENTITIES_MAX_ESSENCE_ON_DEATH = "Cauldron.Entities.MaxEssenceOnDeath";
 
     /** Configuration path, Cauldron.DeathMessages */
     public static final String CONFIG_CAULDRON_DEATH_MESSAGES = "Cauldron.DeathMessages";

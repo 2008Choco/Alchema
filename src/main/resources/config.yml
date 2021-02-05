@@ -3,7 +3,10 @@ Metrics: true
 
 Cauldron:
   MillisecondsToHeatUp: 5000
-  DamageEntities: true
+  Entities:
+    Damage: true
+    MinEssenceOnDeath: 50
+    MaxEssenceOnDeath: 100
   DeathMessages:
     - "%s has boiled to death in a cauldron."
     - "%s was cooked in a cauldron."

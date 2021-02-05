@@ -17,6 +17,7 @@ import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
+import wtf.choco.alchema.api.event.entity.EntityDeathByCauldronEvent;
 import wtf.choco.alchema.api.event.entity.EntityDropEssenceEvent;
 import wtf.choco.alchema.api.event.player.PlayerConsumeEntityEssenceEvent;
 import wtf.choco.alchema.api.event.player.PlayerEssenceCollectEvent;
@@ -47,6 +48,22 @@ public final class AlchemaEventFactory {
     @NotNull
     public static EntityDamageByCauldronEvent callEntityDamageByCauldronEvent(@NotNull LivingEntity entity, @NotNull AlchemicalCauldron cauldron, double damage) {
         EntityDamageByCauldronEvent event = new EntityDamageByCauldronEvent(entity, cauldron, damage);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
+
+    /**
+     * Call and return the {@link EntityDamageByCauldronEvent}.
+     *
+     * @param entity the damaged entity
+     * @param cauldron the cauldron
+     * @param essence the amount of essence to be inserted into the cauldron
+     *
+     * @return the event
+     */
+    @NotNull
+    public static EntityDeathByCauldronEvent callEntityDeathByCauldronEvent(@NotNull LivingEntity entity, @NotNull AlchemicalCauldron cauldron, int essence) {
+        EntityDeathByCauldronEvent event = new EntityDeathByCauldronEvent(entity, cauldron, essence);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }
