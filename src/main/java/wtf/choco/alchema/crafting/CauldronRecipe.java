@@ -110,13 +110,25 @@ public class CauldronRecipe {
      * Set the comment for this recipe.
      *
      * @param comment the comment to set or null
+     *
+     * @deprecated inconvenient parameter. See {@link #setComment(String)} instead
      */
+    @Deprecated
     public void setComment(@Nullable Optional<@NotNull String> comment) {
         if (comment == null) {
             comment = Optional.empty();
         }
 
         this.comment = comment;
+    }
+
+    /**
+     * Set the comment for this recipe.
+     *
+     * @param comment the comment to set or null
+     */
+    public void setComment(@Nullable String comment) {
+        this.comment = Optional.<String>ofNullable(comment); // Nullability annotations are funny sometimes ;p
     }
 
     /**
