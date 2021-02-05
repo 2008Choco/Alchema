@@ -16,6 +16,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -45,7 +46,7 @@ public final class EntityEssenceCollectionListener implements Listener {
         this.interactBlacklist = new EntityBlacklist(() -> plugin.getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_BLACKLIST));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     private void onEntityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         EntityType type = entity.getType();
@@ -89,7 +90,7 @@ public final class EntityEssenceCollectionListener implements Listener {
         event.getDrops().add(essenceData.createItemStack(entityDropEssenceEvent.getAmountOfEssence()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlayerRightClickEntity(PlayerInteractEntityEvent event) {
         FileConfiguration config = plugin.getConfig();
         if (!config.getBoolean(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_ENABLED, true)) {
