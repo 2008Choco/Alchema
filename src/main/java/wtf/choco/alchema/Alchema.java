@@ -25,6 +25,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.inventory.RecipeChoice.MaterialChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -63,6 +64,26 @@ public final class Alchema extends JavaPlugin {
 
     /** The GSON instance provided by Alchema */
     public static final Gson GSON = new Gson();
+
+    private static final Material[] GLASS_PANES = {
+        Material.GLASS_PANE,
+        Material.BLACK_STAINED_GLASS_PANE,
+        Material.BLUE_STAINED_GLASS_PANE,
+        Material.BROWN_STAINED_GLASS_PANE,
+        Material.CYAN_STAINED_GLASS_PANE,
+        Material.GRAY_STAINED_GLASS_PANE,
+        Material.GREEN_STAINED_GLASS_PANE,
+        Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+        Material.LIGHT_GRAY_STAINED_GLASS_PANE,
+        Material.LIME_STAINED_GLASS_PANE,
+        Material.MAGENTA_STAINED_GLASS_PANE,
+        Material.ORANGE_STAINED_GLASS_PANE,
+        Material.PINK_STAINED_GLASS_PANE,
+        Material.PURPLE_STAINED_GLASS_PANE,
+        Material.RED_STAINED_GLASS_PANE,
+        Material.WHITE_STAINED_GLASS_PANE,
+        Material.YELLOW_STAINED_GLASS_PANE
+    };
 
     private static Alchema instance;
 
@@ -153,7 +174,7 @@ public final class Alchema extends JavaPlugin {
         this.registerCommandSafely("givevialofessence", new CommandGiveVialOfEssence(this));
 
         // Register crafting recipes
-        Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', Material.GLASS_PANE));
+        Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', new MaterialChoice(GLASS_PANES)));
 
         this.cauldronUpdateTask = CauldronUpdateTask.startTask(this);
 
