@@ -37,6 +37,7 @@ public class CauldronIngredientAddEvent extends BlockEvent {
     private final Item item;
     private final ItemStack itemStack;
     private final OfflinePlayer player;
+    private final UUID playerUUID;
 
     /**
      * Construct a new {@link CauldronIngredientAddEvent}.
@@ -56,8 +57,8 @@ public class CauldronIngredientAddEvent extends BlockEvent {
         this.item = item;
         this.itemStack = item.getItemStack();
 
-        UUID throwerUUID = item.getThrower();
-        this.player = throwerUUID != null ? Bukkit.getOfflinePlayer(throwerUUID) : null;
+        this.playerUUID = item.getThrower();
+        this.player = (playerUUID != null) ? Bukkit.getOfflinePlayer(playerUUID) : null;
     }
 
     /**
@@ -121,10 +122,21 @@ public class CauldronIngredientAddEvent extends BlockEvent {
     }
 
     /**
+     * Get the UUID of the player that threw the {@link Item} into the cauldron to cause
+     * this event (if there is one).
+     *
+     * @return the thrower uuid. null if none
+     */
+    @Nullable
+    public UUID getPlayerUUID() {
+        return playerUUID;
+    }
+
+    /**
      * Get the player that threw the {@link Item} into the cauldron to cause this event
      * (if there is one).
      *
-     * @return the thrower
+     * @return the thrower. null if none
      */
     @Nullable
     public OfflinePlayer getPlayer() {
