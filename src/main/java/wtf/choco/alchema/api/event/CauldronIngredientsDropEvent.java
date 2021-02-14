@@ -10,7 +10,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.block.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,13 +20,12 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
  *
  * @author Parker Hawke - Choco
  */
-public class CauldronIngredientsDropEvent extends BlockEvent implements Cancellable {
+public class CauldronIngredientsDropEvent extends CauldronEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean cancelled = false;
 
-    private final AlchemicalCauldron cauldron;
     private final List<@NotNull Item> items;
     private final Player player;
     private final Reason reason;
@@ -41,26 +39,14 @@ public class CauldronIngredientsDropEvent extends BlockEvent implements Cancella
      * @param reason the reason for this event
      */
     public CauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull Reason reason) {
-        super(cauldron.getCauldronBlock());
+        super(cauldron);
 
-        Preconditions.checkArgument(cauldron != null, "cauldron must not be null");
         Preconditions.checkArgument(items != null, "items must not be null");
         Preconditions.checkArgument(reason != null, "reast must not be null");
 
-        this.cauldron = cauldron;
         this.items = new ArrayList<>(items);
         this.player = player;
         this.reason = reason;
-    }
-
-    /**
-     * Get the {@link AlchemicalCauldron} involved in this event.
-     *
-     * @return the cauldron
-     */
-    @NotNull
-    public AlchemicalCauldron getCauldron() {
-        return cauldron;
     }
 
     /**

@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.block.BlockEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +17,7 @@ import wtf.choco.alchema.crafting.CauldronRecipe;
  *
  * @author Parker Hawke - Choco
  */
-public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
+public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -26,7 +25,6 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
     private ItemStack result;
     private int experience;
 
-    private final AlchemicalCauldron cauldron;
     private final CauldronRecipe recipe;
     private final Player player;
 
@@ -41,12 +39,10 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
      * @param experience the experience yielded from the recipe
      */
     public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player, @Nullable ItemStack result, int experience) {
-        super(cauldron.getCauldronBlock());
+        super(cauldron);
 
-        Preconditions.checkArgument(cauldron != null, "cauldron must not be null");
         Preconditions.checkArgument(recipe != null, "recipe must not be null");
 
-        this.cauldron = cauldron;
         this.recipe = recipe;
         this.player = player;
 
@@ -63,16 +59,6 @@ public class CauldronItemCraftEvent extends BlockEvent implements Cancellable {
      */
     public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player) {
         this(cauldron, recipe, player, recipe.getResult(), recipe.getExperience());
-    }
-
-    /**
-     * Get the {@link AlchemicalCauldron} involved in this event.
-     *
-     * @return the cauldron
-     */
-    @NotNull
-    public AlchemicalCauldron getCauldron() {
-        return cauldron;
     }
 
     /**

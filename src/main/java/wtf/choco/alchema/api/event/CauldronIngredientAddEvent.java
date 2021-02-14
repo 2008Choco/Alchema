@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Item;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.block.BlockEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,13 +26,12 @@ import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
  *
  * @author Parker Hawke - Choco
  */
-public class CauldronIngredientAddEvent extends BlockEvent {
+public class CauldronIngredientAddEvent extends CauldronEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private CauldronIngredient ingredient;
 
-    private final AlchemicalCauldron cauldron;
     private final Item item;
     private final ItemStack itemStack;
     private final OfflinePlayer player;
@@ -47,28 +45,16 @@ public class CauldronIngredientAddEvent extends BlockEvent {
      * @param item the item thrown into the cauldron
      */
     public CauldronIngredientAddEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronIngredient ingredient, @NotNull Item item) {
-        super(cauldron.getCauldronBlock());
+        super(cauldron);
 
-        Preconditions.checkArgument(cauldron != null, "cauldron must not be null");
         Preconditions.checkArgument(ingredient != null, "ingredient must not be null");
 
-        this.cauldron = cauldron;
         this.ingredient = ingredient;
         this.item = item;
         this.itemStack = item.getItemStack();
 
         this.playerUUID = item.getThrower();
         this.player = (playerUUID != null) ? Bukkit.getOfflinePlayer(playerUUID) : null;
-    }
-
-    /**
-     * Get the {@link AlchemicalCauldron} involved in this event.
-     *
-     * @return the cauldron
-     */
-    @NotNull
-    public AlchemicalCauldron getCauldron() {
-        return cauldron;
     }
 
     /**
