@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.alchema.api.event.CauldronBubbleEvent;
 import wtf.choco.alchema.api.event.CauldronIngredientAddEvent;
 import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
 import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
@@ -117,6 +118,19 @@ public final class AlchemaEventFactory {
         PlayerEssenceCollectEvent event = new PlayerEssenceCollectEvent(player, hand, item, entity, essenceData, essenceAmount);
         Bukkit.getPluginManager().callEvent(event);
         return event;
+    }
+
+    /**
+     * Handle the {@link CauldronBubbleEvent} and return whether or not it's cancelled.
+     *
+     * @param cauldron the cauldron
+     *
+     * @return true if not cancelled, false otherwise
+     */
+    public static boolean handleCauldronBubbleEvent(@NotNull AlchemicalCauldron cauldron) {
+        CauldronBubbleEvent event = new CauldronBubbleEvent(cauldron);
+        Bukkit.getPluginManager().callEvent(event);
+        return !event.isCancelled();
     }
 
     /**

@@ -115,6 +115,10 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                     continue;
                 }
 
+                if (!AlchemaEventFactory.handleCauldronBubbleEvent(cauldron)) {
+                    continue;
+                }
+
                 cauldron.stopHeatingUp();
                 cauldron.setBubbling(true);
             }
