@@ -2,10 +2,13 @@ package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -51,6 +54,8 @@ public final class CauldronUpdateTask extends BukkitRunnable {
 
     private int currentTick = 0;
 
+    private final List<AlchemicalCauldron> forRemoval = new ArrayList<>(4);
+
     private final Alchema plugin;
     private final CauldronManager cauldronManager;
     private final CauldronRecipeRegistry recipeRegistry;
@@ -89,7 +94,13 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                 continue;
             }
 
+            // Remove cauldrons that aren't cauldrons anymore. Ingredients are dropped during removal after this iteration.
             Block block = cauldron.getCauldronBlock();
+            if (block.getType() != Material.CAULDRON) {
+                this.forRemoval.add(cauldron);
+                continue;
+            }
+
             World world = block.getWorld();
             Location location = block.getLocation().add(0.5, 0.25, 0.5);
             Location particleLocation = block.getLocation().add(0.5, 1, 0.5);
@@ -240,6 +251,15 @@ public final class CauldronUpdateTask extends BukkitRunnable {
                 world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_UPWARDS_AMBIENT, volumeSuccessfulCraft, 1.5F);
                 world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_WHIRLPOOL_AMBIENT, volumeSuccessfulCraft, 0.8F);
             }
+        }
+
+        if (!forRemoval.isEmpty()) {
+            this.forRemoval.forEach(cauldron -> {
+                cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.DESTROYED, null);
+                this.cauldronManager.removeCauldron(cauldron);
+            });
+
+            this.forRemoval.clear();
         }
     }
 
