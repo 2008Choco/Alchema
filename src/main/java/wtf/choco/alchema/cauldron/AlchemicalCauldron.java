@@ -461,7 +461,7 @@ public class AlchemicalCauldron {
      * @param cauldronConfiguration the cauldron configuration
      * @param currentTick the current update tick
      */
-    public void update(@NotNull Alchema plugin, @NotNull CauldronConfigurationContext cauldronConfiguration, int currentTick) {
+    protected void update(@NotNull Alchema plugin, @NotNull CauldronConfigurationContext cauldronConfiguration, int currentTick) {
         Preconditions.checkArgument(plugin != null, "plugin must not be null");
         Preconditions.checkArgument(cauldronConfiguration != null, "cauldronConfiguration must not be null");
 
