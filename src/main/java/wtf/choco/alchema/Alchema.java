@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.cauldron.CauldronManager;
-import wtf.choco.alchema.cauldron.CauldronUpdateTask;
+import wtf.choco.alchema.cauldron.CauldronUpdateHandler;
 import wtf.choco.alchema.command.CommandAlchema;
 import wtf.choco.alchema.command.CommandGiveVialOfEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
@@ -94,7 +94,7 @@ public final class Alchema extends JavaPlugin {
     private File cauldronFile;
     private File recipesDirectory;
 
-    private CauldronUpdateTask cauldronUpdateTask;
+    private CauldronUpdateHandler cauldronUpdateTask;
 
     private EntityEssenceCollectionListener entityEssenceLootListener;
 
@@ -176,7 +176,8 @@ public final class Alchema extends JavaPlugin {
         // Register crafting recipes
         Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', new MaterialChoice(GLASS_PANES)));
 
-        this.cauldronUpdateTask = CauldronUpdateTask.startTask(this);
+        this.cauldronUpdateTask = CauldronUpdateHandler.init(this);
+        this.cauldronUpdateTask.startTask();
 
         // Load Metrics
         if (getConfig().getBoolean("MetricsEnabled", true)) {
@@ -227,9 +228,7 @@ public final class Alchema extends JavaPlugin {
         this.recipeRegistry.clearIngredientTypes();
         this.entityEssenceEffectRegistry.clearEntityEssenceData();
 
-        if (cauldronUpdateTask != null) {
-            this.cauldronUpdateTask.cancel();
-        }
+        this.cauldronUpdateTask.cancelTask();
     }
 
     /**

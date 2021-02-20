@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
@@ -18,32 +19,31 @@ import wtf.choco.alchema.config.CauldronConfigurationContext;
 import wtf.choco.alchema.util.AlchemaConstants;
 
 /**
- * An implementation of {@link BukkitRunnable} that handles the updating and ticking of
- * in-world {@link AlchemicalCauldron} instances.
+ * Reponsible for the updating and ticking of in-world {@link AlchemicalCauldron} instances.
  *
  * @author Parker Hawke - Choco
  */
-public final class CauldronUpdateTask extends BukkitRunnable {
+public final class CauldronUpdateHandler {
 
-    private static CauldronUpdateTask instance = null;
+    private static CauldronUpdateHandler instance = null;
 
+    private BukkitTask task;
     private int currentTick = 0;
 
-    private CauldronConfigurationContext cauldronConfiguration;
     private boolean dirty = true;
+    private CauldronConfigurationContext cauldronConfiguration;
 
     private final List<AlchemicalCauldron> forRemoval = new ArrayList<>(4);
 
     private final Alchema plugin;
     private final CauldronManager cauldronManager;
 
-    private CauldronUpdateTask(@NotNull Alchema plugin) {
+    private CauldronUpdateHandler(@NotNull Alchema plugin) {
         this.plugin = plugin;
         this.cauldronManager = plugin.getCauldronManager();
     }
 
-    @Override
-    public void run() {
+    private void run() {
         this.currentTick++;
 
         Collection<@NotNull AlchemicalCauldron> cauldrons = cauldronManager.getCauldrons();
@@ -106,34 +106,56 @@ public final class CauldronUpdateTask extends BukkitRunnable {
     }
 
     /**
+     * Start the update task. If the task was already started, an exception will be thrown.
+     */
+    public void startTask() {
+        Preconditions.checkState(task == null, "task was already started and cannot be started again");
+
+        this.task = Bukkit.getScheduler().runTaskTimer(plugin, instance::run, 0L, 1L);
+    }
+
+    /**
+     * Cancel the update task.
+     *
+     * @return true if the task was cancelled, false if no task was running
+     */
+    public boolean cancelTask() {
+        if (task == null) {
+            return false;
+        }
+
+        this.task.cancel();
+        return true;
+    }
+
+    /**
      * Get the cauldron update task instance if it exists.
      * <p>
-     * If this method is called before {@link #startTask(Alchema)}, an exception will be thrown.
+     * If this method is called before {@link #init(Alchema)}, an exception will be thrown.
      *
      * @return the update task instance
      */
     @NotNull
-    public static CauldronUpdateTask get() {
+    public static CauldronUpdateHandler get() {
         Preconditions.checkState(instance != null, "CauldronUpdateTask has not yet been started. Cannot fetch instance.");
         return instance;
     }
 
     /**
-     * Start the singleton {@link CauldronUpdateTask}.
+     * Init the singleton {@link CauldronUpdateHandler}.
      * <p>
      * <strong>NOTE:</strong> This is for internal use only
      *
-     * @param plugin the plugin to start the task
+     * @param plugin the plugin to initialize the handler
      *
      * @return the task instance
      */
     @NotNull
-    public static CauldronUpdateTask startTask(@NotNull Alchema plugin) {
+    public static CauldronUpdateHandler init(@NotNull Alchema plugin) {
         Preconditions.checkArgument(plugin != null, "plugin cannot be null");
 
         if (instance == null) {
-            instance = new CauldronUpdateTask(plugin);
-            instance.runTaskTimer(plugin, 0, 1);
+            instance = new CauldronUpdateHandler(plugin);
         }
 
         return instance;

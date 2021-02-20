@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
-import wtf.choco.alchema.cauldron.CauldronUpdateTask;
+import wtf.choco.alchema.cauldron.CauldronUpdateHandler;
 import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.UpdateChecker;
@@ -104,7 +104,7 @@ public final class CommandAlchema implements TabExecutor {
             this.plugin.getRecipeRegistry().clearRecipes();
             this.plugin.reloadConfig();
             this.plugin.refreshEntityBlacklists();
-            CauldronUpdateTask.get().markAsDirty();
+            CauldronUpdateHandler.get().markAsDirty();
 
             this.plugin.getRecipeRegistry().loadCauldronRecipes(plugin, plugin.getRecipesDirectory()).whenComplete((result, exception) -> {
                 if (exception != null) {
