@@ -2,6 +2,7 @@ CheckForUpdates: true
 Metrics: true
 
 Cauldron:
+  ItemSearchInterval: 1
   MillisecondsToHeatUp: 5000
   Entities:
     Damage: true

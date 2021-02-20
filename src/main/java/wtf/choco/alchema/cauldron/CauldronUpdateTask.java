@@ -77,6 +77,7 @@ public final class CauldronUpdateTask extends BukkitRunnable {
 
         // Pull configuration values every tick, but only once for every cauldron iteration
         FileConfiguration config = plugin.getConfig();
+        int itemSearchInterval = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_ITEM_SEARCH_INTERVAL, 1), 1);
         int millisecondsToHeatUp = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP, 5000), 0);
 
         boolean damageEntities = config.getBoolean(AlchemaConstants.CONFIG_CAULDRON_ENTITIES_DAMAGE, true);
@@ -140,75 +141,77 @@ public final class CauldronUpdateTask extends BukkitRunnable {
             }
 
             // Dissolve items in bubbling cauldrons
-            world.getNearbyEntities(cauldron.getItemConsumptionBounds()).forEach(entity -> {
-                if (entity instanceof Item) {
-                    Item item = (Item) entity;
-                    if (item.hasMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED)) {
-                        return;
-                    }
-
-                    ItemStack itemStack = item.getItemStack();
-
-                    // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)
-                    int amount = itemStack.getAmount();
-                    if (amount <= 0) {
-                        return;
-                    }
-
-                    // Entity essence
-                    CauldronIngredient ingredient = null;
-                    if (EntityEssenceData.isVialOfEntityEssence(itemStack)) {
-                        EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
-                        if (entityType != null) {
-                            int essenceAmount = EntityEssenceData.getEntityEssenceAmount(itemStack);
-                            ingredient = new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, essenceAmount);
-                        }
-                    }
-
-                    if (ingredient == null) {
-                        ingredient = new CauldronIngredientItemStack(itemStack, amount);
-                    }
-
-                    CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(cauldron, ingredient, item);
-
-                    cauldron.addIngredient(ingredientAddEvent.getIngredient());
-                    item.remove();
-
-                    world.spawnParticle(Particle.WATER_SPLASH, particleLocation, 4);
-
-                    if (volumeItemSplash > 0.0) {
-                        world.playSound(location, Sound.ENTITY_PLAYER_SPLASH, volumeItemSplash, 2F);
-                    }
-                }
-                else if (damageEntities && entity instanceof LivingEntity) {
-                    LivingEntity livingEntity = (LivingEntity) entity;
-                    if (currentTick % 20 == 0 && !livingEntity.isDead()) {
-                        EntityDamageByCauldronEvent entityDamageByCauldronEvent = AlchemaEventFactory.callEntityDamageByCauldronEvent(livingEntity, cauldron, 1.0);
-
-                        double damage = entityDamageByCauldronEvent.getDamage();
-                        if (entityDamageByCauldronEvent.isCancelled() || damage <= 0.0) {
+            if (currentTick % itemSearchInterval == 0) {
+                world.getNearbyEntities(cauldron.getItemConsumptionBounds()).forEach(entity -> {
+                    if (entity instanceof Item) {
+                        Item item = (Item) entity;
+                        if (item.hasMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED)) {
                             return;
                         }
 
-                        livingEntity.setMetadata(AlchemaConstants.METADATA_KEY_DAMAGED_BY_CAULDRON, new FixedMetadataValue(plugin, System.currentTimeMillis()));
-                        livingEntity.damage(damage);
+                        ItemStack itemStack = item.getItemStack();
 
-                        // Entity died due to cauldron damage. Insert essence into the cauldron
-                        if (livingEntity.isDead()) {
-                            EntityType type = livingEntity.getType();
-                            boolean hasEntityEssenceData = essenceEffectRegistry.hasEntityEssenceData(type);
+                        // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)
+                        int amount = itemStack.getAmount();
+                        if (amount <= 0) {
+                            return;
+                        }
 
-                            int amountOfEssence = hasEntityEssenceData ? MathUtil.generateNumberBetween(minEssenceOnDeath, maxEssenceOnDeath) : 0;
-                            EntityDeathByCauldronEvent entityDeathByCauldronEvent = AlchemaEventFactory.callEntityDeathByCauldronEvent(livingEntity, cauldron, amountOfEssence);
-                            amountOfEssence = entityDeathByCauldronEvent.getEssence();
+                        // Entity essence
+                        CauldronIngredient ingredient = null;
+                        if (EntityEssenceData.isVialOfEntityEssence(itemStack)) {
+                            EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
+                            if (entityType != null) {
+                                int essenceAmount = EntityEssenceData.getEntityEssenceAmount(itemStack);
+                                ingredient = new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, essenceAmount);
+                            }
+                        }
 
-                            if (hasEntityEssenceData && amountOfEssence > 0) {
-                                cauldron.addIngredient(new CauldronIngredientEntityEssence(type, essenceEffectRegistry, amountOfEssence));
+                        if (ingredient == null) {
+                            ingredient = new CauldronIngredientItemStack(itemStack, amount);
+                        }
+
+                        CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(cauldron, ingredient, item);
+
+                        cauldron.addIngredient(ingredientAddEvent.getIngredient());
+                        item.remove();
+
+                        world.spawnParticle(Particle.WATER_SPLASH, particleLocation, 4);
+
+                        if (volumeItemSplash > 0.0) {
+                            world.playSound(location, Sound.ENTITY_PLAYER_SPLASH, volumeItemSplash, 2F);
+                        }
+                    }
+                    else if (damageEntities && entity instanceof LivingEntity) {
+                        LivingEntity livingEntity = (LivingEntity) entity;
+                        if (currentTick % 20 == 0 && !livingEntity.isDead()) {
+                            EntityDamageByCauldronEvent entityDamageByCauldronEvent = AlchemaEventFactory.callEntityDamageByCauldronEvent(livingEntity, cauldron, 1.0);
+
+                            double damage = entityDamageByCauldronEvent.getDamage();
+                            if (entityDamageByCauldronEvent.isCancelled() || damage <= 0.0) {
+                                return;
+                            }
+
+                            livingEntity.setMetadata(AlchemaConstants.METADATA_KEY_DAMAGED_BY_CAULDRON, new FixedMetadataValue(plugin, System.currentTimeMillis()));
+                            livingEntity.damage(damage);
+
+                            // Entity died due to cauldron damage. Insert essence into the cauldron
+                            if (livingEntity.isDead()) {
+                                EntityType type = livingEntity.getType();
+                                boolean hasEntityEssenceData = essenceEffectRegistry.hasEntityEssenceData(type);
+
+                                int amountOfEssence = hasEntityEssenceData ? MathUtil.generateNumberBetween(minEssenceOnDeath, maxEssenceOnDeath) : 0;
+                                EntityDeathByCauldronEvent entityDeathByCauldronEvent = AlchemaEventFactory.callEntityDeathByCauldronEvent(livingEntity, cauldron, amountOfEssence);
+                                amountOfEssence = entityDeathByCauldronEvent.getEssence();
+
+                                if (hasEntityEssenceData && amountOfEssence > 0) {
+                                    cauldron.addIngredient(new CauldronIngredientEntityEssence(type, essenceEffectRegistry, amountOfEssence));
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
 
             if (!cauldron.hasIngredients()) {
                 continue;

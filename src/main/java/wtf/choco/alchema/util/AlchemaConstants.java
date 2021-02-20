@@ -40,6 +40,9 @@ public final class AlchemaConstants {
 
 
     // Configuration keys
+    /** Configuration path, Cauldron.ItemSearchInterval */
+    public static final String CONFIG_CAULDRON_ITEM_SEARCH_INTERVAL = "Cauldron.ItemSearchInterval";
+
     /** Configuration path, Cauldron.MillisecondsToHeatUp */
     public static final String CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP = "Cauldron.MillisecondsToHeatUp";
 
