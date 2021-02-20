@@ -11,7 +11,7 @@
         {
             "type": "alchema:material",
             "item": "minecraft:diamond",
-            "amount": 2
+            "amount": 3
         }
     ]
 }
