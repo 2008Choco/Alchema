@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
@@ -21,24 +22,43 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
+import wtf.choco.alchema.api.event.CauldronIngredientAddEvent;
 import wtf.choco.alchema.api.event.CauldronIngredientsDropEvent;
+import wtf.choco.alchema.api.event.CauldronItemCraftEvent;
+import wtf.choco.alchema.api.event.entity.EntityDamageByCauldronEvent;
+import wtf.choco.alchema.api.event.entity.EntityDeathByCauldronEvent;
+import wtf.choco.alchema.config.CauldronConfigurationContext;
 import wtf.choco.alchema.crafting.CauldronIngredient;
+import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
+import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.essence.EntityEssenceData;
+import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
+import wtf.choco.alchema.util.MathUtil;
 import wtf.choco.alchema.util.NamespacedKeyUtil;
 
 /**
@@ -432,6 +452,174 @@ public class AlchemicalCauldron {
      */
     public void clearIngredients() {
         this.ingredients.clear();
+    }
+
+    /**
+     * Update this cauldron.
+     *
+     * @param plugin the alchema plugin instance
+     * @param cauldronConfiguration the cauldron configuration
+     * @param currentTick the current update tick
+     */
+    public void update(@NotNull Alchema plugin, @NotNull CauldronConfigurationContext cauldronConfiguration, int currentTick) {
+        Preconditions.checkArgument(plugin != null, "plugin must not be null");
+        Preconditions.checkArgument(cauldronConfiguration != null, "cauldronConfiguration must not be null");
+
+        World world = getWorld();
+        Location location = getLocation().add(0.5, 0.25, 0.5);
+        Location particleLocation = getLocation().add(0.5, 1, 0.5);
+
+        // Unheat if conditions are not met
+        if (!canHeatUp()) {
+            this.stopHeatingUp();
+            this.setBubbling(false);
+
+            this.dropIngredients(CauldronIngredientsDropEvent.Reason.UNHEATED, null);
+            return;
+        }
+
+        // Attempt to heat cauldron (if valid)
+        if (!isBubbling() && !isHeatingUp() && !attemptToHeatUp()) {
+            return;
+        }
+
+        // Prepare bubbling cauldrons
+        if (isHeatingUp()) {
+            long timeSinceHeatingUp = System.currentTimeMillis() - getHeatingStartTime();
+            if (timeSinceHeatingUp < cauldronConfiguration.getMillisecondsToHeatUp()) {
+                return;
+            }
+
+            if (!AlchemaEventFactory.handleCauldronBubbleEvent(this)) {
+                return;
+            }
+
+            this.stopHeatingUp();
+            this.setBubbling(true);
+        }
+
+        world.spawnParticle(Particle.BUBBLE_COLUMN_UP, getLocation().add(0.5, 0.95, 0.5), 2, 0.15F, 0F, 0.15F, 0F);
+        if (currentTick % 40 == 0 && cauldronConfiguration.getAmbientBubbleVolume() > 0.0) {
+            world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_UPWARDS_AMBIENT, cauldronConfiguration.getAmbientBubbleVolume(), 0.8F);
+        }
+
+        // Dissolve items in bubbling cauldrons
+        if (currentTick % cauldronConfiguration.getItemSearchInterval() == 0) {
+            EntityEssenceEffectRegistry essenceEffectRegistry = plugin.getEntityEssenceEffectRegistry();
+
+            world.getNearbyEntities(getItemConsumptionBounds()).forEach(entity -> {
+                if (entity instanceof Item) {
+                    Item item = (Item) entity;
+                    if (item.hasMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED)) {
+                        return;
+                    }
+
+                    ItemStack itemStack = item.getItemStack();
+
+                    // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)
+                    int amount = itemStack.getAmount();
+                    if (amount <= 0) {
+                        return;
+                    }
+
+                    // Entity essence
+                    CauldronIngredient ingredient = null;
+                    if (EntityEssenceData.isVialOfEntityEssence(itemStack)) {
+                        EntityType entityType = EntityEssenceData.getEntityEssenceType(itemStack);
+                        if (entityType != null) {
+                            int essenceAmount = EntityEssenceData.getEntityEssenceAmount(itemStack);
+                            ingredient = new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, essenceAmount);
+                        }
+                    }
+
+                    if (ingredient == null) {
+                        ingredient = new CauldronIngredientItemStack(itemStack, amount);
+                    }
+
+                    CauldronIngredientAddEvent ingredientAddEvent = AlchemaEventFactory.callCauldronIngredientAddEvent(this, ingredient, item);
+
+                    this.addIngredient(ingredientAddEvent.getIngredient());
+                    item.remove();
+
+                    world.spawnParticle(Particle.WATER_SPLASH, particleLocation, 4);
+
+                    if (cauldronConfiguration.getItemSplashVolume() > 0.0) {
+                        world.playSound(location, Sound.ENTITY_PLAYER_SPLASH, cauldronConfiguration.getItemSplashVolume(), 2F);
+                    }
+                }
+                else if (cauldronConfiguration.shouldDamageEntities() && entity instanceof LivingEntity) {
+                    LivingEntity livingEntity = (LivingEntity) entity;
+                    if (currentTick % 20 == 0 && !livingEntity.isDead()) {
+                        EntityDamageByCauldronEvent entityDamageByCauldronEvent = AlchemaEventFactory.callEntityDamageByCauldronEvent(livingEntity, this, 1.0);
+
+                        double damage = entityDamageByCauldronEvent.getDamage();
+                        if (entityDamageByCauldronEvent.isCancelled() || damage <= 0.0) {
+                            return;
+                        }
+
+                        livingEntity.setMetadata(AlchemaConstants.METADATA_KEY_DAMAGED_BY_CAULDRON, new FixedMetadataValue(plugin, System.currentTimeMillis()));
+                        livingEntity.damage(damage);
+
+                        // Entity died due to cauldron damage. Insert essence into the cauldron
+                        if (livingEntity.isDead()) {
+                            EntityType type = livingEntity.getType();
+                            boolean hasEntityEssenceData = essenceEffectRegistry.hasEntityEssenceData(type);
+
+                            int amountOfEssence = hasEntityEssenceData ? MathUtil.generateNumberBetween(cauldronConfiguration.getMinEssenceOnDeath(), cauldronConfiguration.getMaxEssenceOnDeath()) : 0;
+                            EntityDeathByCauldronEvent entityDeathByCauldronEvent = AlchemaEventFactory.callEntityDeathByCauldronEvent(livingEntity, this, amountOfEssence);
+                            amountOfEssence = entityDeathByCauldronEvent.getEssence();
+
+                            if (hasEntityEssenceData && amountOfEssence > 0) {
+                                this.addIngredient(new CauldronIngredientEntityEssence(type, essenceEffectRegistry, amountOfEssence));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        if (!hasIngredients()) {
+            return;
+        }
+
+        CauldronRecipeRegistry recipeRegistry = plugin.getRecipeRegistry();
+        CauldronRecipe activeRecipe = recipeRegistry.getApplicableRecipe(getIngredients());
+        if (activeRecipe == null) {
+            return;
+        }
+
+        OfflinePlayer lastInteracted = getLastInteracted();
+        CauldronItemCraftEvent cauldronCraftEvent = AlchemaEventFactory.callCauldronItemCraftEvent(this, activeRecipe, lastInteracted != null ? lastInteracted.getPlayer() : null);
+        if (cauldronCraftEvent.isCancelled()) {
+            return;
+        }
+
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        Vector itemVelocity = new Vector(random.nextDouble() / 10.0, 0.10 + (random.nextDouble() / 3), random.nextDouble() / 10.0);
+        Location resultSpawnLocation = getLocation().add(0.5, 1.1, 0.5);
+
+        // Item result
+        ItemStack result = cauldronCraftEvent.getResult();
+        if (result != null) {
+            Item item = world.dropItem(resultSpawnLocation, result);
+            item.setVelocity(itemVelocity);
+            item.setMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED, new FixedMetadataValue(plugin, true));
+        }
+
+        // Experience
+        int experience = cauldronCraftEvent.getExperience();
+        if (experience > 0) {
+            world.spawn(resultSpawnLocation, ExperienceOrb.class, orb -> orb.setExperience(experience));
+        }
+
+        this.removeIngredients(activeRecipe);
+
+        world.spawnParticle(Particle.SPELL_WITCH, particleLocation, 10, 0.3, 0.2, 0.3, 0.0);
+
+        if (cauldronConfiguration.getSuccessfulCraftVolume() > 0.0) {
+            world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_UPWARDS_AMBIENT, cauldronConfiguration.getSuccessfulCraftVolume(), 1.5F);
+            world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_WHIRLPOOL_AMBIENT, cauldronConfiguration.getSuccessfulCraftVolume(), 0.8F);
+        }
     }
 
     /**
