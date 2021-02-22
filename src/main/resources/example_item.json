@@ -1,0 +1,186 @@
+{
+    "comment": [ 
+        "This is an example item. These attributes may be applied to any item in the Alchema recipe JSON files.",
+        "The ingredient type must be of type 'alchema:item', otherwise only the 'item' type and 'amount' will be read.",
+
+        "Some attributes apply to specific items while others do not. Anything under 'OPTIONAL BASE ATTRIBUTES' may be applied to all items",
+        "and anything below that point is item specific. However, anything not declared as a 'required attribute' is optional and will default",
+        "to some unspecified value. You do not need to include everything in this file, just what you need.",
+
+        "You may use this file as a guide when writing items for your recipe files. Do take caution, JSON is very picky!",
+        "Alchema will let you know if something went wrong while reading your file. The easiest solution is to run your file through a",
+        "JSON linter such as https://jsonlint.com/ and it will identify most issues.",
+
+        "If you have any questions, do not hesitate to contact the project maintainer through SpigotMC or the support Discord."
+    ],
+
+
+    "comment": " // REQUIRED ATTRIBUTES. Must be present in all items //",
+    "item": "minecraft:netherite_sword",
+
+
+    "comment": " // BASE ATTRIBUTES. Applies to all items //",
+    "amount": 1,
+    "name": "&4My custom name",
+    "lore": [
+        "&fFirst line",
+        "&cSecond line"
+    ],
+    "damage": 10,
+    "unbreakable": true,
+    "custom_model_data": 15,
+    "enchantments": {
+        "minecraft:sharpness": 4,
+        "minecraft:unbreaking": 3
+    },
+    "attribute_modifiers": { 
+        "generic_max_health": {
+            "uuid": "3da64fcf-328f-4815-b0a6-ec9a3a839562",
+            "name": "generic.maxHealth",
+            "operation": "add_number",
+            "value": 10,
+            "slot": "off_hand"
+        },
+        "generic_attack_damage": {
+            "name": "generic.attackDamage",
+            "operation": "multiply_scalar_1",
+            "value": 2.5
+        }
+    },
+    "item_flags": [
+        "hide_enchants",
+        "hide_unbreakable"
+    ],
+
+
+    "comment": " // BANNER ATTRIBUTES. Applicable to banners //",
+    "patterns": [
+        {
+            "color": "red",
+            "pattern": "skull"
+        },
+        {
+            "color": "green",
+            "pattern": "globe"
+        }
+    ],
+
+
+    "comment": " // BOOK ATTRIBUTES. Applicable to written books //",
+    "author": "Choco",
+    "title": "How To Write Item JSON",
+    "generation": "tattered",
+    "pages": [
+        "This is the first page of the book. You can write whatever you want here",
+        "This is the second page of the book. You have to click the arrow to go to the next page",
+        "This is the third page of the book! The end!",
+        "(You can include as many pages as you'd like - limited to Minecraft's page limit)"
+    ],
+
+
+    "comment": " // FIREWORK STAR ATTRIBUTES. Applicable to firework stars //",
+    "effect": "star",
+    "flicker": true,
+    "trail": false,
+    "color": {
+        "primary": [
+            "#EB3434",
+            "#19B33D"
+        ],
+        "fade": "#E8CB25"
+    },
+
+
+    "comment": " // FIREWORK ROCKET ATTRIBUTES. Applicable to firework rockets //",
+    "power": 3,
+    "effects": [
+        {
+            "effect": "star",
+            "flicker": false,
+            "trail": true,
+            "color": {
+                "primary": [
+                    "#EB3434",
+                    "#19B33D"
+                ],
+                "fade": [
+                    "#4681E0",
+                    "#B330E3",
+                    "#E8CB25"
+                ]
+            }
+        },
+        {
+            "effect": "creeper",
+            "color": {
+                "primary": [
+                    "#4681E0",
+                    "#B330E3",
+                    "#E8CB25"
+                ],
+                "fade": [
+                    "#EB3434",
+                    "#19B33D"
+                ]
+            }
+        }
+    ],
+
+
+    "comment": " // KNOWLEDGE BOOK ATTRIBUTES. Applicable to knowledge books //",
+    "recipes": [
+        "minecraft:arrow",
+        "minecraft:furnace",
+        "minecraft:boat"
+    ],
+
+
+    "comment": " // LEATHER ARMOUR ATTRIBUTES. Applicable to all types of leather armour //",
+    "color": "#55E3C2",
+
+
+    "comment": " // MAP ATTRIBUTES. Applicable to filled maps //",
+    "color": "#9DD62A",
+    "location": "Sunken Treasure",
+    "scaling": false,
+
+
+    "comment": " // POTION ATTRIBUTES. Applicable to all types of potions (splash and lingering too) //",
+    "base": "weakness",
+    "upgraded": true,
+    "extended": false,
+    "color": "#33FF22",
+    "effects": {
+        "speed": {
+            "duration": 600,
+            "amplifier": 2,
+            "ambient": true
+        },
+        "increase_damage": 1000,
+        "fire_resistance": 400
+    },
+
+
+    "comment": " // PLAYER SKULL ATTRIBUTES. Applicable to player skulls //",
+    "owner": "2e5bb75b-c55f-4798-903e-db21c6f814c8",
+
+
+    "comment": " // SUSPICIOUS STEW ATTRIBUTES. Applicable to suspicious stew //",
+    "effects": {
+        "speed": {
+            "duration": 600,
+            "amplifier": 2,
+            "ambient": true
+        },
+        "increase_damage": 1000,
+        "fire_resistance": 400
+    },
+
+
+    "comment": " // TROPICAL FISH BUCKET ATTRIBUTES. Applicable to tropical fish buckets // ",
+    "pattern": "dasher",
+    "color": {
+        "body": "red",
+        "pattern": "blue"
+    }       
+}

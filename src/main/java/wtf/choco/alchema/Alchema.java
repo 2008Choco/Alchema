@@ -111,6 +111,11 @@ public final class Alchema extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
 
+        // Checking first if it exists so we don't get that annoying Bukkit "could not save file" message
+        if (!new File(getDataFolder(), "example_item.json").exists()) {
+            this.saveResource("example_item.json", false);
+        }
+
         this.recipesDirectory = new File(getDataFolder(), "recipes");
         if (!recipesDirectory.exists()) {
             this.saveDefaultDirectory("recipes", true);
