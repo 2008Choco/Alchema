@@ -199,20 +199,58 @@ public final class CommandAlchema implements TabExecutor {
                 return true;
             }
 
-            if (!defaultRecipePaths.contains(args[1])) {
-                sender.sendMessage(Alchema.CHAT_PREFIX + "Unrecognized default recipe with path " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ". Did you spell it right?");
-                return true;
-            }
+            if (args[1].endsWith(".json")) {
+                if (!defaultRecipePaths.contains(args[1])) {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + "Unrecognized default recipe with path " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ". Did you spell it right?");
+                    return true;
+                }
 
-            String recipePath = "recipes/" + args[1];
-            File recipeFile = new File(plugin.getDataFolder(), recipePath);
-            if (recipeFile.exists()) {
-                sender.sendMessage(Alchema.CHAT_PREFIX + "A recipe file already exists at " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ".");
-                return true;
-            }
+                String recipePath = "recipes/" + args[1];
+                File recipeFile = new File(plugin.getDataFolder(), recipePath);
+                if (recipeFile.exists()) {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + "A recipe file already exists at " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ".");
+                    return true;
+                }
 
-            this.plugin.saveResource(recipePath, false);
-            sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved the default recipe at path " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
+                this.plugin.saveResource(recipePath, false);
+                sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved the default recipe at path " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
+            }
+            else if (args[1].endsWith("/*")) {
+                List<@NotNull String> applicableRecipePaths = new ArrayList<>(defaultRecipePaths.size());
+
+                String recipePathDirectory = args[1].substring(0, args[1].length() - 1);
+                this.defaultRecipePaths.forEach(recipePath -> {
+                    if (recipePath.startsWith(recipePathDirectory)) {
+                        applicableRecipePaths.add("recipes/" + recipePath);
+                    }
+                });
+
+                if (applicableRecipePaths.isEmpty()) {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + "The path located at " + ChatColor.YELLOW + "recipes/" + recipePathDirectory + ChatColor.GRAY + " contains no recipes.");
+                    return true;
+                }
+
+                int failedToLoad = 0;
+                for (String recipePath : applicableRecipePaths) {
+                    File recipeFile = new File(plugin.getDataFolder(), recipePath);
+                    if (recipeFile.exists()) {
+                        failedToLoad++;
+                        continue;
+                    }
+
+                    this.plugin.saveResource(recipePath, false);
+                }
+
+                int loaded = applicableRecipePaths.size() - failedToLoad;
+                if (loaded > 0) {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved " + ChatColor.YELLOW + "(" + loaded + ") " + ChatColor.GRAY + "default recipes" + (failedToLoad >= 1 ? " (could not save " + ChatColor.RED + failedToLoad + ChatColor.GRAY + ")" : "") + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
+                } else {
+                    sender.sendMessage(Alchema.CHAT_PREFIX + "Could not save any default recipes in the path " + ChatColor.YELLOW + "recipes/" + recipePathDirectory + ChatColor.GRAY + ". All files exist.");
+                }
+            }
+            else {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "Invalid recipe path. Must end with " + ChatColor.YELLOW + ".json " + ChatColor.GRAY + "or " + ChatColor.YELLOW + "/* " + ChatColor.GRAY + ".");
+            }
         }
 
         else {
@@ -241,6 +279,10 @@ public final class CommandAlchema implements TabExecutor {
                         suggestions.add(recipePath);
                     }
                 });
+
+                if (args[1].endsWith("/")) {
+                    suggestions.add(args[1] + "*");
+                }
 
                 return suggestions;
             }
