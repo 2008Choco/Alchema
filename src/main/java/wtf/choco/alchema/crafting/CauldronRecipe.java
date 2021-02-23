@@ -243,6 +243,23 @@ public class CauldronRecipe {
     }
 
     /**
+     * Get the numerical complexity of this recipe.
+     * <p>
+     * Complexity is determine by the amount of each ingredient in this recipe.
+     *
+     * @return the complexity. Higher numbers are more complex. Will always be {@literal >=} 0
+     */
+    public int getComplexity() {
+        int complexity = 0;
+
+        for (CauldronIngredient ingredient : ingredients) {
+            complexity += ingredient.getAmount();
+        }
+
+        return complexity;
+    }
+
+    /**
      * Get the expected yield (i.e. quantity of result) that may be produced such that the provided
      * ingredients will not be over-consumed.
      *

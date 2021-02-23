@@ -583,7 +583,7 @@ public class AlchemicalCauldron {
         }
 
         CauldronRecipeRegistry recipeRegistry = plugin.getRecipeRegistry();
-        CauldronRecipe activeRecipe = recipeRegistry.getApplicableRecipe(getIngredients());
+        CauldronRecipe activeRecipe = recipeRegistry.getApplicableRecipe(getIngredients(), true);
         if (activeRecipe == null) {
             return;
         }

@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,24 +78,79 @@ public class CauldronRecipeRegistry {
 
     /**
      * Get the {@link CauldronRecipe} that applies given a set of ingredients. If no recipe can consume
-     * the ingredients and catalyst, null is returned. If more than one recipe is valid, the first is
-     * selected.
+     * the ingredients, null is returned. If more than one recipe is valid, the first is selected.
      *
      * @param ingredients the available ingredients
+     * @param mostComplex whether or not to find the most complex applicable recipe if more than one is
+     * applicable. Note that if this value is true, all recipes will be iterated over and will result in
+     * a fixed operation time of O(n) rather than O(n) worst case.
      *
      * @return the cauldron recipe that applies. null if none
+     *
+     * @see #getApplicableRecipes(List) to get a list of all applicable recipes
      */
     @Nullable
-    public CauldronRecipe getApplicableRecipe(@NotNull List<@NotNull CauldronIngredient> ingredients) {
+    public CauldronRecipe getApplicableRecipe(@NotNull List<@NotNull CauldronIngredient> ingredients, boolean mostComplex) {
+        CauldronRecipe result = null;
+
         for (CauldronRecipe recipe : recipes.values()) {
             if (recipe.getYieldFromIngredients(ingredients) == 0) {
                 continue;
             }
 
-            return recipe;
+            if (!mostComplex) {
+                return recipe;
+            }
+
+            if (result == null || recipe.getComplexity() > result.getComplexity()) {
+                result = recipe;
+            }
         }
 
-        return null;
+        return result;
+    }
+
+    /**
+     * Get the {@link CauldronRecipe} that applies given a set of ingredients. If no recipe can consume
+     * the ingredients, null is returned. If more than one recipe is valid, the first is selected.
+     * <p>
+     * The complexity of the recipe is not taken into consideration. The recipe returned by this method
+     * is not guaranteed.
+     *
+     * @param ingredients the available ingredients
+     *
+     * @return the cauldron recipe that applies. null if none
+     *
+     * @see #getApplicableRecipes(List) to get a list of all applicable recipes
+     */
+    @Nullable
+    public CauldronRecipe getApplicableRecipe(@NotNull List<@NotNull CauldronIngredient> ingredients) {
+        return getApplicableRecipe(ingredients, false);
+    }
+
+    /**
+     * Get a list of {@link CauldronRecipe CauldronRecipes} that apply given a set of ingredients sorted by
+     * their complexity (0th index = most complex, last index = least complex). If no recipe can consume the
+     * ingredients, an empty list is returned.
+     *
+     * @param ingredients the available ingredients
+     *
+     * @return all applicable cauldron recipes. empty list if none
+     */
+    @NotNull
+    public List<@NotNull CauldronRecipe> getApplicableRecipes(@NotNull List<@NotNull CauldronIngredient> ingredients) {
+        List<@NotNull CauldronRecipe> applicable = new ArrayList<>();
+
+        this.recipes.values().forEach(recipe -> {
+            if (recipe.getYieldFromIngredients(ingredients) == 0) {
+                return;
+            }
+
+            applicable.add(recipe);
+        });
+
+        applicable.sort(Comparator.comparingInt(CauldronRecipe::getComplexity));
+        return applicable;
     }
 
     /**
