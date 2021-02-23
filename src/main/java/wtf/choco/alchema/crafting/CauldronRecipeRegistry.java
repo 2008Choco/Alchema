@@ -2,6 +2,7 @@ package wtf.choco.alchema.crafting;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -35,6 +36,8 @@ import wtf.choco.alchema.util.NamespacedKeyUtil;
  * @author Parker Hawke - Choco
  */
 public class CauldronRecipeRegistry {
+
+    private static final Gson GSON = new Gson();
 
     private final Map<@NotNull NamespacedKey, CauldronRecipe> recipes = new HashMap<>();
     private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient>> ingredientTypes = new HashMap<>();
@@ -219,7 +222,7 @@ public class CauldronRecipeRegistry {
             NamespacedKey key = new NamespacedKey(plugin, joinedRecipeKey);
 
             try (BufferedReader reader = Files.newReader(recipeFile, Charset.defaultCharset())) {
-                JsonObject recipeObject = Alchema.GSON.fromJson(reader, JsonObject.class);
+                JsonObject recipeObject = GSON.fromJson(reader, JsonObject.class);
                 CauldronRecipe recipe = CauldronRecipe.fromJson(key, recipeObject, this);
 
                 this.registerCauldronRecipe(recipe);
