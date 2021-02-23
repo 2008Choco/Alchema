@@ -9,7 +9,7 @@ api-version: 1.16
 commands:
   alchema:
     description: The main command for Alchema
-    usage: /<command> <version|reload>
+    usage: /<command> <version|reload|integrations|saverecipe>
   givevialofessence:
     description: Give a vial of essence to a player
     usage: /<command> [player] [amount] [entity] [amount of essence]
@@ -23,6 +23,7 @@ permissions:
     children:
       alchema.command.reload: true
       alchema.command.integrations: false
+      alchema.command.saverecipe: true
       alchema.command.givevialofessence: true
 
   alchema.command.reload:
@@ -33,6 +34,9 @@ permissions:
   alchema.command.integrations:
     description: Grants access to the /alchema integrations subcommand
     default: true
+  alchema.command.saverecipe:
+    description: Grants access to the /alchema saverecipe subcommand
+    default: op
   alchema.command.givevialofessence:
     description: Grants access to the /givevialofessence command
     default: op

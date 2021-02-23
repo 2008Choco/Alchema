@@ -2,6 +2,7 @@ package wtf.choco.alchema.command;
 
 import com.google.common.base.Preconditions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,12 +43,15 @@ public final class CommandAlchema implements TabExecutor {
         BASE_ARGS.put("version", null);
         BASE_ARGS.put("reload", AlchemaConstants.PERMISSION_COMMAND_RELOAD);
         BASE_ARGS.put("integrations", AlchemaConstants.PERMISSION_COMMAND_INTEGRATIONS);
+        BASE_ARGS.put("saverecipe", AlchemaConstants.PERMISSION_COMMAND_SAVERECIPE);
     }
 
     private final Alchema plugin;
+    private final List<@NotNull String> defaultRecipePaths;
 
     public CommandAlchema(Alchema plugin) {
         this.plugin = plugin;
+        this.defaultRecipePaths = plugin.getDefaultRecipePaths();
     }
 
     @Override
@@ -184,6 +188,33 @@ public final class CommandAlchema implements TabExecutor {
             }
         }
 
+        else if (args[0].equalsIgnoreCase("saverecipe")) {
+            if (!sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_SAVERECIPE)) {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "You have insufficient permissions to run this command.");
+                return true;
+            }
+
+            if (args.length < 2) {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "Which recipe would you like to save?");
+                return true;
+            }
+
+            if (!defaultRecipePaths.contains(args[1])) {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "Unrecognized default recipe with path " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ". Did you spell it right?");
+                return true;
+            }
+
+            String recipePath = "recipes/" + args[1];
+            File recipeFile = new File(plugin.getDataFolder(), recipePath);
+            if (recipeFile.exists()) {
+                sender.sendMessage(Alchema.CHAT_PREFIX + "A recipe file already exists at " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ".");
+                return true;
+            }
+
+            this.plugin.saveResource(recipePath, false);
+            sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved the default recipe at path " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
+        }
+
         else {
             sender.sendMessage(Alchema.CHAT_PREFIX + "Unknown command argument, " + ChatColor.YELLOW + args[0] + ChatColor.GRAY + ".");
         }
@@ -198,8 +229,21 @@ public final class CommandAlchema implements TabExecutor {
             return StringUtil.copyPartialMatches(args[0], getBaseArgsFor(sender), new ArrayList<>());
         }
 
-        else if (args.length == 2 && args[0].equalsIgnoreCase("reload") && sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_RELOAD_VERBOSE)) {
-            return StringUtil.copyPartialMatches(args[1], RELOAD_ARGS, new ArrayList<>());
+        else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("reload") && sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_RELOAD_VERBOSE)) {
+                return StringUtil.copyPartialMatches(args[1], RELOAD_ARGS, new ArrayList<>());
+            }
+            else if (args[0].equalsIgnoreCase("saverecipe") && sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_SAVERECIPE)) {
+                List<String> suggestions = new ArrayList<>();
+
+                this.defaultRecipePaths.forEach(recipePath -> {
+                    if (recipePath.contains(args[1])) {
+                        suggestions.add(recipePath);
+                    }
+                });
+
+                return suggestions;
+            }
         }
 
         return Collections.emptyList();

@@ -137,6 +137,9 @@ public final class AlchemaConstants {
     /** Permission node, alchema.command.integrations, grants access to /alchema integrations */
     public static final String PERMISSION_COMMAND_INTEGRATIONS = "alchema.command.integrations";
 
+    /** Permission node, alchema.command.saverecipe, grants access to /alchema saverecipe */
+    public static final String PERMISSION_COMMAND_SAVERECIPE = "alchema.command.saverecipe";
+
     /** Permission node, alchema.command.givevialofessence, grants access to /givevialofessence */
     public static final String PERMISSION_COMMAND_GIVE_VIAL_OF_ESSENCE = "alchema.command.givevialofessence";
 

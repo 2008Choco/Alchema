@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -271,6 +273,48 @@ public final class Alchema extends JavaPlugin {
     }
 
     /**
+     * Get a list of paths to the default recipes provided by Alchema.
+     * <p>
+     * These paths are NOT the same as those in the plugin's recipe directory. These
+     * are paths to the recipe files present in the plugin's jar file.
+     *
+     * @return the recipe paths
+     */
+    @NotNull
+    public List<@NotNull String> getDefaultRecipePaths() {
+        return getDefaultRecipePaths("recipes");
+    }
+
+    @NotNull
+    private List<@NotNull String> getDefaultRecipePaths(String path) {
+        List<@NotNull String> paths = new ArrayList<>();
+
+        try (JarFile jar = new JarFile(getFile())) {
+            Enumeration<JarEntry> entries = jar.entries();
+
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String name = entry.getName();
+
+                if (!name.startsWith(path + "/")) {
+                    continue;
+                }
+
+                if (entry.isDirectory()) {
+                    paths.addAll(getDefaultRecipePaths(name));
+                    continue;
+                }
+
+                paths.add(name.substring("recipes/".length()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return paths;
+    }
+
+    /**
      * Get an instance of {@link Alchema}.
      *
      * @return the alchema instance
@@ -310,7 +354,7 @@ public final class Alchema extends JavaPlugin {
 
                 if (entry.isDirectory()) {
                     if (saveChildDirectories) {
-                        this.saveDefaultDirectory(entry.getName(), saveChildDirectories);
+                        this.saveDefaultDirectory(name, saveChildDirectories);
                     }
 
                     continue;
