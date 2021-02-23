@@ -9,6 +9,7 @@ import com.google.gson.JsonParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.bukkit.NamespacedKey;
@@ -302,6 +303,31 @@ public class CauldronRecipe {
         }
 
         return yield;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(comment, experience, ingredients, key, result);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof CauldronRecipe)) {
+            return false;
+        }
+
+        CauldronRecipe other = (CauldronRecipe) obj;
+        return experience == other.experience && Objects.equals(key, other.key) && Objects.equals(comment, other.comment)
+                && Objects.equals(result, other.result) && Objects.equals(ingredients, other.ingredients);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CauldronRecipe[key=%s, comment=%s]", key, comment);
     }
 
     /**

@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -171,6 +172,30 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
         object.addProperty("amount", getAmount());
 
         return object;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAmount(), entityType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof CauldronIngredientEntityEssence)) {
+            return false;
+        }
+
+        CauldronIngredientEntityEssence other = (CauldronIngredientEntityEssence) obj;
+        return getAmount() == other.getAmount() && entityType == other.entityType;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CauldronIngredientEntityEssence[amount=%s, entityType=%s]", getAmount(), entityType);
     }
 
 }

@@ -3,6 +3,8 @@ package wtf.choco.alchema.crafting;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
+import java.util.Objects;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -106,6 +108,30 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
         JsonObject object = ItemUtil.serializeItemStack(item);
         object.addProperty("amount", getAmount()); // Adjust "amount" to match getAmount()
         return object;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item, getAmount());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof CauldronIngredientItemStack)) {
+            return false;
+        }
+
+        CauldronIngredientItemStack other = (CauldronIngredientItemStack) obj;
+        return getAmount() == other.getAmount() && Objects.equals(item, other.item);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CauldronIngredientItemStack[amount=%s, item=%s]", getAmount(), item);
     }
 
 }

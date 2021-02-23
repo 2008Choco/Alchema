@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.util.Objects;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -127,6 +129,30 @@ public class CauldronIngredientMaterial implements CauldronIngredient {
         object.addProperty("amount", getAmount());
 
         return object;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(material, getAmount());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof CauldronIngredientMaterial)) {
+            return false;
+        }
+
+        CauldronIngredientMaterial other = (CauldronIngredientMaterial) obj;
+        return getAmount() == other.getAmount() && material == other.material;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CauldronIngredientMaterial[amount=%s, material=%s]", getAmount(), material.getKey());
     }
 
 }

@@ -28,6 +28,10 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
  * the item being thrown in. All implementations need to be registered with
  * {@link CauldronRecipeRegistry#registerIngredientType(NamespacedKey, Function)}
  * with the {@link #getKey()} matching that of the registered key.
+ * <p>
+ * It is advised that implementations also implement {@link #hashCode()},
+ * {@link #equals(Object)} and {@link #toString()}. While not required, it may improve
+ * the performance of hash-based collections.
  *
  * @author Parker Hawke - Choco
  */
