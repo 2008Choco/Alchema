@@ -164,27 +164,28 @@ public final class Alchema extends JavaPlugin {
         this.cauldronUpdateTask.startTask();
 
         // Load Metrics
-        if (getConfig().getBoolean("MetricsEnabled", true)) {
+        if (getConfig().getBoolean(AlchemaConstants.CONFIG_METRICS_ENABLED, true)) {
             this.getLogger().info("Enabling plugin metrics");
             new Metrics(this, 9741); // https://bstats.org/what-is-my-plugin-id
         }
 
         UpdateChecker updateChecker = UpdateChecker.init(this, 87078);
-        if (getConfig().getBoolean("CheckForUpdates", true)) {
+        if (getConfig().getBoolean(AlchemaConstants.CONFIG_CHECK_FOR_UPDATES, true)) {
             this.getLogger().info("Getting version information...");
             updateChecker.requestUpdateCheck().whenComplete((result, exception) -> {
                 if (result.requiresUpdate()) {
-                    this.getLogger().info(String.format("An update is available! Alchema %s may be downloaded on SpigotMC", result.getNewestVersion()));
+                    this.getLogger().info(String.format("An update is available! %s %s may be downloaded on SpigotMC", getName(), result.getNewestVersion()));
+                    this.getLogger().info(String.format("For more information, run /%s version", getName().toLowerCase()));
                     return;
                 }
 
                 UpdateReason reason = result.getReason();
                 if (reason == UpdateReason.UP_TO_DATE) {
-                    this.getLogger().info(String.format("Your version of Alchema (%s) is up to date!", result.getNewestVersion()));
+                    this.getLogger().info(String.format("Your version of %s (%s) is up to date!", getName(), result.getNewestVersion()));
                 } else if (reason == UpdateReason.UNRELEASED_VERSION) {
-                    this.getLogger().info(String.format("Your version of Alchema (%s) is more recent than the one publicly available. Are you on a development build?", result.getNewestVersion()));
+                    this.getLogger().info(String.format("Your version of %s (%s) is more recent than the one publicly available. Are you on a development build?", getName(), result.getNewestVersion()));
                 } else {
-                    this.getLogger().warning("Could not check for a new version of Alchema. Reason: " + reason);
+                    this.getLogger().warning(String.format("Could not check for a new version of %s. Reason: %s", getName(), reason));
                 }
             });
         }
