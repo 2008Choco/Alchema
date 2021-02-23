@@ -19,7 +19,7 @@ import wtf.choco.alchema.config.CauldronConfigurationContext;
 import wtf.choco.alchema.util.AlchemaConstants;
 
 /**
- * Reponsible for the updating and ticking of in-world {@link AlchemicalCauldron} instances.
+ * Responsible for the updating and ticking of in-world {@link AlchemicalCauldron} instances.
  *
  * @author Parker Hawke - Choco
  */
@@ -142,7 +142,7 @@ public final class CauldronUpdateHandler {
     }
 
     /**
-     * Init the singleton {@link CauldronUpdateHandler}.
+     * Initialize the singleton {@link CauldronUpdateHandler}.
      * <p>
      * <strong>NOTE:</strong> This is for internal use only
      *

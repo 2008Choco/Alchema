@@ -70,7 +70,7 @@ public class EntityEssenceData {
     }
 
     /**
-     * Construct a new unconsumable {@link EntityEssenceData}.
+     * Construct a new non-consumable {@link EntityEssenceData}.
      *
      * @param entityType the target entity type
      * @param essenceColor the colour of the essence bottle
@@ -81,7 +81,7 @@ public class EntityEssenceData {
     }
 
     /**
-     * Construct a new unconsumable {@link EntityEssenceData} with {@code glowing} set to false.
+     * Construct a new non-consumable {@link EntityEssenceData} with {@code glowing} set to false.
      *
      * @param entityType the target entity type
      * @param essenceColor the colour of the essence bottle

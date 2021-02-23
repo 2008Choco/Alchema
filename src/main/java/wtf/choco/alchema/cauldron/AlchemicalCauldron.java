@@ -322,7 +322,7 @@ public class AlchemicalCauldron {
     }
 
     /**
-     * Get the time in millis (according to {@link System#currentTimeMillis()}) at which this
+     * Get the time in milliseconds (according to {@link System#currentTimeMillis()}) at which this
      * cauldron started heating up. If the cauldron is not heating up (i.e. {@link #isHeatingUp()}
      * == false), this will return -1.
      *

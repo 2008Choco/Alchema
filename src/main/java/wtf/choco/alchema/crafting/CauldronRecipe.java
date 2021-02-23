@@ -47,7 +47,7 @@ public class CauldronRecipe {
      * @param experience the experience to reward the player
      * @param ingredients the set of ingredients
      *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
+     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
     @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
@@ -64,7 +64,7 @@ public class CauldronRecipe {
      * @param experience the experience to reward the player
      * @param ingredients the set of ingredients
      *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
+     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
     @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient... ingredients) {
@@ -84,7 +84,7 @@ public class CauldronRecipe {
      * @param experience the experience to reward the player
      * @param ingredient the recipe ingredient
      *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
+     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
     @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient ingredient) {
@@ -100,7 +100,7 @@ public class CauldronRecipe {
      * @param result the result of the recipe
      * @param ingredients the set of ingredients
      *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
+     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
     @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull List<@NotNull CauldronIngredient> ingredients) {
@@ -115,7 +115,7 @@ public class CauldronRecipe {
      * @param result the result of the recipe
      * @param ingredients the set of ingredients
      *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
+     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
     @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient... ingredients) {
@@ -129,7 +129,7 @@ public class CauldronRecipe {
      * @param result the result of the recipe
      * @param ingredient the recipe ingredient
      *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
+     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
      */
     @Deprecated
     public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient ingredient) {

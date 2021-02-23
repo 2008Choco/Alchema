@@ -35,7 +35,7 @@ public final class AlchemaConstants {
     /** A {@link NamespacedKey} used as an NBT key for entity essence items. Determines the quantity */
     public static final NamespacedKey NBT_KEY_ESSENCE_AMOUNT = Alchema.key("essence_amount");
 
-    /** A {@link NamespacedKey} used as an NBT key for empty vial items. Acts as an idenifier */
+    /** A {@link NamespacedKey} used as an NBT key for empty vial items. Acts as an identifier */
     public static final NamespacedKey NBT_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
 
 

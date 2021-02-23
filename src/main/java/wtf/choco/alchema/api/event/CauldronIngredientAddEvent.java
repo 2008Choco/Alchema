@@ -111,7 +111,7 @@ public class CauldronIngredientAddEvent extends CauldronEvent {
      * Get the UUID of the player that threw the {@link Item} into the cauldron to cause
      * this event (if there is one).
      *
-     * @return the thrower uuid. null if none
+     * @return the thrower UUID. null if none
      */
     @Nullable
     public UUID getPlayerUUID() {

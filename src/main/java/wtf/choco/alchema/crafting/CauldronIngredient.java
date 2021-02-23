@@ -19,10 +19,10 @@ import wtf.choco.alchema.api.event.CauldronIngredientAddEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 
 /**
- * Represents an ingredient useable in an {@link AlchemicalCauldron} defined by a
+ * Represents an ingredient usable in an {@link AlchemicalCauldron} defined by a
  * {@link CauldronRecipe}.
  * <p>
- * CauldronIngredient is meant to be extendable. Should a plugin choose to add a new
+ * CauldronIngredient is meant to be extendible. Should a plugin choose to add a new
  * implementation of CauldronIngredient, the {@link CauldronIngredientAddEvent} should
  * be listened to in order to inject custom implementations into a cauldron based on
  * the item being thrown in. All implementations need to be registered with

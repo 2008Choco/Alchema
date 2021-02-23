@@ -243,7 +243,7 @@ public class CauldronRecipeRegistry {
      * @param plugin the instance of Alchema (for logging purposes)
      * @param recipesDirectory the directory from which to load recipes
      *
-     * @return a completable future where the supplied value is the amount of loaded recipes
+     * @return a CompletableFuture where the supplied value is the amount of loaded recipes
      */
     @NotNull
     public CompletableFuture<@NotNull RecipeLoadResult> loadCauldronRecipes(@NotNull Alchema plugin, @NotNull File recipesDirectory) {

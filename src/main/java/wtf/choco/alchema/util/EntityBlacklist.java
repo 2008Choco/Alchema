@@ -15,7 +15,8 @@ import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a blacklist of {@link EntityType EntityTypes} refreshable from a {@link Supplier}.
+ * Represents a blacklist of {@link EntityType EntityTypes} that may be refreshed with
+ * a {@link Supplier}.
  *
  * @author Parker Hawke - Choco
  */

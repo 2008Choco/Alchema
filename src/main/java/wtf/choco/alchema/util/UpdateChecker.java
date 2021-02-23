@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * A utility class to assist in checking for updates for plugins uploaded to
  * <a href="https://spigotmc.org/resources/">SpigotMC</a>. Before any members of this
  * class are accessed, {@link #init(JavaPlugin, int)} must be invoked by the plugin,
- * preferrably in its {@link JavaPlugin#onEnable()} method, though that is not a
+ * preferably in its {@link JavaPlugin#onEnable()} method, though that is not a
  * requirement.
  * <p>
  * This class performs asynchronous queries to Spigot's API. If the results of
