@@ -39,7 +39,7 @@ public class CauldronRecipeRegistry {
 
     private static final Gson GSON = new Gson();
 
-    private final Map<@NotNull NamespacedKey, CauldronRecipe> recipes = new HashMap<>();
+    private final Map<@NotNull NamespacedKey, @NotNull CauldronRecipe> recipes = new HashMap<>();
     private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient>> ingredientTypes = new HashMap<>();
 
     /**
@@ -86,9 +86,15 @@ public class CauldronRecipeRegistry {
      */
     @Nullable
     public CauldronRecipe getApplicableRecipe(@NotNull List<@NotNull CauldronIngredient> ingredients) {
-        return recipes.values().stream()
-                .filter(recipe -> recipe.getYieldFromIngredients(ingredients) >= 1)
-                .findFirst().orElse(null);
+        for (CauldronRecipe recipe : recipes.values()) {
+            if (recipe.getYieldFromIngredients(ingredients) == 0) {
+                continue;
+            }
+
+            return recipe;
+        }
+
+        return null;
     }
 
     /**
