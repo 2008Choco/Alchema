@@ -15,6 +15,11 @@ public abstract class CauldronEvent extends BlockEvent {
 
     protected final AlchemicalCauldron cauldron;
 
+    /**
+     * Construct a base {@link CauldronEvent}.
+     *
+     * @param cauldron the cauldron involved in the event
+     */
     public CauldronEvent(@NotNull AlchemicalCauldron cauldron) {
         super(cauldron.getCauldronBlock());
 
