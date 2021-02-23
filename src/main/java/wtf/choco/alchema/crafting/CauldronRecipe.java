@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.util.ItemUtil;
-import wtf.choco.alchema.util.NamespacedKeyUtil;
+import wtf.choco.commons.util.NamespacedKeyUtil;
 
 /**
  * Represents a recipe that may be crafted in an {@link AlchemicalCauldron}.

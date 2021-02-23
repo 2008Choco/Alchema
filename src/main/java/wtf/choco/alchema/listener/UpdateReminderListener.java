@@ -9,8 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import wtf.choco.alchema.Alchema;
-import wtf.choco.alchema.util.UpdateChecker;
-import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
+import wtf.choco.commons.util.UpdateChecker;
+import wtf.choco.commons.util.UpdateChecker.UpdateResult;
 
 public final class UpdateReminderListener implements Listener {
 

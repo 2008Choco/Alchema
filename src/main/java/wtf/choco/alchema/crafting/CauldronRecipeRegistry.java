@@ -29,7 +29,7 @@ import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.util.AlchemaEventFactory;
-import wtf.choco.alchema.util.NamespacedKeyUtil;
+import wtf.choco.commons.util.NamespacedKeyUtil;
 
 /**
  * Represents a registry in which recipes and recipe types may be registered.

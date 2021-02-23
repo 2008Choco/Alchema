@@ -30,9 +30,9 @@ import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.cauldron.CauldronUpdateHandler;
 import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
 import wtf.choco.alchema.util.AlchemaConstants;
-import wtf.choco.alchema.util.UpdateChecker;
-import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
-import wtf.choco.alchema.util.UpdateChecker.UpdateResult;
+import wtf.choco.commons.util.UpdateChecker;
+import wtf.choco.commons.util.UpdateChecker.UpdateReason;
+import wtf.choco.commons.util.UpdateChecker.UpdateResult;
 
 public final class CommandAlchema implements TabExecutor {
 

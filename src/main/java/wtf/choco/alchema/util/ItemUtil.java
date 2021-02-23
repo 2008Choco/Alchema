@@ -51,6 +51,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
+import wtf.choco.commons.util.NamespacedKeyUtil;
+
 /**
  * A series of utilities pertaining to {@link ItemStack ItemStacks}.
  *

@@ -33,17 +33,18 @@ import wtf.choco.alchema.api.event.player.PlayerEssenceCollectEvent;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
-import wtf.choco.alchema.util.EntityBlacklist;
+import wtf.choco.alchema.util.RefreshableEnumSets;
+import wtf.choco.commons.collection.RefreshableEnumSet;
 
 public final class EntityEssenceCollectionListener implements Listener {
 
     private final Alchema plugin;
-    private final EntityBlacklist deathBlacklist, interactBlacklist;
+    private final RefreshableEnumSet<@NotNull EntityType> deathBlacklist, interactBlacklist;
 
     public EntityEssenceCollectionListener(@NotNull Alchema plugin) {
         this.plugin = plugin;
-        this.deathBlacklist = new EntityBlacklist(() -> plugin.getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BLACKLIST));
-        this.interactBlacklist = new EntityBlacklist(() -> plugin.getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_BLACKLIST));
+        this.deathBlacklist = RefreshableEnumSets.entityType(() -> plugin.getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BLACKLIST));
+        this.interactBlacklist = RefreshableEnumSets.entityType(() -> plugin.getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_BLACKLIST));
     }
 
     @EventHandler(priority = EventPriority.LOW)

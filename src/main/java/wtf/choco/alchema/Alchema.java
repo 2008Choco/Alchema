@@ -50,8 +50,8 @@ import wtf.choco.alchema.listener.EntityEssenceCollectionListener;
 import wtf.choco.alchema.listener.UpdateReminderListener;
 import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
 import wtf.choco.alchema.util.AlchemaConstants;
-import wtf.choco.alchema.util.UpdateChecker;
-import wtf.choco.alchema.util.UpdateChecker.UpdateReason;
+import wtf.choco.commons.util.UpdateChecker;
+import wtf.choco.commons.util.UpdateChecker.UpdateReason;
 
 /**
  * The main plugin class of Alchema.

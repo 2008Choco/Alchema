@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.util.AlchemaConstants;
-import wtf.choco.alchema.util.NamespacedKeyUtil;
+import wtf.choco.commons.util.NamespacedKeyUtil;
 
 import static wtf.choco.alchema.Alchema.CHAT_PREFIX;
 

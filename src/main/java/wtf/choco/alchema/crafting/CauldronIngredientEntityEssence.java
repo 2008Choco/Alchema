@@ -24,7 +24,7 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.util.AlchemaConstants;
-import wtf.choco.alchema.util.NamespacedKeyUtil;
+import wtf.choco.commons.util.NamespacedKeyUtil;
 
 /**
  * A {@link CauldronIngredient} implementation wrapped around an {@link EntityEssenceData}.

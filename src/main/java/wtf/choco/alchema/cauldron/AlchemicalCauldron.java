@@ -58,8 +58,8 @@ import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
-import wtf.choco.alchema.util.MathUtil;
-import wtf.choco.alchema.util.NamespacedKeyUtil;
+import wtf.choco.commons.util.MathUtil;
+import wtf.choco.commons.util.NamespacedKeyUtil;
 
 /**
  * Represents a special cauldron provided by Alchema. These cauldrons require a source
