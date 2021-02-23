@@ -78,8 +78,15 @@ public final class Alchema extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        instance = this;
+        instance = this; // Needs to be set here so the CauldronIngredient* keys can be defined by Alchema#key()
 
+        /*
+         * These are done on load so other plugins may have the opportunity to use them as well.
+         *
+         * It is expected that other plugins hooking into VeinMiner with custom ingredient types also register onLoad()
+         * because we need them for the recipe files. By the time their onEnable() is called, recipes files are already
+         * being loaded so it's a tad too late to be registering new ingredient types.
+         */
         this.recipeRegistry.registerIngredientType(CauldronIngredientItemStack.KEY, CauldronIngredientItemStack::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientMaterial.KEY, CauldronIngredientMaterial::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientEntityEssence.KEY, object -> new CauldronIngredientEntityEssence(object, entityEssenceEffectRegistry));
@@ -125,6 +132,7 @@ public final class Alchema extends JavaPlugin {
         }
 
         // Load cauldron recipes (asynchronously)
+        this.recipeRegistry.stopAcceptingIngredientRegistrations(); // Stop accepting registrations now. We're ready to load.
         this.recipeRegistry.loadCauldronRecipes(this, recipesDirectory).whenComplete((result, exception) -> {
             if (exception != null) {
                 exception.printStackTrace();

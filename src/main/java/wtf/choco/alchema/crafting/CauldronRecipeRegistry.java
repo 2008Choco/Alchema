@@ -40,6 +40,8 @@ public class CauldronRecipeRegistry {
 
     private static final Gson GSON = new Gson();
 
+    private boolean acceptingIngredientRegistrations = true;
+
     private final Map<@NotNull NamespacedKey, @NotNull CauldronRecipe> recipes = new HashMap<>();
     private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient>> ingredientTypes = new HashMap<>();
 
@@ -172,8 +174,23 @@ public class CauldronRecipeRegistry {
     }
 
     /**
+     * Declare that this registry is no longer accepting ingredient registrations.
+     * <p>
+     * This method should be called internally by Alchema to ensure that ingredient types are not
+     * registered after all plugins have been loaded. It is expected that all calls to
+     * {@link #registerIngredientType(NamespacedKey, Function)} be made in {@link JavaPlugin#onLoad()}.
+     */
+    public void stopAcceptingIngredientRegistrations() {
+        this.acceptingIngredientRegistrations = false;
+    }
+
+    /**
      * Register a new type of {@link CauldronIngredient}. This registration should be done during
      * the plugin's load phase (i.e. {@link JavaPlugin#onLoad()}).
+     * <p>
+     * <strong>NOTE:</strong> This method should be called in {@link JavaPlugin#onLoad()}. Registrations
+     * will no longer be accepted in {@link JavaPlugin#onEnable()} and an IllegalStateException will be
+     * thrown.
      *
      * @param key the ingredient key. Should match that of {@link CauldronIngredient#getKey()}
      * @param ingredientProvider the ingredient provider
@@ -181,6 +198,10 @@ public class CauldronRecipeRegistry {
     public void registerIngredientType(@NotNull NamespacedKey key, @NotNull Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient> ingredientProvider) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(ingredientProvider != null, "ingredientProvider must not be null");
+
+        if (!acceptingIngredientRegistrations) {
+            throw new IllegalStateException("Attempted to register ingredient type (" + key + ") while the registry is no longer accepting registrations. Ingredient registration should be done onLoad()");
+        }
 
         this.ingredientTypes.put(key, ingredientProvider);
     }
