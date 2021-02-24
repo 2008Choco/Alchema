@@ -1,6 +1,9 @@
 <a href="https://github.com/2008Choco/Alchema/releases/latest" alt="Latest release">
     <img src="https://img.shields.io/github/v/release/2008Choco/Alchema?include_prereleases" alt="Latest release">
 </a>
+<a href="https://www.spigotmc.org/resources/alchema.87078/">
+    <img src="https://img.shields.io/spiget/downloads/87078?color=yellow&label=Spigot%20downloads" alt="Spigot Downloads">
+</a>
 <a href="http://choco.wtf/javadocs/alchema" alt="Javadocs">
     <img src="https://img.shields.io/badge/Javadocs-Regularly_updated-brightgreen" alt="Javadocs"/>
 </a>
