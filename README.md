@@ -25,7 +25,7 @@ If you plan on contributing to Alchema, thank you! Contributions are much apprec
 ## Suggesting a Feature
 You do not have to be a developer to contribute to this project. Requesting features helps me out just as much! In order to suggest a feature, please visit the [issues tab](https://github.com/2008Choco/Alchema/issues) and select the most appropriate issue template. The templates should guide you on how to make a ticket but please be as thorough as possible as to not require any additional inquiries for information not provided in the original ticket.
 
-If you would like to suggest a recipe to be added to the default set of recipes, please create a ticket using the "New cauldron recipe" template. Include the JSON file as a reason as to why you believe this recipe should be added. Additionally, please include the name that you would like to use as it will be included in the recipe file itself for author attribution.
+If you would like to suggest a recipe to be added to the default set of recipes, please create a ticket using the "New cauldron recipe" template. Include the JSON file and a reason as to why you believe this recipe should be added. Additionally, please include the name that you would like to use as it will be included in the recipe file itself for author attribution.
 
 ## Creating a Pull Request
 When creating a pull request, it is expected that your changes have been tested and will compile successfully. Alchema makes use of a few different compile-time checks including Checkstyle and JUnit tests to ensure that code quality meets basic standards.
