@@ -29,9 +29,9 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
  * {@link CauldronRecipeRegistry#registerIngredientType(NamespacedKey, Function)}
  * with the {@link #getKey()} matching that of the registered key.
  * <p>
- * It is advised that implementations also implement {@link #hashCode()},
- * {@link #equals(Object)} and {@link #toString()}. While not required, it may improve
- * the performance of hash-based collections.
+ * It is advised that implementations also implement {@link Object#hashCode()},
+ * {@link Object#equals(Object)} and {@link Object#toString()}. While not required,
+ * it may improve the performance of hash-based collections.
  *
  * @author Parker Hawke - Choco
  */
