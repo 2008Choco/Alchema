@@ -37,6 +37,7 @@ import wtf.choco.commons.util.UpdateChecker.UpdateResult;
 public final class CommandAlchema implements TabExecutor {
 
     private static final List<String> RELOAD_ARGS = Arrays.asList("verbose");
+    private static final List<String> SAVE_FLAG_ARGS = Arrays.asList("-f");
 
     private static final Map<@NotNull String, @Nullable String> BASE_ARGS = new HashMap<>();
     static {
@@ -199,6 +200,8 @@ public final class CommandAlchema implements TabExecutor {
                 return true;
             }
 
+            boolean force = args.length >= 3 && args[2].equalsIgnoreCase("-f");
+
             if (args[1].endsWith(".json")) {
                 if (!defaultRecipePaths.contains(args[1])) {
                     sender.sendMessage(Alchema.CHAT_PREFIX + "Unrecognized default recipe with path " + ChatColor.YELLOW + args[1] + ChatColor.GRAY + ". Did you spell it right?");
@@ -207,12 +210,12 @@ public final class CommandAlchema implements TabExecutor {
 
                 String recipePath = "recipes/" + args[1];
                 File recipeFile = new File(plugin.getDataFolder(), recipePath);
-                if (recipeFile.exists()) {
+                if (recipeFile.exists() && !force) {
                     sender.sendMessage(Alchema.CHAT_PREFIX + "A recipe file already exists at " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ".");
                     return true;
                 }
 
-                this.plugin.saveResource(recipePath, false);
+                this.plugin.saveResource(recipePath, force);
                 sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved the default recipe at path " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
             }
             else if (args[1].endsWith("/*")) {
@@ -230,20 +233,20 @@ public final class CommandAlchema implements TabExecutor {
                     return true;
                 }
 
-                int failedToLoad = 0;
+                int existingRecipes = 0;
                 for (String recipePath : applicableRecipePaths) {
                     File recipeFile = new File(plugin.getDataFolder(), recipePath);
-                    if (recipeFile.exists()) {
-                        failedToLoad++;
+                    if (recipeFile.exists() && !force) {
+                        existingRecipes++;
                         continue;
                     }
 
-                    this.plugin.saveResource(recipePath, false);
+                    this.plugin.saveResource(recipePath, force);
                 }
 
-                int loaded = applicableRecipePaths.size() - failedToLoad;
+                int loaded = applicableRecipePaths.size() - existingRecipes;
                 if (loaded > 0) {
-                    sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved " + ChatColor.YELLOW + "(" + loaded + ") " + ChatColor.GRAY + "default recipes" + (failedToLoad >= 1 ? " (could not save " + ChatColor.RED + failedToLoad + ChatColor.GRAY + ")" : "") + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
+                    sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved " + ChatColor.YELLOW + "(" + loaded + ") " + ChatColor.GRAY + "default recipes" + (existingRecipes >= 1 && !force ? " (could not save " + ChatColor.RED + existingRecipes + ChatColor.GRAY + ")" : "") + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
                 } else {
                     sender.sendMessage(Alchema.CHAT_PREFIX + "Could not save any default recipes in the path " + ChatColor.YELLOW + "recipes/" + recipePathDirectory + ChatColor.GRAY + ". All files exist.");
                 }
@@ -286,6 +289,10 @@ public final class CommandAlchema implements TabExecutor {
 
                 return suggestions;
             }
+        }
+
+        else if (args.length == 3 && args[0].equalsIgnoreCase("saverecipe") && sender.hasPermission(AlchemaConstants.PERMISSION_COMMAND_SAVERECIPE)) {
+            return StringUtil.copyPartialMatches(args[2], SAVE_FLAG_ARGS, new ArrayList<>());
         }
 
         return Collections.emptyList();
