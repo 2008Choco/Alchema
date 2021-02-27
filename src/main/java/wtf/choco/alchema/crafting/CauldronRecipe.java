@@ -449,8 +449,10 @@ public class CauldronRecipe {
 
         int experience = object.has("experience") ? object.get("experience").getAsInt() : 0;
         String comment = object.has("comment") ? object.get("comment").getAsString() : null;
+        String name = object.has("name") ? object.get("name").getAsString() : null;
+        String description = object.has("description") ? object.get("description").getAsString() : null;
 
-        CauldronRecipe recipe = new CauldronRecipe(key, result, experience, ingredients);
+        CauldronRecipe recipe = new CauldronRecipe(key, result, name, description, experience, ingredients);
         recipe.setComment(comment);
         return recipe;
     }
