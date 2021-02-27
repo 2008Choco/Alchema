@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -161,6 +162,12 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
         }
 
         return drops;
+    }
+
+    @NotNull
+    @Override
+    public String describe() {
+        return getAmount() + "x " + StringUtils.capitalize(entityType.getKey().getKey().replace('_', ' ')) + " essence";
     }
 
     @NotNull

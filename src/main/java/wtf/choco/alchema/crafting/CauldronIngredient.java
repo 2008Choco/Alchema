@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -124,6 +125,20 @@ public interface CauldronIngredient {
      */
     public default int getComplexity() {
         return getAmount();
+    }
+
+    /**
+     * Describe this ingredient as a human-readable string.
+     * <p>
+     * Default implementation of this method will, if not null, describe the ingredient
+     * as {@code (amount)x <item name>}.
+     *
+     * @return the description string
+     */
+    @NotNull
+    public default String describe() {
+        ItemStack itemStack = asItemStack();
+        return itemStack != null ? getAmount() + "x " + StringUtils.capitalize(itemStack.getType().getKey().getKey().replace('_', ' ')) : "???";
     }
 
     /**
