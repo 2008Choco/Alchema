@@ -115,6 +115,18 @@ public interface CauldronIngredient {
     }
 
     /**
+     * Get the complexity of this ingredient. This will be used to calculate the
+     * overall complexity of a {@link CauldronRecipe}.
+     * <p>
+     * Default implementation of this method will return {@link #getAmount()}.
+     *
+     * @return the ingredient complexity
+     */
+    public default int getComplexity() {
+        return getAmount();
+    }
+
+    /**
      * Serialize this ingredient to a {@link JsonObject}.
      *
      * @return the serialized json

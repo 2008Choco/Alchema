@@ -246,7 +246,8 @@ public class CauldronRecipe {
     /**
      * Get the numerical complexity of this recipe.
      * <p>
-     * Complexity is determine by the amount of each ingredient in this recipe.
+     * Complexity is determined on the sum of all ingredients'
+     * {@link CauldronIngredient#getComplexity()} values.
      *
      * @return the complexity. Higher numbers are more complex. Will always be {@literal >=} 0
      */
@@ -254,7 +255,7 @@ public class CauldronRecipe {
         int complexity = 0;
 
         for (CauldronIngredient ingredient : ingredients) {
-            complexity += ingredient.getAmount();
+            complexity += ingredient.getComplexity();
         }
 
         return complexity;
