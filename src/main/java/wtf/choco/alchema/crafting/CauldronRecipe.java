@@ -7,9 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,146 +27,7 @@ import wtf.choco.commons.util.NamespacedKeyUtil;
  *
  * @author Parker Hawke - Choco
  */
-public class CauldronRecipe {
-
-    private Optional<@NotNull String> comment = Optional.empty();
-
-    private final NamespacedKey key;
-    private final ItemStack result;
-    private final int experience;
-
-    private final String name, description;
-
-    private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
-     * required ingredients
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param name the recipe name
-     * @param description the recipe description
-     * @param experience the experience to reward the player
-     * @param ingredients the set of ingredients
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @Nullable String name, @Nullable String description, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
-        this(key, result, name, description, experience);
-        this.ingredients.addAll(ingredients);
-    }
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
-     * required ingredients
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param experience the experience to reward the player
-     * @param ingredients the set of ingredients
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
-        this(key, result, null, null, experience);
-    }
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
-     * required ingredients
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param experience the experience to reward the player
-     * @param ingredients the set of ingredients
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient... ingredients) {
-        this(key, result, null, null, experience);
-
-        Preconditions.checkState(ingredients.length > 0, "Recipes contain at least one ingredient (excluding the catalyst)");
-        for (CauldronIngredient ingredient : ingredients) {
-            this.ingredients.add(ingredient);
-        }
-    }
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result and a single ingredient.
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param experience the experience to reward the player
-     * @param ingredient the recipe ingredient
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, int experience, @NotNull CauldronIngredient ingredient) {
-        this(key, result, null, null, experience);
-        this.ingredients.add(ingredient);
-    }
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
-     * required ingredients
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param ingredients the set of ingredients
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull List<@NotNull CauldronIngredient> ingredients) {
-        this(key, result, null, null, 0, ingredients);
-    }
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result, and a set of
-     * required ingredients
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param ingredients the set of ingredients
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient... ingredients) {
-        this(key, result, 0, ingredients);
-    }
-
-    /**
-     * Construct a new CauldronRecipe with a unique ID, {@link ItemStack} result and a single ingredient.
-     *
-     * @param key the unique recipe key
-     * @param result the result of the recipe
-     * @param ingredient the recipe ingredient
-     *
-     * @deprecated this class will not be constructible in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @NotNull CauldronIngredient ingredient) {
-        this(key, result, 0, ingredient);
-    }
-
-    // Convenience constructor
-    private CauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @Nullable String name, @Nullable String description, int experience) {
-        Preconditions.checkArgument(key != null, "key must not be null");
-        Preconditions.checkArgument(result != null, "result must not be null");
-
-        this.key = key;
-        this.result = result;
-        this.experience = experience;
-
-        this.name = name;
-        this.description = description;
-    }
+public interface CauldronRecipe {
 
     /**
      * Get the key of this recipe.
@@ -176,9 +35,7 @@ public class CauldronRecipe {
      * @return the key
      */
     @NotNull
-    public NamespacedKey getKey() {
-        return key;
-    }
+    public NamespacedKey getKey();
 
     /**
      * Get the result of this recipe.
@@ -186,56 +43,7 @@ public class CauldronRecipe {
      * @return the result
      */
     @NotNull
-    public ItemStack getResult() {
-        return result.clone();
-    }
-
-    /**
-     * Get the experience yielded from this recipe.
-     *
-     * @return the experience
-     */
-    public int getExperience() {
-        return experience;
-    }
-
-    /**
-     * Set the comment for this recipe.
-     *
-     * @param comment the comment to set or null
-     *
-     * @deprecated inconvenient parameter. See {@link #setComment(String)} instead
-     */
-    @Deprecated
-    public void setComment(@Nullable Optional<@NotNull String> comment) {
-        if (comment == null) {
-            comment = Optional.empty();
-        }
-
-        this.comment = comment;
-    }
-
-    /**
-     * Set the comment for this recipe.
-     *
-     * @param comment the comment to set or null
-     *
-     * @deprecated this class will not be constructable in 1.2.0. See {@link #builder(NamespacedKey, ItemStack)}
-     */
-    @Deprecated
-    public void setComment(@Nullable String comment) {
-        this.comment = Optional.<String>ofNullable(comment); // Nullability annotations are funny sometimes ;p
-    }
-
-    /**
-     * Get the comment for this recipe if one is set.
-     *
-     * @return the comment
-     */
-    @NotNull
-    public Optional<@NotNull String> getComment() {
-        return comment;
-    }
+    public ItemStack getResult();
 
     /**
      * Get the name of this recipe.
@@ -243,9 +51,7 @@ public class CauldronRecipe {
      * @return the recipe name
      */
     @NotNull
-    public Optional<@NotNull String> getName() {
-        return Optional.ofNullable(name);
-    }
+    public Optional<@NotNull String> getName();
 
     /**
      * Get the description of this recipe.
@@ -253,9 +59,22 @@ public class CauldronRecipe {
      * @return the recipe description
      */
     @NotNull
-    public Optional<@NotNull String> getDescription() {
-        return Optional.ofNullable(description);
-    }
+    public Optional<@NotNull String> getDescription();
+
+    /**
+     * Get the comment for this recipe if one is set.
+     *
+     * @return the comment
+     */
+    @NotNull
+    public Optional<@NotNull String> getComment();
+
+    /**
+     * Get the experience yielded from this recipe.
+     *
+     * @return the experience
+     */
+    public int getExperience();
 
     /**
      * Check whether this recipe contains the specified ingredient. Quantity is not
@@ -265,17 +84,7 @@ public class CauldronRecipe {
      *
      * @return true if the ingredient is present
      */
-    public boolean hasIngredient(@NotNull CauldronIngredient ingredient) {
-        Preconditions.checkArgument(ingredient != null, "ingredient must not be null");
-
-        for (CauldronIngredient recipeIngredient : ingredients) {
-            if (recipeIngredient.isSimilar(ingredient)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    public boolean hasIngredient(@NotNull CauldronIngredient ingredient);
 
     /**
      * Get an unmodifiable set of all required ingredients.
@@ -283,9 +92,7 @@ public class CauldronRecipe {
      * @return the required ingredients
      */
     @NotNull
-    public List<@NotNull CauldronIngredient> getIngredients() {
-        return Collections.unmodifiableList(ingredients);
-    }
+    public List<@NotNull CauldronIngredient> getIngredients();
 
     /**
      * Get the numerical complexity of this recipe.
@@ -295,15 +102,7 @@ public class CauldronRecipe {
      *
      * @return the complexity. Higher numbers are more complex. Will always be {@literal >=} 0
      */
-    public int getComplexity() {
-        int complexity = 0;
-
-        for (CauldronIngredient ingredient : ingredients) {
-            complexity += ingredient.getComplexity();
-        }
-
-        return complexity;
-    }
+    public int getComplexity();
 
     /**
      * Get the expected yield (i.e. quantity of result) that may be produced such that the provided
@@ -313,67 +112,7 @@ public class CauldronRecipe {
      *
      * @return the recipe yield
      */
-    public int getYieldFromIngredients(@NotNull List<@NotNull CauldronIngredient> availableIngredients) {
-        int yield = 0;
-        boolean initialFind = true;
-
-        // This can probably be done a lot better...
-        for (CauldronIngredient requiredIngredient : ingredients) {
-            CauldronIngredient availableIngredient = null;
-
-            for (CauldronIngredient localIngredient : availableIngredients) {
-                if (!requiredIngredient.isSimilar(localIngredient)) {
-                    continue;
-                }
-
-                int requiredCount = requiredIngredient.getAmount();
-                int availableCount = localIngredient.getAmount();
-
-                if (availableCount >= requiredCount) {
-                    availableIngredient = localIngredient;
-                    break;
-                }
-            }
-
-            if (availableIngredient == null) {
-                return 0;
-            }
-
-            // Compute yield
-            int requiredCount = requiredIngredient.getAmount();
-            int availableCount = availableIngredient.getAmount();
-            yield = initialFind ? availableCount / requiredCount : Math.min(availableCount / requiredCount, yield);
-
-            initialFind = false;
-        }
-
-        return yield;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(comment, experience, ingredients, key, result);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof CauldronRecipe)) {
-            return false;
-        }
-
-        CauldronRecipe other = (CauldronRecipe) obj;
-        return experience == other.experience && Objects.equals(key, other.key) && Objects.equals(comment, other.comment)
-                && Objects.equals(result, other.result) && Objects.equals(ingredients, other.ingredients);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("CauldronRecipe[key=%s, comment=%s]", key, comment);
-    }
+    public int getYieldFromIngredients(@NotNull List<@NotNull CauldronIngredient> availableIngredients);
 
     /**
      * Create a new CauldronRecipe builder instance.
@@ -448,13 +187,11 @@ public class CauldronRecipe {
         }
 
         int experience = object.has("experience") ? object.get("experience").getAsInt() : 0;
-        String comment = object.has("comment") ? object.get("comment").getAsString() : null;
         String name = object.has("name") ? object.get("name").getAsString() : null;
         String description = object.has("description") ? object.get("description").getAsString() : null;
+        String comment = object.has("comment") ? object.get("comment").getAsString() : null;
 
-        CauldronRecipe recipe = new CauldronRecipe(key, result, name, description, experience, ingredients);
-        recipe.setComment(comment);
-        return recipe;
+        return new SimpleCauldronRecipe(key, result, name, description, comment, experience, ingredients);
     }
 
     /**
@@ -462,10 +199,8 @@ public class CauldronRecipe {
      */
     public static final class Builder {
 
-        private String comment = null;
+        private String name = null, description = null, comment = null;
         private int experience = 0;
-
-        private String name = null, description = null;
 
         private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
 
@@ -492,6 +227,67 @@ public class CauldronRecipe {
             Preconditions.checkArgument(ingredient != null, "ingredient must not be null");
 
             this.ingredients.add(ingredient);
+            return this;
+        }
+
+        /**
+         * Set the name for this recipe.
+         *
+         * @param name the name to set
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder name(@NotNull String name) {
+            Preconditions.checkArgument(!StringUtils.isBlank(name), "name must not be null or empty");
+
+            this.name = name;
+            return this;
+        }
+
+        /**
+         * Set the description for this recipe.
+         *
+         * @param description the name to set
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder description(@NotNull String description) {
+            Preconditions.checkArgument(!StringUtils.isBlank(description), "description must not be null or empty");
+
+            this.description = description;
+            return this;
+        }
+
+        /**
+         * Set the comment for this recipe. Comments are purely aesthetic.
+         *
+         * @param comment the comment to set
+         *
+         * @return this instance. Allows for chained method calls
+         *
+         * @deprecated poor naming. See {@link #comment(String)}. Will be removed in a future release
+         */
+        @NotNull
+        @Deprecated
+        public CauldronRecipe.Builder setComment(@Nullable String comment) {
+            this.comment = comment; // Not calling #comment() because of the change in nullability handling
+            return this;
+        }
+
+        /**
+         * Set the comment for this recipe. Comments are purely aesthetic.
+         *
+         * @param comment the comment to set
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder comment(@NotNull String comment) {
+            Preconditions.checkArgument(!StringUtils.isBlank(name), "comemnt must not be null or empty");
+
+            this.comment = comment;
             return this;
         }
 
@@ -528,77 +324,13 @@ public class CauldronRecipe {
         }
 
         /**
-         * Set the comment for this recipe. Comments are purely aesthetic.
-         *
-         * @param comment the comment to set
-         *
-         * @return this instance. Allows for chained method calls
-         *
-         * @deprecated poor naming. See {@link #comment(String)}. Will be removed in a future release
-         */
-        @NotNull
-        @Deprecated
-        public CauldronRecipe.Builder setComment(@Nullable String comment) {
-            this.comment = comment; // Not calling #comment() because of the change in nullability handling
-            return this;
-        }
-
-        /**
-         * Set the comment for this recipe. Comments are purely aesthetic.
-         *
-         * @param comment the comment to set
-         *
-         * @return this instance. Allows for chained method calls
-         */
-        @NotNull
-        public CauldronRecipe.Builder comment(@NotNull String comment) {
-            Preconditions.checkArgument(!StringUtils.isBlank(name), "comemnt must not be null or empty");
-
-            this.comment = comment;
-            return this;
-        }
-
-        /**
-         * Set the name for this recipe.
-         *
-         * @param name the name to set
-         *
-         * @return this instance. Allows for chained method calls
-         */
-        @NotNull
-        public CauldronRecipe.Builder name(@NotNull String name) {
-            Preconditions.checkArgument(!StringUtils.isBlank(name), "name must not be null or empty");
-
-            this.name = name;
-            return this;
-        }
-
-        /**
-         * Set the description for this recipe.
-         *
-         * @param description the name to set
-         *
-         * @return this instance. Allows for chained method calls
-         */
-        @NotNull
-        public CauldronRecipe.Builder description(@NotNull String description) {
-            Preconditions.checkArgument(!StringUtils.isBlank(description), "description must not be null or empty");
-
-            this.description = description;
-            return this;
-        }
-
-        /**
          * Build a new {@link CauldronRecipe} instance.
          *
          * @return the cauldron recipe
          */
         @NotNull
         public CauldronRecipe build() {
-            // TODO: In future versions, construct a new instance of the implementation rather than using this deprecated constructor
-            CauldronRecipe recipe = new CauldronRecipe(key, result, name, description, experience, ingredients);
-            recipe.setComment(comment);
-            return recipe;
+            return new SimpleCauldronRecipe(key, result, name, description, comment, experience, ingredients);
         }
 
     }
