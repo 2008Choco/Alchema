@@ -500,9 +500,25 @@ public class CauldronRecipe {
          * @param experience the experience to set. Must be positive or 0
          *
          * @return this instance. Allows for chained method calls
+         *
+         * @deprecated poor naming. See {@link #experience(int)}. Will be removed in a future release
          */
         @NotNull
+        @Deprecated
         public CauldronRecipe.Builder setExperience(int experience) {
+            return experience(experience);
+        }
+
+        /**
+         * Set the experience to be yielded from crafting this recipe. The experience set is
+         * directly proportional to {@link ExperienceOrb#setExperience(int)}.
+         *
+         * @param experience the experience to set. Must be positive or 0
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder experience(int experience) {
             Preconditions.checkArgument(experience >= 0, "experience must be positive or 0");
 
             this.experience = experience;
@@ -515,9 +531,27 @@ public class CauldronRecipe {
          * @param comment the comment to set
          *
          * @return this instance. Allows for chained method calls
+         *
+         * @deprecated poor naming. See {@link #comment(String)}. Will be removed in a future release
          */
         @NotNull
+        @Deprecated
         public CauldronRecipe.Builder setComment(@Nullable String comment) {
+            this.comment = comment; // Not calling #comment() because of the change in nullability handling
+            return this;
+        }
+
+        /**
+         * Set the comment for this recipe. Comments are purely aesthetic.
+         *
+         * @param comment the comment to set
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronRecipe.Builder comment(@NotNull String comment) {
+            Preconditions.checkArgument(!StringUtils.isBlank(name), "comemnt must not be null or empty");
+
             this.comment = comment;
             return this;
         }
@@ -531,7 +565,7 @@ public class CauldronRecipe {
          */
         @NotNull
         public CauldronRecipe.Builder name(@NotNull String name) {
-            Preconditions.checkArgument(name != null && !StringUtils.isBlank(name), "name must not be null or empty");
+            Preconditions.checkArgument(!StringUtils.isBlank(name), "name must not be null or empty");
 
             this.name = name;
             return this;
@@ -546,7 +580,7 @@ public class CauldronRecipe {
          */
         @NotNull
         public CauldronRecipe.Builder description(@NotNull String description) {
-            Preconditions.checkArgument(description != null && !StringUtils.isBlank(description), "description must not be null or empty");
+            Preconditions.checkArgument(!StringUtils.isBlank(description), "description must not be null or empty");
 
             this.description = description;
             return this;
