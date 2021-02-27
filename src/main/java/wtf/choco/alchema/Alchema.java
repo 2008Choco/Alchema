@@ -22,12 +22,14 @@ import java.util.jar.JarFile;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -36,10 +38,12 @@ import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.cauldron.CauldronManager;
 import wtf.choco.alchema.cauldron.CauldronUpdateHandler;
 import wtf.choco.alchema.command.CommandAlchema;
+import wtf.choco.alchema.command.CommandGiveRecipeBook;
 import wtf.choco.alchema.command.CommandGiveVialOfEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
+import wtf.choco.alchema.crafting.CauldronRecipeBook;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
@@ -148,6 +152,9 @@ public final class Alchema extends JavaPlugin {
             result.getFailures().forEach(failureReport -> {
                 this.getLogger().warning("Failed to load recipe " + failureReport.getRecipeKey() + ". Reason: " + failureReport.getReason());
             });
+
+            // Add the recipe after all recipes have been registered (TODO: Just generate an empty one. Will populate recipes on click)
+            Bukkit.addRecipe(new ShapelessRecipe(AlchemaConstants.RECIPE_KEY_RECIPE_BOOK, CauldronRecipeBook.createRecipeBook(recipeRegistry)).addIngredient(Material.GLASS_BOTTLE).addIngredient(Material.BOOK));
         });
 
         // Register entity essence effects
@@ -161,10 +168,12 @@ public final class Alchema extends JavaPlugin {
         manager.registerEvents(this.entityEssenceLootListener = new EntityEssenceCollectionListener(this), this);
         manager.registerEvents(new UpdateReminderListener(this), this);
         manager.registerEvents(new VialOfEssenceConsumptionListener(this), this);
+        CauldronRecipeBook.initialize(this);
 
         // Register commands
         this.registerCommandSafely("alchema", new CommandAlchema(this));
         this.registerCommandSafely("givevialofessence", new CommandGiveVialOfEssence(this));
+        this.registerCommandSafely("giverecipebook", new CommandGiveRecipeBook(this));
 
         // Register crafting recipes
         Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', new MaterialChoice(AlchemaConstants.MATERIALS_GLASS_PANES)));

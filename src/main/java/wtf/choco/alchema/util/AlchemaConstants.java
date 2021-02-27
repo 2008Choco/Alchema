@@ -43,6 +43,9 @@ public final class AlchemaConstants {
     /** A {@link NamespacedKey} used as a key for the empty vial crafting recipe */
     public static final NamespacedKey RECIPE_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
 
+    /** A {@link NamespacedKey} used as a key for the recipe book crafting recipe */
+    public static final NamespacedKey RECIPE_KEY_RECIPE_BOOK = Alchema.key("recipe_book");
+
 
     // Configuration keys
     /** Configuration path, MetricsEnabled */
