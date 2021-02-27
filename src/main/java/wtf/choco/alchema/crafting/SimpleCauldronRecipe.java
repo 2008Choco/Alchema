@@ -13,14 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import wtf.choco.alchema.cauldron.AlchemicalCauldron;
-
 /**
- * Represents a recipe that may be crafted in an {@link AlchemicalCauldron}.
+ * A simple implementation of {@link CauldronRecipe}.
  *
- * @author Parker Hawke - Choco
+ * @author Parker Hawke
  */
-public class SimpleCauldronRecipe implements CauldronRecipe {
+class SimpleCauldronRecipe implements CauldronRecipe {
 
     private final NamespacedKey key;
     private final ItemStack result;
@@ -45,79 +43,41 @@ public class SimpleCauldronRecipe implements CauldronRecipe {
         this.ingredients.addAll(ingredients);
     }
 
-    /**
-     * Get the key of this recipe.
-     *
-     * @return the key
-     */
     @NotNull
     @Override
     public NamespacedKey getKey() {
         return key;
     }
 
-    /**
-     * Get the result of this recipe.
-     *
-     * @return the result
-     */
     @NotNull
     @Override
     public ItemStack getResult() {
         return result.clone();
     }
 
-    /**
-     * Get the name of this recipe.
-     *
-     * @return the recipe name
-     */
     @NotNull
     @Override
     public Optional<@NotNull String> getName() {
         return Optional.ofNullable(name);
     }
 
-    /**
-     * Get the description of this recipe.
-     *
-     * @return the recipe description
-     */
     @NotNull
     @Override
     public Optional<@NotNull String> getDescription() {
         return Optional.ofNullable(description);
     }
 
-    /**
-     * Get the comment for this recipe if one is set.
-     *
-     * @return the comment
-     */
     @NotNull
     @Override
     public Optional<@NotNull String> getComment() {
         return Optional.ofNullable(comment);
     }
 
-    /**
-     * Get the experience yielded from this recipe.
-     *
-     * @return the experience
-     */
     @Override
     public int getExperience() {
         return experience;
     }
 
-    /**
-     * Check whether this recipe contains the specified ingredient. Quantity is not
-     * accounted for in this check.
-     *
-     * @param ingredient the ingredient to check
-     *
-     * @return true if the ingredient is present
-     */
     @Override
     public boolean hasIngredient(@NotNull CauldronIngredient ingredient) {
         Preconditions.checkArgument(ingredient != null, "ingredient must not be null");
@@ -131,25 +91,12 @@ public class SimpleCauldronRecipe implements CauldronRecipe {
         return false;
     }
 
-    /**
-     * Get an unmodifiable set of all required ingredients.
-     *
-     * @return the required ingredients
-     */
     @NotNull
     @Override
     public List<@NotNull CauldronIngredient> getIngredients() {
         return Collections.unmodifiableList(ingredients);
     }
 
-    /**
-     * Get the numerical complexity of this recipe.
-     * <p>
-     * Complexity is determined on the sum of all ingredients'
-     * {@link CauldronIngredient#getComplexity()} values.
-     *
-     * @return the complexity. Higher numbers are more complex. Will always be {@literal >=} 0
-     */
     @Override
     public int getComplexity() {
         int complexity = 0;
@@ -161,14 +108,6 @@ public class SimpleCauldronRecipe implements CauldronRecipe {
         return complexity;
     }
 
-    /**
-     * Get the expected yield (i.e. quantity of result) that may be produced such that the provided
-     * ingredients will not be over-consumed.
-     *
-     * @param availableIngredients the ingredients available in the cauldron.
-     *
-     * @return the recipe yield
-     */
     @Override
     public int getYieldFromIngredients(@NotNull List<@NotNull CauldronIngredient> availableIngredients) {
         int yield = 0;
