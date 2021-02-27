@@ -79,6 +79,18 @@ public class CauldronRecipeRegistry {
     }
 
     /**
+     * Get the {@link CauldronRecipe} associated with the provided key.
+     *
+     * @param key the recipe key to get
+     *
+     * @return the recipe. null if none registered with the given key
+     */
+    @Nullable
+    public CauldronRecipe getCauldronRecipe(@NotNull NamespacedKey key) {
+        return recipes.get(key);
+    }
+
+    /**
      * Get the {@link CauldronRecipe} that applies given a set of ingredients. If no recipe can consume
      * the ingredients, null is returned. If more than one recipe is valid, the first is selected.
      *
