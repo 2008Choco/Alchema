@@ -14,7 +14,7 @@ public final class PluginIntegrationMMOItems implements PluginIntegration {
 
     private final MMOItems mmoItemsPlugin;
 
-    public PluginIntegrationMMOItems(Plugin plugin) {
+    public PluginIntegrationMMOItems(@NotNull Plugin plugin) {
         this.mmoItemsPlugin = (MMOItems) plugin;
     }
 
