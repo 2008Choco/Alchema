@@ -106,7 +106,7 @@ public final class Alchema extends JavaPlugin {
          * Calling #integrate() here ensures that PluginIntegration's load() methods are called onLoad().
          * For plugins like WorldGuard where registering flags must be done onLoad(), this is necessary.
          */
-        this.integrationHandler.registerIntegrations("MMOItems", PluginIntegrationMMOItems::new);
+        this.integrationHandler.registerIntegrations("MMOItems", () -> PluginIntegrationMMOItems::new);
         this.integrationHandler.integrate();
     }
 

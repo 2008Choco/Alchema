@@ -130,7 +130,7 @@
     <dependency>
       <groupId>com.github.2008Choco</groupId>
       <artifactId>ChocoCommons</artifactId>
-      <version>2863470664</version>
+      <version>6b9e230911</version>
       <scope>compile</scope>
     </dependency>
 
