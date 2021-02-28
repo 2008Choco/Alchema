@@ -47,6 +47,7 @@ import wtf.choco.alchema.crafting.CauldronRecipeBook;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
+import wtf.choco.alchema.integration.mmoitems.PluginIntegrationMMOItems;
 import wtf.choco.alchema.listener.CauldronDeathMessageListener;
 import wtf.choco.alchema.listener.CauldronManipulationListener;
 import wtf.choco.alchema.listener.EmptyVialRecipeDiscoverListener;
@@ -54,6 +55,7 @@ import wtf.choco.alchema.listener.EntityEssenceCollectionListener;
 import wtf.choco.alchema.listener.UpdateReminderListener;
 import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
 import wtf.choco.alchema.util.AlchemaConstants;
+import wtf.choco.commons.integration.IntegrationHandler;
 import wtf.choco.commons.util.UpdateChecker;
 import wtf.choco.commons.util.UpdateChecker.UpdateReason;
 
@@ -74,6 +76,8 @@ public final class Alchema extends JavaPlugin {
     private final CauldronManager cauldronManager = new CauldronManager();
     private final CauldronRecipeRegistry recipeRegistry = new CauldronRecipeRegistry();
     private final EntityEssenceEffectRegistry entityEssenceEffectRegistry = new EntityEssenceEffectRegistry();
+
+    private final IntegrationHandler integrationHandler = new IntegrationHandler(this);
 
     private File cauldronFile;
     private File recipesDirectory;
@@ -96,6 +100,14 @@ public final class Alchema extends JavaPlugin {
         this.recipeRegistry.registerIngredientType(CauldronIngredientItemStack.KEY, CauldronIngredientItemStack::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientMaterial.KEY, CauldronIngredientMaterial::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientEntityEssence.KEY, object -> new CauldronIngredientEntityEssence(object, entityEssenceEffectRegistry));
+
+        /*
+         * We're also going to handle plugin integration registrations on load just to jump the gun a bit.
+         * Calling #integrate() here ensures that PluginIntegration's load() methods are called onLoad().
+         * For plugins like WorldGuard where registering flags must be done onLoad(), this is necessary.
+         */
+        this.integrationHandler.registerIntegrations("MMOItems", PluginIntegrationMMOItems::new);
+        this.integrationHandler.integrate();
     }
 
     @Override
@@ -181,6 +193,9 @@ public final class Alchema extends JavaPlugin {
         this.cauldronUpdateTask = CauldronUpdateHandler.init(this);
         this.cauldronUpdateTask.startTask();
 
+        // Enable integrations
+        this.integrationHandler.enableIntegrations();
+
         // Load Metrics
         if (getConfig().getBoolean(AlchemaConstants.CONFIG_METRICS_ENABLED, true)) {
             this.getLogger().info("Enabling plugin metrics");
@@ -211,6 +226,8 @@ public final class Alchema extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.integrationHandler.disableIntegrations(true);
+
         // Write all cauldrons to file
         Collection<@NotNull AlchemicalCauldron> cauldrons = cauldronManager.getCauldrons();
         if (cauldrons.size() > 0) {
@@ -262,6 +279,16 @@ public final class Alchema extends JavaPlugin {
     @NotNull
     public EntityEssenceEffectRegistry getEntityEssenceEffectRegistry() {
         return entityEssenceEffectRegistry;
+    }
+
+    /**
+     * Get the {@link IntegrationHandler} instance.
+     *
+     * @return the integration handler
+     */
+    @NotNull
+    public IntegrationHandler getIntegrationHandler() {
+        return integrationHandler;
     }
 
     /**

@@ -91,6 +91,18 @@
       <id>jitpack</id>
       <url>https://jitpack.io/</url>
     </repository>
+
+    <!-- MMOItems -->
+    <repository>
+      <id>zz_lumine-repo</id>
+      <url>http://mvn.lumine.io/repository/maven-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -120,6 +132,20 @@
       <artifactId>ChocoCommons</artifactId>
       <version>2863470664</version>
       <scope>compile</scope>
+    </dependency>
+
+    <!-- Integration dependencies -->
+    <dependency>
+      <groupId>io.lumine</groupId>
+      <artifactId>MythicLib</artifactId>
+      <version>1.0.6</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.Indyuce</groupId>
+      <artifactId>MMOItems</artifactId>
+      <version>6.5.4</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Testing dependencies -->

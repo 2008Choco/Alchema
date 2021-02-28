@@ -5,11 +5,13 @@ import com.google.common.base.Preconditions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
@@ -30,6 +32,7 @@ import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.cauldron.CauldronUpdateHandler;
 import wtf.choco.alchema.crafting.RecipeLoadFailureReport;
 import wtf.choco.alchema.util.AlchemaConstants;
+import wtf.choco.commons.integration.PluginIntegration;
 import wtf.choco.commons.util.UpdateChecker;
 import wtf.choco.commons.util.UpdateChecker.UpdateReason;
 import wtf.choco.commons.util.UpdateChecker.UpdateResult;
@@ -168,8 +171,9 @@ public final class CommandAlchema implements TabExecutor {
                 .distinct()
                 .filter(plugin -> plugin != this.plugin) // Remove Alchema from the list... just in case
                 .collect(Collectors.toList());
+            Collection<@NotNull ? extends PluginIntegration> nativeIntegrations = plugin.getIntegrationHandler().getIntegrations();
 
-            if (integrations.isEmpty()) {
+            if (integrations.isEmpty() && nativeIntegrations.isEmpty()) {
                 sender.sendMessage(Alchema.CHAT_PREFIX + "No plugins are currently integrating with Alchema.");
 
                 // Just a little bit of shameless self-promotion :)
@@ -180,13 +184,11 @@ public final class CommandAlchema implements TabExecutor {
                 return true;
             }
 
-            sender.sendMessage(Alchema.CHAT_PREFIX + "Currently integrating with " + ChatColor.YELLOW + "(" + integrations.size() + ") plugin" + (integrations.size() > 1 ? "s" : "") + ChatColor.GRAY + ":");
-            for (Plugin plugin : integrations) {
-                PluginDescriptionFile description = plugin.getDescription();
-                String authors = generateListOfAuthors(plugin);
+            int integrationCount = integrations.size() + nativeIntegrations.size();
+            sender.sendMessage(Alchema.CHAT_PREFIX + "Currently integrating with " + ChatColor.YELLOW + "(" + integrationCount + ") plugin" + (integrationCount > 1 ? "s" : "") + ChatColor.GRAY + ":");
 
-                sender.sendMessage(" - " + ChatColor.YELLOW + plugin.getName() + " " + ChatColor.GREEN + description.getVersion() + ChatColor.GRAY + " by " + authors + ChatColor.GRAY + ".");
-            }
+            this.displayListOfIntegrations(sender, integrations, false);
+            this.displayListOfIntegrations(sender, nativeIntegrations, PluginIntegration::getIntegratedPlugin, true);
         }
 
         else if (args[0].equalsIgnoreCase("saverecipe")) {
@@ -312,6 +314,20 @@ public final class CommandAlchema implements TabExecutor {
         }
 
         return args;
+    }
+
+    private <T> void displayListOfIntegrations(@NotNull CommandSender sender, @NotNull Collection<@NotNull T> integrations, @NotNull Function<@NotNull T, @NotNull Plugin> toPluginFunction, boolean isNative) {
+        integrations.forEach(integration -> {
+            Plugin plugin = toPluginFunction.apply(integration);
+            PluginDescriptionFile description = plugin.getDescription();
+            String authors = generateListOfAuthors(plugin);
+
+            sender.sendMessage(" - " + ChatColor.YELLOW + plugin.getName() + " " + ChatColor.GREEN + description.getVersion() + ChatColor.GRAY + " by " + authors + ChatColor.GRAY + "." + (isNative ? " " + ChatColor.AQUA + "(native)" : ""));
+        });
+    }
+
+    private void displayListOfIntegrations(@NotNull CommandSender sender, @NotNull Collection<@NotNull Plugin> integrations, boolean isNative) {
+        this.displayListOfIntegrations(sender, integrations, Function.identity(), isNative);
     }
 
     @NotNull
