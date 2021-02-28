@@ -8,8 +8,11 @@ import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,6 +101,22 @@ public final class CauldronIngredientMMOItem implements CauldronIngredient {
     public CauldronIngredient adjustAmountBy(int amount) {
         Preconditions.checkArgument(amount < getAmount(), "amount must be < getAmount(), %d", getAmount());
         return new CauldronIngredientMMOItem(mmoItem, item, getAmount() - amount);
+    }
+
+    @Override
+    @NotNull
+    public String describe() {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            meta = mmoItem.newBuilder().build().getItemMeta();
+            if (meta == null) { // Last attempt. Just going based on data we have available I suppose
+                return getAmount() + "x " + StringUtils.capitalize(mmoItem.getId().replace('_', ' ').toLowerCase()) + " (" + mmoItem.getType().getId().replace('_', ' ').toLowerCase() + ")";
+            }
+
+            return getAmount() + "x " + meta.getDisplayName();
+        }
+
+        return getAmount() + "x " + ChatColor.stripColor(meta.getDisplayName());
     }
 
     @NotNull
