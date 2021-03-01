@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.util.Objects;
+
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
@@ -162,6 +164,31 @@ public final class CauldronIngredientMMOItem implements CauldronIngredient {
         object.addProperty("amount", getAmount());
 
         return object;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item, getAmount(), mmoItem.getType(), mmoItem.getId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof CauldronIngredientMMOItem)) {
+            return false;
+        }
+
+        CauldronIngredientMMOItem other = (CauldronIngredientMMOItem) obj;
+        return getAmount() == other.getAmount() && mmoItem.getType() == other.mmoItem.getType()
+                && Objects.equals(mmoItem.getId(), other.mmoItem.getId()) && Objects.equals(item, other.item);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("CauldronIngredientMMOItem[amount=%s, item=%s, mmoItem=%s]", getAmount(), item, mmoItem);
     }
 
 }
