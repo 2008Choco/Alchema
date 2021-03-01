@@ -10,10 +10,20 @@ import org.jetbrains.annotations.NotNull;
 import wtf.choco.alchema.Alchema;
 import wtf.choco.commons.integration.PluginIntegration;
 
+/**
+ * Soft integration with MMOItems.
+ *
+ * @author Parker Hawke - Choco
+ */
 public final class PluginIntegrationMMOItems implements PluginIntegration {
 
     private final MMOItems mmoItemsPlugin;
 
+    /**
+     * Construct a new {@link PluginIntegrationMMOItems}.
+     *
+     * @param plugin the MMOItems plugin instance
+     */
     public PluginIntegrationMMOItems(@NotNull Plugin plugin) {
         this.mmoItemsPlugin = (MMOItems) plugin;
     }

@@ -18,6 +18,13 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.crafting.CauldronIngredient;
 
+/**
+ * A {@link CauldronIngredient} implementation wrapped around an {@link MMOItem}.
+ * The MMO item must match in type and in id. Neither rarities nor levels are taken
+ * into consideration.
+ *
+ * @author Parker Hawke - Choco
+ */
 public final class CauldronIngredientMMOItem implements CauldronIngredient {
 
     static NamespacedKey key; // Set by PluginIntegrationMMOItems
@@ -25,20 +32,46 @@ public final class CauldronIngredientMMOItem implements CauldronIngredient {
     private final MMOItem mmoItem;
     private final ItemStack item;
 
+    /**
+     * Construct a new {@link CauldronIngredientMMOItem} with a given amount and {@link ItemStack}.
+     *
+     * @param mmoItem the MMOItem instance
+     * @param item the ItemStack representation of the MMOItem
+     * @param amount the amount
+     */
     public CauldronIngredientMMOItem(@NotNull MMOItem mmoItem, @NotNull ItemStack item, int amount) {
         this.mmoItem = mmoItem;
         this.item = item.clone();
         this.item.setAmount(amount);
     }
 
+    /**
+     * Construct a new {@link CauldronIngredientMMOItem} with a given amount. The {@link ItemStack}
+     * will be newly created.
+     *
+     * @param mmoItem the MMOItem instance
+     * @param amount the amount
+     */
     public CauldronIngredientMMOItem(@NotNull MMOItem mmoItem, int amount) {
         this(mmoItem, mmoItem.newBuilder().build(), amount);
     }
 
+    /**
+     * Construct a new {@link CauldronIngredientMMOItem}. The {@link ItemStack} will be newly
+     * created.
+     *
+     * @param mmoItem the MMOItem instance
+     */
     public CauldronIngredientMMOItem(@NotNull MMOItem mmoItem) {
         this(mmoItem, mmoItem.newBuilder().build(), 1);
     }
 
+    /**
+     * Construct a new {@link CauldronIngredientMMOItem} deserialized from the
+     * provided {@link JsonObject}.
+     *
+     * @param object the object from which to deserialize
+     */
     public CauldronIngredientMMOItem(@NotNull JsonObject object) {
         if (!object.has("item_type")) {
             throw new JsonParseException("Missing element \"item_type\"");
@@ -46,7 +79,7 @@ public final class CauldronIngredientMMOItem implements CauldronIngredient {
 
         Type itemType = MMOItems.plugin.getTypes().get(object.get("item_type").getAsString());
         if (itemType == null) {
-            throw new JsonParseException("Unkown MMOItems type: " + object.get("item_type").getAsString());
+            throw new JsonParseException("Unknown MMOItems type: " + object.get("item_type").getAsString());
         }
 
         if (!object.has("id")) {

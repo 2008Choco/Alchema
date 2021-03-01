@@ -13,6 +13,11 @@ import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
 
+/**
+ * Event listeners for MMOItems plugin integration.
+ *
+ * @author Parker Hawke - Choco
+ */
 public final class MMOItemsIntegrationListener implements Listener {
 
     MMOItemsIntegrationListener() { }

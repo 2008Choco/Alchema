@@ -158,6 +158,16 @@ public final class CauldronRecipeBook implements Listener {
         return createRecipeBook(Alchema.getInstance().getRecipeRegistry(), false);
     }
 
+    /**
+     * Create a new recipe book item for a list of recipes starting with the
+     * given character.
+     *
+     * @param recipeRegistry an instance of the registry from which recipes should
+     * be pulled
+     * @param character the character with which recipes must start
+     *
+     * @return the recipe book
+     */
     @NotNull
     public static ItemStack createRecipeBookForCharacter(@NotNull CauldronRecipeRegistry recipeRegistry, char character) {
         Preconditions.checkArgument(recipeRegistry != null, "recipeRegistry must not be null");
