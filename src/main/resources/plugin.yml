@@ -57,3 +57,7 @@ permissions:
   alchema.updatenotify:
     description: Grants the ability to see update notifications on join
     default: op
+
+  alchema.craft:
+    description: Allows a player to craft recipes in the cauldron
+    default: true

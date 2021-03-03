@@ -155,6 +155,9 @@ public final class AlchemaConstants {
     /** Permission node, alchema.updatenotify, grants access to update notifications */
     public static final String PERMISSION_UPDATE_NOTIFY = "alchema.updatenotify";
 
+    /** Permission node, alchema.craft, allows a player to craft recipes in the cauldron */
+    public static final String PERMISSION_CRAFT = "alchema.craft";
+
 
     // General constants
     /** A list of glass panes and stained glass panes */

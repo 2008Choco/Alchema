@@ -539,8 +539,17 @@ public class AlchemicalCauldron {
 
                     // Don't collect non-player-sourced items (configuration based)
                     UUID itemThrowerUUID = item.getThrower();
-                    if (cauldronConfiguration.shouldEnforcePlayerDroppedItems() && (itemThrowerUUID == null || Bukkit.getPlayer(itemThrowerUUID) != null)) {
+                    OfflinePlayer itemThrower = (itemThrowerUUID != null) ? Bukkit.getOfflinePlayer(itemThrowerUUID) : null;
+                    if (cauldronConfiguration.shouldEnforcePlayerDroppedItems() && (itemThrowerUUID == null || itemThrower == null)) {
                         return;
+                    }
+
+                    // Permission check for boiling player-sourced items
+                    if (itemThrower != null && itemThrower.isOnline()) {
+                        Player itemThrowerOnline = itemThrower.getPlayer();
+                        if (itemThrowerOnline != null && !itemThrowerOnline.hasPermission(AlchemaConstants.PERMISSION_CRAFT)) {
+                            return;
+                        }
                     }
 
                     ItemStack itemStack = item.getItemStack();
