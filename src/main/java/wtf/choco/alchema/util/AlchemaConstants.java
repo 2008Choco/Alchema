@@ -60,6 +60,9 @@ public final class AlchemaConstants {
     /** Configuration path, Cauldron.MillisecondsToHeatUp */
     public static final String CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP = "Cauldron.MillisecondsToHeatUp";
 
+    /** Configuration path, Cauldron.EnforcePlayerDroppedItems */
+    public static final String CONFIG_CAULDRON_ENFORCE_PLAYER_DROPPED_ITEMS = "Cauldron.EnforcePlayerDroppedItems";
+
     /** Configuration path, Cauldron.Entities.Damage */
     public static final String CONFIG_CAULDRON_ENTITIES_DAMAGE = "Cauldron.Entities.Damage";
 

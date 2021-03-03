@@ -25,6 +25,14 @@ public interface CauldronConfigurationContext {
     public int getMillisecondsToHeatUp();
 
     /**
+     * Check whether or not cauldrons should only collect items that were dropped by players.
+     *
+     * @return true if player dropped items only, false if all items (i.e. dispensers, deaths,
+     * etc.)
+     */
+    public boolean shouldEnforcePlayerDroppedItems();
+
+    /**
      * Check whether or not cauldrons should damage entities in boiling water.
      *
      * @return true if damage should be inflicted, false otherwise
@@ -84,6 +92,7 @@ public interface CauldronConfigurationContext {
 
         private int itemSearchInterval = 1;
         private int millisecondsToHeatUp = 5000;
+        private boolean enforcePlayerDroppedItems = false;
 
         private boolean damageEntities = true;
         private int minEssenceOnDeath = 50, maxEssenceOnDeath = 100;
@@ -119,7 +128,20 @@ public interface CauldronConfigurationContext {
         }
 
         /**
-         * Set the damage entities value
+         * Set whether or not to enforce player dropped items.
+         *
+         * @param enforcePlayerDroppedItems the value to set
+         *
+         * @return this instance. Allows for chained method calls
+         */
+        @NotNull
+        public CauldronConfigurationContextBuilder enforcePlayerDroppedItems(boolean enforcePlayerDroppedItems) {
+            this.enforcePlayerDroppedItems = enforcePlayerDroppedItems;
+            return this;
+        }
+
+        /**
+         * Set the damage entities value.
          *
          * @param damageEntities the value to set
          *
@@ -206,6 +228,7 @@ public interface CauldronConfigurationContext {
             return new SimpleCauldronConfigurationContext(
                 itemSearchInterval,
                 millisecondsToHeatUp,
+                enforcePlayerDroppedItems,
                 damageEntities,
                 minEssenceOnDeath,
                 maxEssenceOnDeath,

@@ -514,6 +514,12 @@ public class AlchemicalCauldron {
                         return;
                     }
 
+                    // Don't collect non-player-sourced items (configuration based)
+                    UUID itemThrowerUUID = item.getThrower();
+                    if (cauldronConfiguration.shouldEnforcePlayerDroppedItems() && (itemThrowerUUID == null || Bukkit.getPlayer(itemThrowerUUID) != null)) {
+                        return;
+                    }
+
                     ItemStack itemStack = item.getItemStack();
 
                     // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)

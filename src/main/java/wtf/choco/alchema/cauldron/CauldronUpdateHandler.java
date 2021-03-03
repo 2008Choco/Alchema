@@ -58,6 +58,7 @@ public final class CauldronUpdateHandler {
             int minEssenceOnDeath = Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_ENTITIES_MIN_ESSENCE_ON_DEATH, 50), 0);
             this.cauldronConfiguration = CauldronConfigurationContext.builder()
                     .itemSearchInterval(Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_ITEM_SEARCH_INTERVAL, 1), 1))
+                    .enforcePlayerDroppedItems(config.getBoolean(AlchemaConstants.CONFIG_CAULDRON_ENFORCE_PLAYER_DROPPED_ITEMS, false))
                     .millisecondsToHeatUp(Math.max(config.getInt(AlchemaConstants.CONFIG_CAULDRON_MILLISECONDS_TO_HEAT_UP, 5000), 0))
                     .damageEntities(config.getBoolean(AlchemaConstants.CONFIG_CAULDRON_ENTITIES_DAMAGE, true))
                     .minEssenceOnDeath(minEssenceOnDeath)

@@ -3,19 +3,22 @@ package wtf.choco.alchema.config;
 /**
  * A simple implementation of {@link CauldronConfigurationContext}.
  */
+// TODO: This would be a really nice class to use a record ._.
 public final class SimpleCauldronConfigurationContext implements CauldronConfigurationContext {
 
     private final int itemSearchInterval;
     private final int millisecondsToHeatUp;
+    private final boolean enforcePlayerDroppedItems;
 
     private final boolean damageEntities;
     private final int minEssenceOnDeath, maxEssenceOnDeath;
 
     private final float volumeAmbientBubble, volumeItemSplash, volumeSuccessfulCraft;
 
-    SimpleCauldronConfigurationContext(int itemSearchInterval, int millisecondsToHeatUp, boolean damageEntities, int minEssenceOnDeath, int maxEssenceOnDeath, float volumeAmbientBubble, float volumeItemSplash, float volumeSuccessfulCraft) {
+    SimpleCauldronConfigurationContext(int itemSearchInterval, int millisecondsToHeatUp, boolean enforcePlayerDroppedItems, boolean damageEntities, int minEssenceOnDeath, int maxEssenceOnDeath, float volumeAmbientBubble, float volumeItemSplash, float volumeSuccessfulCraft) {
         this.itemSearchInterval = itemSearchInterval;
         this.millisecondsToHeatUp = millisecondsToHeatUp;
+        this.enforcePlayerDroppedItems = enforcePlayerDroppedItems;
         this.damageEntities = damageEntities;
         this.minEssenceOnDeath = minEssenceOnDeath;
         this.maxEssenceOnDeath = maxEssenceOnDeath;
@@ -32,6 +35,11 @@ public final class SimpleCauldronConfigurationContext implements CauldronConfigu
     @Override
     public int getMillisecondsToHeatUp() {
         return millisecondsToHeatUp;
+    }
+
+    @Override
+    public boolean shouldEnforcePlayerDroppedItems() {
+        return enforcePlayerDroppedItems;
     }
 
     @Override

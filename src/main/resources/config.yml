@@ -4,6 +4,7 @@ Metrics: true
 Cauldron:
   ItemSearchInterval: 1
   MillisecondsToHeatUp: 5000
+  EnforcePlayerDroppedItems: false
   Entities:
     Damage: true
     MinEssenceOnDeath: 50
