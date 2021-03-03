@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -82,7 +84,8 @@ public class AlchemicalCauldron {
     private long heatingStartTime;
     private boolean heatingUp = false, bubbling = false;
 
-    private UUID lastInteracted;
+    private UUID lastInteractedUUID;
+    private Reference<@Nullable OfflinePlayer> lastInteracted;
 
     private Block cauldronBlock, heatSourceBlock;
     private BoundingBox itemConsumptionBounds;
@@ -249,20 +252,40 @@ public class AlchemicalCauldron {
     /**
      * Set the {@link OfflinePlayer} that last interacted with this cauldron.
      *
-     * @param player the player to set
+     * @param player the player to set or null if none
      */
     public void setLastInteracted(@Nullable OfflinePlayer player) {
-        this.lastInteracted = player != null ? player.getUniqueId() : null;
+        this.lastInteractedUUID = (player != null) ? player.getUniqueId() : null;
+        this.lastInteracted = new WeakReference<>(player);
     }
 
     /**
      * Get the {@link OfflinePlayer} that last interacted with this cauldron.
      *
-     * @return the player that last interacted
+     * @return the player that last interacted. null if none
      */
     @Nullable
     public OfflinePlayer getLastInteracted() {
-        return lastInteracted != null ? Bukkit.getOfflinePlayer(lastInteracted) : null;
+        OfflinePlayer interactor = lastInteracted.get();
+        if (interactor != null) {
+            return interactor;
+        }
+
+        if (lastInteractedUUID != null) {
+            this.lastInteracted = new WeakReference<>(Bukkit.getOfflinePlayer(lastInteractedUUID));
+        }
+
+        return lastInteracted.get();
+    }
+
+    /**
+     * Get the UUID of the player that last interacted with this cauldron.
+     *
+     * @return the player that last interacted. null if none
+     */
+    @Nullable
+    public UUID getLastInteractedUUID() {
+        return lastInteractedUUID;
     }
 
     /**
