@@ -2,6 +2,7 @@ package wtf.choco.alchema.listener;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -47,13 +48,13 @@ public final class CauldronManipulationListener implements Listener {
 
         CauldronManager manager = plugin.getCauldronManager();
         AlchemicalCauldron cauldron = manager.getCauldron(block);
+        BlockState newState = event.getNewState();
 
-        if (event.getNewLevel() == ((Levelled) data).getMaximumLevel() && cauldron == null) {
+        if (newState.getType() == Material.WATER_CAULDRON && ((Levelled) newState).getLevel() == ((Levelled) newState).getMaximumLevel() && cauldron == null) {
             manager.addCauldron(new AlchemicalCauldron(block));
-            return;
         }
 
-        else if (event.getNewLevel() < ((Levelled) data).getMaximumLevel() && cauldron != null) {
+        else if ((newState.getType() != Material.WATER_CAULDRON || ((Levelled) newState).getLevel() < ((Levelled) newState).getMaximumLevel()) && cauldron != null) {
             Entity entity = event.getEntity();
             cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.EMPTIED_BY_PLAYER, entity instanceof Player ? (Player) entity : null);
         }

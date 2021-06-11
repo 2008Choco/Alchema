@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.16.3-R0.1-SNAPSHOT</version>
+      <version>1.17-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -130,7 +130,7 @@
     <dependency>
       <groupId>com.github.2008Choco</groupId>
       <artifactId>ChocoCommons</artifactId>
-      <version>6b9e230911</version>
+      <version>5fab5b2561</version>
       <scope>compile</scope>
     </dependency>
 
