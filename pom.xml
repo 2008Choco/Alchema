@@ -116,13 +116,7 @@
     <!-- MMOItems -->
     <repository>
       <id>zz_lumine-repo</id>
-      <url>https://mvn.lumine.io/repository/maven-releases/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
+      <url>https://mvn.lumine.io/repository/maven-public/</url>
     </repository>
   </repositories>
 
