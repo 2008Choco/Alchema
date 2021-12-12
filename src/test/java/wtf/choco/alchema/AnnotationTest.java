@@ -14,8 +14,8 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -35,7 +35,7 @@ import org.objectweb.asm.tree.ParameterNode;
  *
  * Original: https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/test/java/org/bukkit/AnnotationTest.java
  */
-public class AnnotationTest {
+class AnnotationTest {
 
     private static final String[] ACCEPTED_ANNOTATIONS = {
         "Lorg/jetbrains/annotations/Nullable;",
@@ -53,12 +53,12 @@ public class AnnotationTest {
     };
 
     @Test
-    public void testAnnotations() throws IOException, URISyntaxException {
+    void testAnnotations() throws IOException, URISyntaxException {
         URL location = Alchema.class.getProtectionDomain().getCodeSource().getLocation();
         File file = new File(location.toURI());
 
         // Running from jar is not supported yet
-        Assert.assertTrue("Code must be in a directory", file.isDirectory());
+        Assertions.assertTrue(file.isDirectory(), "Code must be in a directory");
 
         Map<String, ClassNode> foundClasses = new HashMap<>();
         collectClasses(file, foundClasses);
@@ -107,7 +107,7 @@ public class AnnotationTest {
             System.out.println(message);
         }
 
-        Assert.fail("There are " + errors.size() + " missing annotation(s)");
+        Assertions.fail("There are " + errors.size() + " missing annotation(s)");
     }
 
     private static void collectClasses(@NotNull File from, @NotNull Map<String, ClassNode> to) throws IOException {

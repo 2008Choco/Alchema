@@ -37,6 +37,11 @@ import org.bukkit.potion.PotionEffectType;
  */
 public final class DefaultEntityEffects {
 
+    // A
+    static final EssenceConsumptionCallback AXOLOTL = (player, essenceData, item, amountOfEssence, potency) -> {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80 + (int) (potency * 60), 0, true));
+    };
+
     // B
     static final EssenceConsumptionCallback BAT = (player, essenceData, item, amountOfEssence, potency) -> {
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 + (int) (180 * potency), 0, true));
@@ -169,6 +174,12 @@ public final class DefaultEntityEffects {
 
     // G
     static final EssenceConsumptionCallback GHAST = null;
+    static final EssenceConsumptionCallback GLOW_SQUID = (player, essenceData, item, amountOfEssence, potency) -> {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 100 + (int) (300 * potency), 0, true));
+    };
+    static final EssenceConsumptionCallback GOAT = (player, essenceData, item, amountOfEssence, potency) -> {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 40 + (int) (60 * potency), 0, true));
+    };
     static final EssenceConsumptionCallback GUARDIAN = null;
 
     // H

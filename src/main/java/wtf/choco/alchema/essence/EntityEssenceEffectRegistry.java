@@ -113,6 +113,9 @@ public final class EntityEssenceEffectRegistry {
     public static void registerDefaultAlchemaEssences(@NotNull EntityEssenceEffectRegistry registry) {
         Preconditions.checkArgument(registry != null, "registry must not be null");
 
+        // A
+        register(registry, EntityType.AXOLOTL, 0xF59DE0, DefaultEntityEffects.AXOLOTL);
+
         // B
         register(registry, EntityType.BAT, 0x3C2F17, DefaultEntityEffects.BAT);
         register(registry, EntityType.BEE, 0xFBD367, DefaultEntityEffects.BEE);
@@ -142,6 +145,8 @@ public final class EntityEssenceEffectRegistry {
 
         // G
         register(registry, EntityType.GHAST, 0xAFAFAF, DefaultEntityEffects.GHAST);
+        register(registry, EntityType.GLOW_SQUID, 0x2F9799, DefaultEntityEffects.GLOW_SQUID);
+        register(registry, EntityType.GOAT, 0xE6E6E6, DefaultEntityEffects.GOAT);
         register(registry, EntityType.GUARDIAN, 0x699381, DefaultEntityEffects.GUARDIAN);
 
         // H

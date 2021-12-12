@@ -7,15 +7,15 @@ import java.util.Set;
 
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /*
  * Tests:
  * - testRegisteredEntityTypes(): Ensure that all EntityTypes are registered to the EntityEssenceEffectRegistry
  * - testDefaultEntityEffectConstants(): Ensure that all EntityTypes have a corresponding DefaultEntityEffects constants
  */
-public class EntityEssenceEffectRegistryTest {
+class EntityEssenceEffectRegistryTest {
 
     // Entities that will never have registered entity essence. Either impossible entity types or not necessary
     private static final Set<@NotNull EntityType> IGNORED_ENTITY_TYPES = EnumSet.of(
@@ -48,7 +48,7 @@ public class EntityEssenceEffectRegistryTest {
     }
 
     @Test
-    public void testRegisteredEntityTypes() {
+    void testRegisteredEntityTypes() {
         List<@NotNull EntityType> missing = new ArrayList<>();
 
         EXPECTED_ENTITY_TYPES.forEach(entityType -> {
@@ -68,11 +68,11 @@ public class EntityEssenceEffectRegistryTest {
             System.out.println("\t - " + entityType.getKey() + " (EntityType." + entityType.name() + ")");
         });
 
-        Assert.fail("Missing registrations for " + missing.size() + " entities.");
+        Assertions.fail("Missing registrations for " + missing.size() + " entities.");
     }
 
     @Test
-    public void testDefaultEntityEffectConstants() {
+    void testDefaultEntityEffectConstants() {
         List<@NotNull EntityType> missing = new ArrayList<>();
 
         Class<@NotNull DefaultEntityEffects> defaultEffectsClass = DefaultEntityEffects.class;
@@ -97,7 +97,7 @@ public class EntityEssenceEffectRegistryTest {
             System.out.println("\t - " + entityType.getKey() + " (" + defaultEffectsClass.getSimpleName() + "." + entityType.name() + ")");
         });
 
-        Assert.fail("Missing default effect constants for " + missing.size() + " entities.");
+        Assertions.fail("Missing default effect constants for " + missing.size() + " entities.");
     }
 
 }
