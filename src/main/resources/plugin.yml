@@ -16,10 +16,6 @@ commands:
     usage: /<command> [player] [amount] [entity] [amount of essence]
     aliases: [ givevialsofessence, giveessence, givevials, givevial ]
     permission: alchema.command.givevialofessence
-  giverecipebook:
-    description: Give the Alchema recipe book to a player
-    usage: /<command>
-    permission: alchema.command.giverecipebook
 
 permissions:
   alchema.command.*:
@@ -30,7 +26,6 @@ permissions:
       alchema.command.integrations: false
       alchema.command.saverecipe: true
       alchema.command.givevialofessence: true
-      alchema.command.giverecipebook: true
 
   alchema.command.reload:
     description: Grants access to the /alchema reload subcommand
@@ -45,9 +40,6 @@ permissions:
     default: op
   alchema.command.givevialofessence:
     description: Grants access to the /givevialofessence command
-    default: op
-  alchema.command.giverecipebook:
-    description: Grants access to the /giverecipebook command
     default: op
 
   alchema.command.reload.verbose:
