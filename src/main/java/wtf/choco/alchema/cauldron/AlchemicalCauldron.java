@@ -304,7 +304,7 @@ public class AlchemicalCauldron {
      * @return true if heating is possible, false otherwise
      */
     public boolean canHeatUp() {
-        if (cauldronBlock.getType() != Material.CAULDRON) {
+        if (cauldronBlock.getType() != Material.WATER_CAULDRON) {
             return false;
         }
 
