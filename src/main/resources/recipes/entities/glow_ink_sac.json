@@ -1,0 +1,17 @@
+{
+    "experience": 2,
+    "result": {
+        "item": "minecraft:glow_ink_sac"
+    },
+    "ingredients": [
+        {
+            "type": "alchema:entity_essence",
+            "entity": "minecraft:glow_squid",
+            "amount": 50
+        },
+        {
+            "type": "alchema:material",
+            "item": "minecraft:ink_sac"
+        }
+    ]
+}
