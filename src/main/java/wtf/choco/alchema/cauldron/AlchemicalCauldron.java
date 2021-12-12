@@ -26,6 +26,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -85,7 +86,7 @@ public class AlchemicalCauldron {
     private boolean heatingUp = false, bubbling = false;
 
     private UUID lastInteractedUUID;
-    private Reference<@Nullable OfflinePlayer> lastInteracted;
+    private Reference<@Nullable OfflinePlayer> lastInteracted = new WeakReference<>(null);
 
     private Block cauldronBlock, heatSourceBlock;
     private BoundingBox itemConsumptionBounds;
@@ -98,7 +99,7 @@ public class AlchemicalCauldron {
      * @param block the block at which the cauldron is located
      */
     public AlchemicalCauldron(@NotNull Block block) {
-        Preconditions.checkArgument(block.getType() == Material.CAULDRON, "AlchemicalCauldron block type must be CAULDRON");
+        Preconditions.checkArgument(Tag.CAULDRONS.isTagged(block.getType()), "AlchemicalCauldron block type must be Tag.CAULDRON");
 
         this.cauldronBlock = block;
         this.heatSourceBlock = block.getRelative(BlockFace.DOWN);
@@ -266,16 +267,11 @@ public class AlchemicalCauldron {
      */
     @Nullable
     public OfflinePlayer getLastInteracted() {
-        OfflinePlayer interactor = lastInteracted.get();
-        if (interactor != null) {
-            return interactor;
-        }
-
-        if (lastInteractedUUID != null) {
+        if (lastInteracted == null && lastInteractedUUID != null) {
             this.lastInteracted = new WeakReference<>(Bukkit.getOfflinePlayer(lastInteractedUUID));
         }
 
-        return lastInteracted.get();
+        return (lastInteracted != null) ? lastInteracted.get() : null;
     }
 
     /**
@@ -484,7 +480,7 @@ public class AlchemicalCauldron {
      * @param cauldronConfiguration the cauldron configuration
      * @param currentTick the current update tick
      */
-    protected void update(@NotNull Alchema plugin, @NotNull CauldronConfigurationContext cauldronConfiguration, int currentTick) {
+    void update(@NotNull Alchema plugin, @NotNull CauldronConfigurationContext cauldronConfiguration, int currentTick) {
         Preconditions.checkArgument(plugin != null, "plugin must not be null");
         Preconditions.checkArgument(cauldronConfiguration != null, "cauldronConfiguration must not be null");
 
@@ -552,6 +548,7 @@ public class AlchemicalCauldron {
                         }
                     }
 
+                    this.setLastInteracted(itemThrower);
                     ItemStack itemStack = item.getItemStack();
 
                     // Apparently this can be 0 sometimes on Spigot (I guess due to item merging)

@@ -1,8 +1,8 @@
 package wtf.choco.alchema.listener;
 
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -31,7 +31,7 @@ public final class CauldronManipulationListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onPlaceCauldron(BlockPlaceEvent event) {
         Block block = event.getBlock();
-        if (block.getType() != Material.CAULDRON) {
+        if (!Tag.CAULDRONS.isTagged(block.getType())) {
             return;
         }
 
@@ -41,20 +41,16 @@ public final class CauldronManipulationListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onCauldronLevelChange(CauldronLevelChangeEvent event) {
         Block block = event.getBlock();
-        BlockData data = block.getBlockData();
-        if (!(data instanceof Levelled)) {
-            return;
-        }
-
         CauldronManager manager = plugin.getCauldronManager();
         AlchemicalCauldron cauldron = manager.getCauldron(block);
-        BlockState newState = event.getNewState();
+        BlockData blockData = event.getNewState().getBlockData();
+        Material newMaterial = blockData.getMaterial();
 
-        if (newState.getType() == Material.WATER_CAULDRON && ((Levelled) newState).getLevel() == ((Levelled) newState).getMaximumLevel() && cauldron == null) {
+        if ((newMaterial == Material.WATER_CAULDRON && ((Levelled) blockData).getLevel() == ((Levelled) blockData).getMaximumLevel()) && cauldron == null) {
             manager.addCauldron(new AlchemicalCauldron(block));
         }
 
-        else if ((newState.getType() != Material.WATER_CAULDRON || ((Levelled) newState).getLevel() < ((Levelled) newState).getMaximumLevel()) && cauldron != null) {
+        else if ((newMaterial != Material.WATER_CAULDRON || ((Levelled) blockData).getLevel() < ((Levelled) blockData).getMaximumLevel()) && cauldron != null) {
             Entity entity = event.getEntity();
             cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.EMPTIED_BY_PLAYER, entity instanceof Player ? (Player) entity : null);
         }
@@ -63,7 +59,7 @@ public final class CauldronManipulationListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void onDestroyCauldron(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (block.getType() != Material.CAULDRON) {
+        if (!Tag.CAULDRONS.isTagged(block.getType())) {
             return;
         }
 

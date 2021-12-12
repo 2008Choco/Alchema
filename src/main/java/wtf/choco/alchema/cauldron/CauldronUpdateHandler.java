@@ -78,7 +78,7 @@ public final class CauldronUpdateHandler {
 
             // Remove cauldrons that aren't cauldrons anymore. Ingredients are dropped during removal after this iteration.
             Block block = cauldron.getCauldronBlock();
-            if (block.getType() != Material.CAULDRON) {
+            if (block.getType() != Material.WATER_CAULDRON) {
                 this.forRemoval.add(cauldron);
                 continue;
             }
