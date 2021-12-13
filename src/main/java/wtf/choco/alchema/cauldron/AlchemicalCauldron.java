@@ -527,8 +527,7 @@ public class AlchemicalCauldron {
             EntityEssenceEffectRegistry essenceEffectRegistry = plugin.getEntityEssenceEffectRegistry();
 
             world.getNearbyEntities(getItemConsumptionBounds()).forEach(entity -> {
-                if (entity instanceof Item) {
-                    Item item = (Item) entity;
+                if (entity instanceof Item item) {
                     if (item.hasMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED)) {
                         return;
                     }
@@ -582,8 +581,7 @@ public class AlchemicalCauldron {
                         world.playSound(location, Sound.ENTITY_PLAYER_SPLASH, cauldronConfiguration.getItemSplashVolume(), 2F);
                     }
                 }
-                else if (cauldronConfiguration.shouldDamageEntities() && entity instanceof LivingEntity) {
-                    LivingEntity livingEntity = (LivingEntity) entity;
+                else if (cauldronConfiguration.shouldDamageEntities() && entity instanceof LivingEntity livingEntity) {
                     if (currentTick % 20 == 0 && !livingEntity.isDead()) {
                         EntityDamageByCauldronEvent entityDamageByCauldronEvent = AlchemaEventFactory.callEntityDamageByCauldronEvent(livingEntity, this, 1.0);
 

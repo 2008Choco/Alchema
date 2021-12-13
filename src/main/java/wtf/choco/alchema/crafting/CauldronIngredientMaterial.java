@@ -98,8 +98,8 @@ public class CauldronIngredientMaterial implements CauldronIngredient {
             ItemStack otherItem = other.asItemStack();
             otherMaterial = otherItem != null ? otherItem.getType() : null;
         }
-        else if (other instanceof CauldronIngredientMaterial) {
-            otherMaterial = ((CauldronIngredientMaterial) other).material;
+        else if (other instanceof CauldronIngredientMaterial ingredient) {
+            otherMaterial = ingredient.material;
         }
 
         return otherMaterial != null && material == otherMaterial;
@@ -126,28 +126,19 @@ public class CauldronIngredientMaterial implements CauldronIngredient {
         JsonObject object = new JsonObject();
 
         object.addProperty("item", material.getKey().toString());
-        object.addProperty("amount", getAmount());
+        object.addProperty("amount", amount);
 
         return object;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(material, getAmount());
+        return Objects.hash(material, amount);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof CauldronIngredientMaterial)) {
-            return false;
-        }
-
-        CauldronIngredientMaterial other = (CauldronIngredientMaterial) obj;
-        return getAmount() == other.getAmount() && material == other.material;
+        return obj == this || (obj instanceof CauldronIngredientMaterial other && amount == other.amount && material == other.material);
     }
 
     @Override

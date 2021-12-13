@@ -68,8 +68,8 @@ public final class EntityEssenceCollectionListener implements Listener {
 
         int lootingModifier = 0;
 
-        if (entity instanceof LivingEntity) {
-            Player killer = ((LivingEntity) entity).getKiller();
+        if (entity instanceof LivingEntity livingEntity) {
+            Player killer = livingEntity.getKiller();
             if (killer != null) {
                 ItemStack item = killer.getInventory().getItemInMainHand();
                 lootingModifier = item.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);

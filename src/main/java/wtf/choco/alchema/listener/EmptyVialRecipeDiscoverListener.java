@@ -8,17 +8,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 
 import wtf.choco.alchema.util.AlchemaConstants;
 
 public final class EmptyVialRecipeDiscoverListener implements Listener {
 
+    private static final NamespacedKey GLASS_BOTTLE_KEY = Material.GLASS_PANE.getKey();
+
     @EventHandler
     private void onDiscoverGlassBottle(PlayerRecipeDiscoverEvent event) {
         Player player = event.getPlayer();
-        if (!event.getRecipe().equals(Material.GLASS_BOTTLE.getKey()) || player.hasDiscoveredRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL)) {
+        if (!event.getRecipe().equals(GLASS_BOTTLE_KEY) || player.hasDiscoveredRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL)) {
             return;
         }
 
@@ -27,13 +28,7 @@ public final class EmptyVialRecipeDiscoverListener implements Listener {
 
     @EventHandler
     private void onCraftGlassPane(CraftItemEvent event) {
-        Recipe recipe = event.getRecipe();
-        if (!(recipe instanceof ShapedRecipe)) {
-            return;
-        }
-
-        NamespacedKey key = ((ShapedRecipe) recipe).getKey();
-        if (!key.equals(Material.GLASS_PANE.getKey())) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe) || !recipe.getKey().equals(GLASS_BOTTLE_KEY)) {
             return;
         }
 

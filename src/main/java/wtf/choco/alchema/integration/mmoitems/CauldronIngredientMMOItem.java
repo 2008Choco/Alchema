@@ -116,11 +116,10 @@ public final class CauldronIngredientMMOItem implements CauldronIngredient {
 
     @Override
     public boolean isSimilar(@NotNull CauldronIngredient other) {
-        if (!(other instanceof CauldronIngredientMMOItem)) {
+        if (!(other instanceof CauldronIngredientMMOItem ingredient)) {
             return false;
         }
 
-        CauldronIngredientMMOItem ingredient = (CauldronIngredientMMOItem) other;
         return mmoItem.getId().equals(ingredient.mmoItem.getId()) && mmoItem.getType().equals(ingredient.mmoItem.getType());
     }
 

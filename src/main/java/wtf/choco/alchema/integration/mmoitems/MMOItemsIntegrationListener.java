@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import wtf.choco.alchema.api.event.CauldronIngredientAddEvent;
-import wtf.choco.alchema.crafting.CauldronIngredient;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 
 import io.lumine.mythic.lib.api.item.NBTItem;
@@ -24,16 +23,11 @@ public final class MMOItemsIntegrationListener implements Listener {
 
     @EventHandler
     private void onAddMMOItemIngredient(CauldronIngredientAddEvent event) {
-        CauldronIngredient ingredient = event.getIngredient();
-        if (!(ingredient instanceof CauldronIngredientItemStack)) {
+        if (!(event.getIngredient() instanceof CauldronIngredientItemStack ingredient)) {
             return;
         }
 
         ItemStack item = ingredient.asItemStack();
-        if (item == null) {
-            return;
-        }
-
         NBTItem nbtItem = NBTItem.get(item);
         if (!nbtItem.hasType()) {
             return;

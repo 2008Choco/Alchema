@@ -16,10 +16,13 @@ public final class PersistentDataTypeNamespacedKey implements PersistentDataType
 
     @NotNull
     @Override
-    @SuppressWarnings("deprecation")
     public NamespacedKey fromPrimitive(@NotNull String string, @NotNull PersistentDataAdapterContext context) {
-        String[] split = string.split(":");
-        return split.length >= 2 ? new NamespacedKey(split[0], split[1]) : NamespacedKey.minecraft(split[0]);
+        NamespacedKey key = NamespacedKey.fromString(string);
+        if (key == null) {
+            throw new IllegalStateException("Invalid namespaced key, \"" + string + "\"");
+        }
+
+        return key;
     }
 
     @NotNull

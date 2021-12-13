@@ -157,11 +157,10 @@ class SimpleCauldronRecipe implements CauldronRecipe {
             return true;
         }
 
-        if (!(obj instanceof SimpleCauldronRecipe)) {
+        if (!(obj instanceof SimpleCauldronRecipe other)) {
             return false;
         }
 
-        SimpleCauldronRecipe other = (SimpleCauldronRecipe) obj;
         return experience == other.experience && Objects.equals(key, other.key) && Objects.equals(comment, other.comment)
                 && Objects.equals(name, other.name) && Objects.equals(description, other.description)
                 && Objects.equals(result, other.result) && Objects.equals(ingredients, other.ingredients);

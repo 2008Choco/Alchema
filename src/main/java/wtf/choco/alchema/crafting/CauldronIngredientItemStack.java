@@ -79,12 +79,7 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
 
     @Override
     public boolean isSimilar(@NotNull CauldronIngredient other) {
-        if (!(other instanceof CauldronIngredientItemStack)) {
-            return false;
-        }
-
-        CauldronIngredientItemStack ingredient = (CauldronIngredientItemStack) other;
-        return item.isSimilar(ingredient.item);
+        return other instanceof CauldronIngredientItemStack ingredient && item.isSimilar(ingredient.item);
     }
 
     @NotNull
@@ -117,16 +112,7 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof CauldronIngredientItemStack)) {
-            return false;
-        }
-
-        CauldronIngredientItemStack other = (CauldronIngredientItemStack) obj;
-        return getAmount() == other.getAmount() && Objects.equals(item, other.item);
+        return obj == this || (obj instanceof CauldronIngredientItemStack other && getAmount() == other.getAmount() && Objects.equals(item, other.item));
     }
 
     @Override

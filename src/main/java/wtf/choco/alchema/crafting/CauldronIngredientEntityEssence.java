@@ -118,12 +118,7 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
 
     @Override
     public boolean isSimilar(@NotNull CauldronIngredient other) {
-        if (!(other instanceof CauldronIngredientEntityEssence)) {
-            return false;
-        }
-
-        CauldronIngredientEntityEssence ingredient = (CauldronIngredientEntityEssence) other;
-        return entityType == ingredient.entityType;
+        return other instanceof CauldronIngredientEntityEssence ingredient && entityType == ingredient.entityType;
     }
 
     @NotNull
@@ -167,7 +162,7 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     @NotNull
     @Override
     public String describe() {
-        return getAmount() + "x " + StringUtils.capitalize(entityType.getKey().getKey().replace('_', ' ')) + " essence";
+        return amount + "x " + StringUtils.capitalize(entityType.getKey().getKey().replace('_', ' ')) + " essence";
     }
 
     @NotNull
@@ -176,28 +171,19 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
         JsonObject object = new JsonObject();
 
         object.addProperty("entity", entityType.getKey().toString());
-        object.addProperty("amount", getAmount());
+        object.addProperty("amount", amount);
 
         return object;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAmount(), entityType);
+        return Objects.hash(amount, entityType);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof CauldronIngredientEntityEssence)) {
-            return false;
-        }
-
-        CauldronIngredientEntityEssence other = (CauldronIngredientEntityEssence) obj;
-        return getAmount() == other.getAmount() && entityType == other.entityType;
+        return obj == this || (obj instanceof CauldronIngredientEntityEssence other && amount == other.amount && entityType == other.entityType);
     }
 
     @Override
