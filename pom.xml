@@ -4,10 +4,21 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>wtf.choco</groupId>
   <artifactId>Alchema</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <name>Alchema</name>
   <description>In-world cauldron crafting, witchcraft and sorcery</description>
+
+  <distributionManagement>
+    <repository>
+      <id>md_5-releases</id>
+      <url>https://repo.md-5.net/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>md_5-snapshots</id>
+      <url>https://repo.md-5.net/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <pluginRepositories>
     <pluginRepository>
