@@ -47,7 +47,11 @@ public final class CauldronDeathMessageListener implements Listener {
             }
 
             String deathMessage = deathMessages.get(ThreadLocalRandom.current().nextInt(deathMessages.size()));
-            event.setDeathMessage((deathMessage != null && !deathMessage.trim().isEmpty()) ? String.format(deathMessage, player.getName()) : null);
+            if (deathMessage == null || deathMessage.isBlank()) {
+                return;
+            }
+
+            event.setDeathMessage(String.format(deathMessage, player.getName()));
         }
     }
 
