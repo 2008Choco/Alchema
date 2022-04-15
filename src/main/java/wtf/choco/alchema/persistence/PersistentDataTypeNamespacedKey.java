@@ -33,14 +33,12 @@ public final class PersistentDataTypeNamespacedKey implements PersistentDataType
 
     @NotNull
     @Override
-    @SuppressWarnings("null") // Eclipse being strange with nullability annotations
     public Class<NamespacedKey> getComplexType() {
         return NamespacedKey.class;
     }
 
     @NotNull
     @Override
-    @SuppressWarnings("null") // Eclipse being strange with nullability annotations
     public Class<String> getPrimitiveType() {
         return String.class;
     }

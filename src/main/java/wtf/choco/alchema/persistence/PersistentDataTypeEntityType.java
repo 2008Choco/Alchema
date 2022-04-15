@@ -40,14 +40,12 @@ public final class PersistentDataTypeEntityType implements PersistentDataType<St
 
     @NotNull
     @Override
-    @SuppressWarnings("null") // Eclipse being strange with nullability annotations
     public Class<EntityType> getComplexType() {
         return EntityType.class;
     }
 
     @NotNull
     @Override
-    @SuppressWarnings("null") // Eclipse being strange with nullability annotations
     public Class<String> getPrimitiveType() {
         return String.class;
     }

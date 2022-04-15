@@ -232,7 +232,6 @@ public class EntityEssenceData {
             .replace("%max_quantity%", String.valueOf(maximumEssence))
         );
 
-        @SuppressWarnings("null")
         List<String> itemLore = config.getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_FILLED_LORE).stream()
             .map(line -> ChatColor.translateAlternateColorCodes('&', line
                 .replace("%entity%", entityName)
@@ -386,7 +385,6 @@ public class EntityEssenceData {
 
         itemName = ChatColor.translateAlternateColorCodes('&', itemName);
 
-        @SuppressWarnings("null")
         List<String> itemLore = config.getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_LORE).stream()
             .map(line -> ChatColor.translateAlternateColorCodes('&', line))
             .collect(Collectors.toList());

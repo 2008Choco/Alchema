@@ -114,6 +114,10 @@ public final class EntityEssenceCollectionListener implements Listener {
         EquipmentSlot hand = event.getHand();
         ItemStack item = inventory.getItem(hand);
 
+        if (item == null) {
+            return;
+        }
+
         if (EntityEssenceData.isEmptyVial(item)) {
             if (!canHaveEssenceExtracted(player, entity, config)) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This " + type.getKey().getKey().replace('_', ' ') + " has had its essence extracted recently."));
