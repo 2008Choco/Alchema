@@ -2,8 +2,7 @@ package wtf.choco.alchema.crafting;
 
 import com.google.gson.JsonObject;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -112,7 +111,19 @@ public interface CauldronIngredient {
     @NotNull
     public default List<@NotNull Item> drop(@NotNull AlchemicalCauldron cauldron, @NotNull World world, @NotNull Location location) {
         ItemStack itemStack = asItemStack();
-        return itemStack != null ? Arrays.asList(world.dropItem(location, itemStack)) : Collections.emptyList();
+
+        List<Item> droppedItems = new ArrayList<>();
+        if (itemStack == null) {
+            return droppedItems;
+        }
+
+        int maxStackSize = itemStack.getType().getMaxStackSize();
+        for (int i = itemStack.getAmount(); i > 0; i -= maxStackSize) {
+            itemStack.setAmount(Math.min(i, maxStackSize));
+            droppedItems.add(world.dropItem(location, itemStack));
+        }
+
+        return droppedItems;
     }
 
     /**
