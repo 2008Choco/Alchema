@@ -19,6 +19,45 @@ For information about the plugin and how to use it, please see the plugin's [res
 
 ![Alchema cauldron recipes](https://user-images.githubusercontent.com/10508906/103101156-48bae500-45e4-11eb-96cd-7ab3bb1d025e.gif)
 
+# Depending on Alchema API
+
+Alchema is kindly hosted by md_5 on his repository and can be depended on with either Maven or Gradle.
+
+## Maven
+
+```xml
+<project>
+  ...
+  <repositories>
+    <id>md_5-repository</id>
+    <url>https://repo.md-5.net/content/repositories/snapshots/</url>
+  </repositories>
+  ...
+  <dependencies>
+    <dependency>
+      <groupId>wtf.choco</groupId>
+      <artifactId>Alchema</artifactId>
+      <version>1.2.0-SNAPSHOT</version> <!-- Or whatever version -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  ...
+</project>
+```
+
+## Gradle
+
+```groovy
+repositories {
+  jcenter()
+  maven { url "https://repo.md-5.net/content/repositories/snapshots/" }
+}
+
+dependencies {
+  implementation 'wtf.choco:Alchema:1.2.0-SNAPSHOT' # Or whatever version
+}
+```
+
 # Contribution Guidelines
 If you plan on contributing to Alchema, thank you! Contributions are much appreciated. Please follow the following guidelines if you plan on contributing either as a developer or a user of this plugin.
 
