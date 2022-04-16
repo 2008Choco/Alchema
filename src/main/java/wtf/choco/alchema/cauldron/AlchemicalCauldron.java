@@ -720,7 +720,7 @@ public class AlchemicalCauldron {
         int z = cauldronBlockObject.get("z").getAsInt();
         Block block = world.getBlockAt(x, y, z);
 
-        if (block.getType() != Material.CAULDRON) {
+        if (block.getType() != Material.WATER_CAULDRON) {
             return null;
         }
 

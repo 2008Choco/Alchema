@@ -219,7 +219,7 @@ public final class Alchema extends JavaPlugin {
 
         // Write all cauldrons to file
         Collection<@NotNull AlchemicalCauldron> cauldrons = cauldronManager.getCauldrons();
-        if (cauldrons.size() > 0) {
+        if (!cauldrons.isEmpty()) {
             JsonArray cauldronsArray = new JsonArray();
             cauldrons.forEach(cauldron -> cauldronsArray.add(cauldron.write(new JsonObject())));
 
