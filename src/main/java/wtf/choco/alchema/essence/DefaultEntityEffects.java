@@ -128,6 +128,7 @@ public final class DefaultEntityEffects {
 
     // E
     static final EssenceConsumptionCallback ELDER_GUARDIAN = null;
+    static final EssenceConsumptionCallback ENDER_DRAGON = null;
     static final EssenceConsumptionCallback ENDERMAN = (player, essenceData, item, amountOfEssence, potency) -> {
         World world = player.getWorld();
         Location playerLocation = player.getLocation();
@@ -174,6 +175,7 @@ public final class DefaultEntityEffects {
 
     // G
     static final EssenceConsumptionCallback GHAST = null;
+    static final EssenceConsumptionCallback GIANT = null;
     static final EssenceConsumptionCallback GLOW_SQUID = (player, essenceData, item, amountOfEssence, potency) -> {
         player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 100 + (int) (300 * potency), 0, true));
     };

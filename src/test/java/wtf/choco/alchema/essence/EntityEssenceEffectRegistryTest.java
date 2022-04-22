@@ -20,8 +20,6 @@ class EntityEssenceEffectRegistryTest {
     // Entities that will never have registered entity essence. Either impossible entity types or not necessary
     private static final Set<@NotNull EntityType> IGNORED_ENTITY_TYPES = EnumSet.of(
             EntityType.ARMOR_STAND,
-            EntityType.ENDER_DRAGON,
-            EntityType.GIANT,
             EntityType.UNKNOWN
     );
 

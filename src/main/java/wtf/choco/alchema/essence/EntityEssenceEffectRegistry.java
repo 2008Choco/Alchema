@@ -136,6 +136,7 @@ public final class EntityEssenceEffectRegistry {
 
         // E
         register(registry, EntityType.ELDER_GUARDIAN, 0x9A988E, DefaultEntityEffects.ELDER_GUARDIAN);
+        register(registry, EntityType.ENDER_DRAGON, 0x211329, DefaultEntityEffects.ENDER_DRAGON);
         register(registry, EntityType.ENDERMAN, 0xC140D6, DefaultEntityEffects.ENDERMAN);
         register(registry, EntityType.ENDERMITE, 0x3F2F53, DefaultEntityEffects.ENDERMITE);
         register(registry, EntityType.EVOKER, 0xC5B26A, DefaultEntityEffects.EVOKER);
@@ -145,6 +146,7 @@ public final class EntityEssenceEffectRegistry {
 
         // G
         register(registry, EntityType.GHAST, 0xAFAFAF, DefaultEntityEffects.GHAST);
+        register(registry, EntityType.GIANT, 0x40782F, DefaultEntityEffects.GIANT);
         register(registry, EntityType.GLOW_SQUID, 0x2F9799, DefaultEntityEffects.GLOW_SQUID);
         register(registry, EntityType.GOAT, 0xE6E6E6, DefaultEntityEffects.GOAT);
         register(registry, EntityType.GUARDIAN, 0x699381, DefaultEntityEffects.GUARDIAN);
