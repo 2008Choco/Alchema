@@ -41,6 +41,7 @@ import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.crafting.RecipeResultItemStack;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.integration.mmoitems.PluginIntegrationMMOItems;
@@ -93,9 +94,13 @@ public final class Alchema extends JavaPlugin {
          * because we need them for the recipe files. By the time their onEnable() is called, recipes files are already
          * being loaded so it's a tad too late to be registering new ingredient types.
          */
+        // Ingredient types
         this.recipeRegistry.registerIngredientType(CauldronIngredientItemStack.KEY, CauldronIngredientItemStack::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientMaterial.KEY, CauldronIngredientMaterial::new);
         this.recipeRegistry.registerIngredientType(CauldronIngredientEntityEssence.KEY, object -> new CauldronIngredientEntityEssence(object, entityEssenceEffectRegistry));
+
+        // Result types
+        this.recipeRegistry.registerResultType(RecipeResultItemStack.KEY, RecipeResultItemStack::new);
 
         /*
          * We're also going to handle plugin integration registrations on load just to jump the gun a bit.
@@ -146,7 +151,7 @@ public final class Alchema extends JavaPlugin {
         }
 
         // Load cauldron recipes (asynchronously)
-        this.recipeRegistry.stopAcceptingIngredientRegistrations(); // Stop accepting registrations now. We're ready to load.
+        this.recipeRegistry.stopAcceptingRegistrations(); // Stop accepting registrations now. We're ready to load.
         this.recipeRegistry.loadCauldronRecipes(this, recipesDirectory).whenComplete((result, exception) -> {
             if (exception != null) {
                 exception.printStackTrace();
@@ -235,6 +240,7 @@ public final class Alchema extends JavaPlugin {
         this.cauldronManager.clearCauldrons();
         this.recipeRegistry.clearRecipes();
         this.recipeRegistry.clearIngredientTypes();
+        this.recipeRegistry.clearResultTypes();
         this.entityEssenceEffectRegistry.clearEntityEssenceData();
 
         this.cauldronUpdateTask.cancelTask();

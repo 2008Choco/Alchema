@@ -57,6 +57,7 @@ import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronRecipe;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.crafting.RecipeResult;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.util.AlchemaConstants;
@@ -632,9 +633,9 @@ public class AlchemicalCauldron {
         Location resultSpawnLocation = getLocation().add(0.5, 1.1, 0.5);
 
         // Item result
-        ItemStack result = cauldronCraftEvent.getResult();
+        RecipeResult result = cauldronCraftEvent.getRecipeResult();
         if (result != null) {
-            Item item = world.dropItem(resultSpawnLocation, result);
+            Item item = world.dropItem(resultSpawnLocation, result.asItemStack());
             item.setVelocity(itemVelocity);
             item.setMetadata(AlchemaConstants.METADATA_KEY_CAULDRON_CRAFTED, new FixedMetadataValue(plugin, true));
         }

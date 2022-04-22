@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
-import wtf.choco.alchema.util.ItemUtil;
 import wtf.choco.commons.util.NamespacedKeyUtil;
 
 /**
@@ -41,9 +40,20 @@ public interface CauldronRecipe {
      * Get the result of this recipe.
      *
      * @return the result
+     *
+     * @deprecated use {@link #getRecipeResult()} instead
      */
     @NotNull
+    @Deprecated(since = "1.3.0")
     public ItemStack getResult();
+
+    /**
+     * Get the result of this recipe.
+     *
+     * @return the result
+     */
+    @NotNull
+    public RecipeResult getRecipeResult();
 
     /**
      * Get the name of this recipe.
@@ -124,6 +134,19 @@ public interface CauldronRecipe {
      */
     @NotNull
     public static CauldronRecipe.Builder builder(@NotNull NamespacedKey key, @NotNull ItemStack result) {
+        return builder(key, new RecipeResultItemStack(result));
+    }
+
+    /**
+     * Create a new CauldronRecipe builder instance.
+     *
+     * @param key the recipe key
+     * @param result the result of the cauldron recipe
+     *
+     * @return the builder instance
+     */
+    @NotNull
+    public static CauldronRecipe.Builder builder(@NotNull NamespacedKey key, @NotNull RecipeResult result) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(result != null, "result must not be null");
 
@@ -153,12 +176,25 @@ public interface CauldronRecipe {
             throw new JsonParseException("Missing ingredients array");
         }
 
+        // Parse the result
+        JsonObject resultObject = object.getAsJsonObject("result");
+        NamespacedKey resultTypeKey = (resultObject.has("type") ? NamespacedKeyUtil.fromString(resultObject.get("type").getAsString(), Alchema.getInstance()) : RecipeResultItemStack.KEY);
+        if (resultTypeKey == null) {
+            throw new JsonParseException("Invalid namespaced key \"" + resultObject.get("type").getAsString() + "\". Expected format is \"alchema:example\"");
+        }
+
+        RecipeResult result = recipeRegistry.parseResultType(resultTypeKey, resultObject);
+
+        if (result == null) {
+            throw new JsonParseException("Could not find result type with id \"" + resultTypeKey + "\"");
+        }
+
+        // Parse ingredients
         JsonArray ingredientsArray = object.getAsJsonArray("ingredients");
         if (ingredientsArray.size() < 2) {
             throw new JsonParseException("ingredients array must contain at least two ingredients");
         }
 
-        ItemStack result = ItemUtil.deserializeItemStackModern(object.getAsJsonObject("result"));
         List<@NotNull CauldronIngredient> ingredients = new ArrayList<>(ingredientsArray.size());
 
         for (int i = 0; i < ingredientsArray.size(); i++) {
@@ -204,9 +240,9 @@ public interface CauldronRecipe {
         private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
 
         private final NamespacedKey key;
-        private final ItemStack result;
+        private final RecipeResult result;
 
-        private Builder(NamespacedKey key, ItemStack result) {
+        private Builder(NamespacedKey key, RecipeResult result) {
             Preconditions.checkArgument(key != null, "key must not be null");
             Preconditions.checkArgument(result != null, "result must not be null");
 

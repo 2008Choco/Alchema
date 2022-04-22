@@ -22,6 +22,7 @@ import java.util.function.Function;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,10 +41,11 @@ public class CauldronRecipeRegistry {
 
     private static final Gson GSON = new Gson();
 
-    private boolean acceptingIngredientRegistrations = true;
+    private boolean acceptingRegistrations = true;
 
     private final Map<@NotNull NamespacedKey, @NotNull CauldronRecipe> recipes = new HashMap<>();
     private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient>> ingredientTypes = new HashMap<>();
+    private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends RecipeResult>> resultTypes = new HashMap<>();
 
     /**
      * Register a {@link CauldronRecipe} to be used by any {@link AlchemicalCauldron}.
@@ -186,14 +188,15 @@ public class CauldronRecipeRegistry {
     }
 
     /**
-     * Declare that this registry is no longer accepting ingredient registrations.
+     * Declare that this registry is no longer accepting registrations.
      * <p>
      * This method should be called internally by Alchema to ensure that ingredient types are not
      * registered after all plugins have been loaded. It is expected that all calls to
      * {@link #registerIngredientType(NamespacedKey, Function)} be made in {@link JavaPlugin#onLoad()}.
      */
-    public void stopAcceptingIngredientRegistrations() {
-        this.acceptingIngredientRegistrations = false;
+    @Internal
+    public void stopAcceptingRegistrations() {
+        this.acceptingRegistrations = false;
     }
 
     /**
@@ -211,7 +214,7 @@ public class CauldronRecipeRegistry {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(ingredientProvider != null, "ingredientProvider must not be null");
 
-        if (!acceptingIngredientRegistrations) {
+        if (!acceptingRegistrations) {
             throw new IllegalStateException("Attempted to register ingredient type (" + key + ") while the registry is no longer accepting registrations. Ingredient registration should be done onLoad()");
         }
 
@@ -245,6 +248,57 @@ public class CauldronRecipeRegistry {
      */
     public void clearIngredientTypes() {
         this.ingredientTypes.clear();
+    }
+
+    /**
+     * Register a new type of {@link RecipeResult}. This registration should be done during the plugin's
+     * load phase (i.e. {@link JavaPlugin#onLoad()}).
+     * <p>
+     * <strong>NOTE:</strong> This method should be called in {@link JavaPlugin#onLoad()}. Registrations
+     * will no longer be accepted in {@link JavaPlugin#onEnable()} and an IllegalStateException will be
+     * thrown.
+     *
+     * @param key the ingredient key. Should match that of {@link RecipeResult#getKey()}
+     * @param resultProvider the result provider
+     */
+    public void registerResultType(@NotNull NamespacedKey key, @NotNull Function<@NotNull JsonObject, @NotNull ? extends RecipeResult> resultProvider) {
+        Preconditions.checkArgument(key != null, "key must not be null");
+        Preconditions.checkArgument(resultProvider != null, "ingredientProvider must not be null");
+
+        if (!acceptingRegistrations) {
+            throw new IllegalStateException("Attempted to register result type (" + key + ") while the registry is no longer accepting registrations. Result registration should be done onLoad()");
+        }
+
+        this.resultTypes.put(key, resultProvider);
+    }
+
+    /**
+     * Parse a {@link RecipeResult} with the result type matching the provided {@link NamespacedKey}
+     * from a {@link JsonObject}.
+     *
+     * @param key the key of the result type to parse
+     * @param object the object from which to parse the ingredient
+     *
+     * @return the parsed result. null if invalid
+     */
+    @Nullable
+    public RecipeResult parseResultType(@NotNull NamespacedKey key, @NotNull JsonObject object) {
+        Preconditions.checkArgument(key != null, "key must not be null");
+        Preconditions.checkArgument(object != null, "object must not be null");
+
+        Function<@NotNull JsonObject, @NotNull ? extends RecipeResult> resultProvider = resultTypes.get(key);
+        if (resultProvider == null) {
+            return null;
+        }
+
+        return resultProvider.apply(object);
+    }
+
+    /**
+     * Clear all registered result types.
+     */
+    public void clearResultTypes() {
+        this.resultTypes.clear();
     }
 
     /**

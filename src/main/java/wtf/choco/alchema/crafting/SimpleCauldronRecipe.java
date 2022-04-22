@@ -21,14 +21,14 @@ import org.jetbrains.annotations.Nullable;
 class SimpleCauldronRecipe implements CauldronRecipe {
 
     private final NamespacedKey key;
-    private final ItemStack result;
+    private final RecipeResult result;
 
     private final String name, description, comment;
     private final int experience;
 
     private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
 
-    SimpleCauldronRecipe(@NotNull NamespacedKey key, @NotNull ItemStack result, @Nullable String name, @Nullable String description, @Nullable String comment, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
+    SimpleCauldronRecipe(@NotNull NamespacedKey key, @NotNull RecipeResult result, @Nullable String name, @Nullable String description, @Nullable String comment, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(result != null, "result must not be null");
 
@@ -52,7 +52,13 @@ class SimpleCauldronRecipe implements CauldronRecipe {
     @NotNull
     @Override
     public ItemStack getResult() {
-        return result.clone();
+        return result.asItemStack();
+    }
+
+    @NotNull
+    @Override
+    public RecipeResult getRecipeResult() {
+        return result;
     }
 
     @NotNull
