@@ -1,6 +1,7 @@
 {
     "experience": 2,
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:diamond_ore"
     },
     "ingredients": [

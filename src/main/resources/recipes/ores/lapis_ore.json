@@ -1,6 +1,7 @@
 {
     "experience": 1,
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:lapis_ore"
     },
     "ingredients": [

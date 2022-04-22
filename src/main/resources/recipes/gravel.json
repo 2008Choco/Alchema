@@ -1,6 +1,7 @@
 {
     "comment": "Recipe suggested and provided by Deadpan110",
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:gravel",
         "amount": 8
     },

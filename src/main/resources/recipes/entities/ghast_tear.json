@@ -1,8 +1,8 @@
 {
     "experience": 5,
     "result": {
-        "item": "minecraft:ghast_tear",
-        "amount": 1
+        "type": "alchema:item",
+        "item": "minecraft:ghast_tear"
     },
     "ingredients": [
         {

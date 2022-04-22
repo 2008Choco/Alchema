@@ -1,6 +1,7 @@
 {
     "experience": 3,
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:emerald_ore"
     },
     "ingredients": [

@@ -1,6 +1,7 @@
 {
     "experience": 3,
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:blaze_rod"
     },
     "ingredients": [

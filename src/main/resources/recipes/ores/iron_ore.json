@@ -1,5 +1,6 @@
 {
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:iron_ore"
     },
     "ingredients": [

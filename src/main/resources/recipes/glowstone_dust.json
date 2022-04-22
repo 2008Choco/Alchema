@@ -1,5 +1,6 @@
 {
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:glowstone_dust",
         "amount": 2
     },

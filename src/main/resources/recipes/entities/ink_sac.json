@@ -1,7 +1,7 @@
 {
     "result": {
-        "item": "minecraft:ink_sac",
-        "amount": 1
+        "type": "alchema:item",
+        "item": "minecraft:ink_sac"
     },
     "ingredients": [
         {

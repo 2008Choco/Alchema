@@ -1,6 +1,7 @@
 {
     "comment": "Recipe suggested and provided by WanderingPoet",
     "result": {
+        "type": "alchema:item",
         "item": "minecraft:yellow_concrete",
         "amount": 8
     },
