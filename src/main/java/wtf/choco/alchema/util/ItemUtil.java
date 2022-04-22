@@ -30,6 +30,7 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.TropicalFish;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -385,25 +386,15 @@ public final class ItemUtil {
     /**
      * Deserialize an {@link ItemStack} from a {@link JsonObject}.
      *
+     * @param item the item to which the deserialization should apply
      * @param object the object from which to deserialize an ItemStack
      *
      * @return the deserialized ItemStack
      */
     @NotNull
     @SuppressWarnings("unused") // Eclipse thinks Optional#orNull() never returns null... wot?
-    public static ItemStack deserializeItemStack(@NotNull JsonObject object) {
+    public static ItemStack deserializeItemStack(@NotNull ItemStack item, @NotNull JsonObject object) {
         Preconditions.checkArgument(object != null, "object must not be null");
-
-        if (!object.has("item")) {
-            throw new JsonParseException("Could not find \"item\"");
-        }
-
-        Material type = Material.matchMaterial(object.get("item").getAsString());
-        if (type == null) {
-            throw new JsonParseException("Could not create item of type \"" + object.get("item").getAsString() + "\". Does it exist?");
-        }
-
-        ItemStack item = new ItemStack(type);
 
         // Base meta (ItemMeta)
         if (object.has("amount")) {
@@ -939,6 +930,66 @@ public final class ItemUtil {
 
         item.setItemMeta(meta);
         return item;
+    }
+
+    /**
+     * Deserialize an {@link ItemStack} from a {@link JsonObject}.
+     *
+     * @param object the object from which to deserialize an ItemStack
+     *
+     * @return the deserialized ItemStack
+     */
+    @NotNull
+    public static ItemStack deserializeItemStack(@NotNull JsonObject object) {
+        Preconditions.checkArgument(object != null, "object must not be null");
+
+        if (!object.has("item")) {
+            throw new JsonParseException("Could not find \"item\"");
+        }
+
+        Material type = Material.matchMaterial(object.get("item").getAsString());
+        if (type == null) {
+            throw new JsonParseException("Could not create item of type \"" + object.get("item").getAsString() + "\". Does it exist?");
+        }
+
+        ItemStack item = new ItemStack(type);
+        return deserializeItemStack(item, object);
+    }
+
+    /**
+     * Deserialize an {@link ItemStack} from a {@link JsonObject}, but first attempting to use
+     * modern methods, {@link ItemFactory#createItemStack(String)}, to create the item and apply
+     * legacy deserialization to the created item.
+     *
+     * @param object the object from which to deserialize an ItemStack
+     *
+     * @return the deserialized ItemStack
+     */
+    @NotNull
+    public static ItemStack deserializeItemStackModern(@NotNull JsonObject object) {
+        if (!object.has("item")) {
+            throw new JsonParseException("Could not find \"item\"");
+        }
+
+        String resultString = object.get("item").getAsString();
+        ItemStack result = null;
+
+        try {
+            result = Bukkit.getItemFactory().createItemStack(resultString);
+
+            if (object.has("amount")) {
+                result.setAmount(Math.max(object.get("amount").getAsInt(), 1));
+            }
+
+            // Still apply any legacy deserialization even though we're using modern methods so that legacy recipes are supported
+            result = deserializeItemStack(result, object);
+        } catch (IllegalArgumentException e) {
+            throw new JsonParseException("Malformatted \"item\" input in \"result\" object. Got: \"" + resultString + "\"");
+        } catch (Exception e) { // If the method doesn't exist, we'll fall back to old serialization
+            result = deserializeItemStack(object);
+        }
+
+        return result;
     }
 
 }

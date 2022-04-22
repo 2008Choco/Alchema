@@ -56,7 +56,7 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
      * @param object the object from which to deserialize
      */
     public CauldronIngredientItemStack(@NotNull JsonObject object) {
-        this.item = ItemUtil.deserializeItemStack(object);
+        this.item = ItemUtil.deserializeItemStackModern(object);
         this.item.setAmount(object.has("amount") ? Math.max(object.get("amount").getAsInt(), 1) : 1);
     }
 

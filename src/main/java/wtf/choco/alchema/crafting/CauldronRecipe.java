@@ -158,8 +158,7 @@ public interface CauldronRecipe {
             throw new JsonParseException("ingredients array must contain at least two ingredients");
         }
 
-        ItemStack result = ItemUtil.deserializeItemStack(object.getAsJsonObject("result"));
-
+        ItemStack result = ItemUtil.deserializeItemStackModern(object.getAsJsonObject("result"));
         List<@NotNull CauldronIngredient> ingredients = new ArrayList<>(ingredientsArray.size());
 
         for (int i = 0; i < ingredientsArray.size(); i++) {
