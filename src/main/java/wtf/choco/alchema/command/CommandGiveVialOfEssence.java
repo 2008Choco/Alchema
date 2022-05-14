@@ -55,14 +55,18 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         // Target selector argument
         List<Player> targets = (sender instanceof Player) ? Arrays.asList((Player) sender) : Collections.emptyList();
         if (args.length >= 1) {
-            targets = Bukkit.selectEntities(sender, args[0]).stream()
-                .filter(entity -> entity instanceof Player)
-                .map(entity -> (Player) entity)
-                .distinct()
-                .collect(Collectors.toList());
+            try {
+                targets = Bukkit.selectEntities(sender, args[0]).stream()
+                    .filter(entity -> entity instanceof Player)
+                    .map(entity -> (Player) entity)
+                    .distinct()
+                    .collect(Collectors.toList());
+            } catch (IllegalArgumentException e) {
+                targets = Collections.emptyList();
+            }
 
             if (targets.isEmpty()) {
-                sender.sendMessage(CHAT_PREFIX + "Invalid entity selection, " + ChatColor.YELLOW + args[2]);
+                sender.sendMessage(CHAT_PREFIX + "Invalid entity selection, " + ChatColor.YELLOW + args[0]);
                 return true;
             }
         }
