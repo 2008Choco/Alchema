@@ -175,12 +175,6 @@ public final class CommandAlchema implements TabExecutor {
 
             if (integrations.isEmpty() && nativeIntegrations.isEmpty()) {
                 sender.sendMessage(Alchema.CHAT_PREFIX + "No plugins are currently integrating with Alchema.");
-
-                // Just a little bit of shameless self-promotion :)
-                String selloutPrefix = ChatColor.WHITE.toString() + ChatColor.BOLD + " | " + ChatColor.GRAY;
-                sender.sendMessage(selloutPrefix + "Alchema recommends " + ChatColor.YELLOW + "AlchemicalArrows " + ChatColor.GRAY + "by " + ChatColor.GREEN + "Choco" + ChatColor.GRAY + ".");
-                sender.sendMessage(selloutPrefix + "It adds over " + ChatColor.YELLOW + "15 unique cauldron recipes" + ChatColor.GRAY + "!");
-                sender.sendMessage(selloutPrefix + "Get it at " + ChatColor.GREEN + "https://www.spigotmc.org/resources/11693/");
                 return true;
             }
 
