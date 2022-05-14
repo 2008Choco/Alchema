@@ -3,9 +3,12 @@ package wtf.choco.alchema.listener;
 import java.util.concurrent.ThreadLocalRandom;
 
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -125,7 +128,10 @@ public final class EntityEssenceCollectionListener implements Listener {
 
         if (EntityEssenceData.isEmptyVial(item)) {
             if (!creativeMode && !EssenceUtil.canHaveEssenceExtracted(entity, plugin)) {
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This " + type.getKey().getKey().replace('_', ' ') + " has had its essence extracted recently."));
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder("This ")
+                        .append(entityTypeComponent(type))
+                        .append(" has had its essence extracted recently.")
+                        .create());
                 event.setCancelled(true);
                 return;
             }
@@ -160,7 +166,10 @@ public final class EntityEssenceCollectionListener implements Listener {
             }
 
             if (!creativeMode && !EssenceUtil.canHaveEssenceExtracted(entity, plugin)) {
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This " + type.getKey().getKey().replace('_', ' ') + " has had its essence extracted recently."));
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder("This ")
+                        .append(entityTypeComponent(type))
+                        .append(" has had its essence extracted recently.")
+                        .create());
                 event.setCancelled(true);
                 return;
             }
@@ -215,6 +224,12 @@ public final class EntityEssenceCollectionListener implements Listener {
 
     private int getRandomEssenceAmount(FileConfiguration config, String minPath, int minDefault, String maxPath, int maxDefault) {
         return getRandomEssenceAmount(ThreadLocalRandom.current(), config, minPath, minDefault, maxPath, maxDefault);
+    }
+
+    private TranslatableComponent entityTypeComponent(EntityType entityType) {
+        NamespacedKey key = entityType.getKey();
+        String translationKey = "entity." + key.getNamespace() + "." + key.getKey();
+        return new TranslatableComponent(translationKey);
     }
 
     public void refreshBlacklists() {
