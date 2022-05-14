@@ -18,6 +18,12 @@ import wtf.choco.alchema.Alchema;
 public final class AlchemaConstants {
 
     // Metadata keys
+    /** A metadata key used by Alchema to denote that a block is an alchemical cauldron */
+    public static final String METADATA_KEY_ALCHEMICAL_CAULDRON = "alchema:alchemical_cauldron";
+
+    /** A metadata key used by Alchema to denote whether or not an alchemical cauldron is bubbling */
+    public static final String METADATA_KEY_ALCHEMICAL_CAULDRON_BUBBLING = "alchema:alchemical_cauldron_bubbling";
+
     /** A metadata key used by Alchema to denote that an entity was damaged by a cauldron */
     public static final String METADATA_KEY_DAMAGED_BY_CAULDRON = "alchema:damaged_by_cauldron";
 

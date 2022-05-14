@@ -12,6 +12,8 @@ import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.alchema.Alchema;
+
 /**
  * Manages instances of {@link AlchemicalCauldron} in any given world.
  *
@@ -20,6 +22,16 @@ import org.jetbrains.annotations.Nullable;
 public final class CauldronManager {
 
     private final Map<Block, AlchemicalCauldron> cauldrons = new HashMap<>();
+    private final Alchema plugin;
+
+    /**
+     * Construct a new {@link CauldronManager}.
+     *
+     * @param plugin the plugin instance
+     */
+    public CauldronManager(@NotNull Alchema plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Add an {@link AlchemicalCauldron} to the world.
@@ -29,6 +41,7 @@ public final class CauldronManager {
     public void addCauldron(@NotNull AlchemicalCauldron cauldron) {
         Preconditions.checkNotNull(cauldron, "Cannot add null alchemical cauldron");
         this.cauldrons.put(cauldron.getCauldronBlock(), cauldron);
+        cauldron.attachMetadata(plugin);
     }
 
     /**
@@ -38,6 +51,7 @@ public final class CauldronManager {
      */
     public void removeCauldron(@NotNull AlchemicalCauldron cauldron) {
         this.cauldrons.remove(cauldron.getCauldronBlock());
+        cauldron.detachMetadata(plugin);
     }
 
     /**
@@ -80,6 +94,7 @@ public final class CauldronManager {
      * Clear all alchemical cauldrons from the world.
      */
     public void clearCauldrons() {
+        this.cauldrons.values().forEach(cauldron -> cauldron.detachMetadata(plugin));
         this.cauldrons.clear();
     }
 

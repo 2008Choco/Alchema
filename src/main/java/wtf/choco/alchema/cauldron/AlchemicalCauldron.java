@@ -40,8 +40,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue;
+import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -472,6 +475,30 @@ public class AlchemicalCauldron {
      */
     public void clearIngredients() {
         this.ingredients.clear();
+    }
+
+    /**
+     * Attach metadata values to all relevant metadatable objects pertaining to
+     * this cauldron.
+     *
+     * @param plugin the plugin instance
+     */
+    @Internal
+    void attachMetadata(@NotNull Alchema plugin) {
+        this.cauldronBlock.setMetadata(AlchemaConstants.METADATA_KEY_ALCHEMICAL_CAULDRON, new FixedMetadataValue(plugin, true));
+        this.cauldronBlock.setMetadata(AlchemaConstants.METADATA_KEY_ALCHEMICAL_CAULDRON_BUBBLING, new LazyMetadataValue(plugin, CacheStrategy.NEVER_CACHE, this::isBubbling));
+    }
+
+    /**
+     * Remove metadata values from all relevant metadatable objects pertaining to
+     * this cauldron.
+     *
+     * @param plugin the plugin instance
+     */
+    @Internal
+    void detachMetadata(@NotNull Alchema plugin) {
+        this.cauldronBlock.removeMetadata(AlchemaConstants.METADATA_KEY_ALCHEMICAL_CAULDRON, plugin);
+        this.cauldronBlock.removeMetadata(AlchemaConstants.METADATA_KEY_ALCHEMICAL_CAULDRON_BUBBLING, plugin);
     }
 
     /**

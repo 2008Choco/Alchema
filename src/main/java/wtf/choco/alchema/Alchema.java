@@ -70,7 +70,7 @@ public final class Alchema extends JavaPlugin {
 
     private static Alchema instance;
 
-    private final CauldronManager cauldronManager = new CauldronManager();
+    private final CauldronManager cauldronManager = new CauldronManager(this);
     private final CauldronRecipeRegistry recipeRegistry = new CauldronRecipeRegistry();
     private final EntityEssenceEffectRegistry entityEssenceEffectRegistry = new EntityEssenceEffectRegistry();
 

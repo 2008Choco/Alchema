@@ -53,7 +53,7 @@ public final class DefaultEntityEffects {
 
     // C
     static final EssenceConsumptionCallback CAT = (player, essenceData, item, amountOfEssence, potency) -> {
-        Random random = new Random();
+        Random random = ThreadLocalRandom.current();
         Location location = player.getLocation();
 
         AttributeInstance playerLuckAttribute = player.getAttribute(Attribute.GENERIC_LUCK);

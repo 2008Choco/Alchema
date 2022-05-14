@@ -984,7 +984,7 @@ public final class ItemUtil {
             // Still apply any legacy deserialization even though we're using modern methods so that legacy recipes are supported
             result = deserializeItemStack(result, object);
         } catch (IllegalArgumentException e) {
-            throw new JsonParseException("Malformatted \"item\" input in \"result\" object. Got: \"" + resultString + "\"");
+            throw new JsonParseException("Malformatted \"item\" input. Got: \"" + resultString + "\"");
         } catch (Exception e) { // If the method doesn't exist, we'll fall back to old serialization
             result = deserializeItemStack(object);
         }
