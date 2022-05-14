@@ -21,6 +21,9 @@ import java.util.function.Function;
 
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
+import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
 import wtf.choco.commons.util.NamespacedKeyUtil;
 
@@ -316,28 +320,55 @@ public class CauldronRecipeRegistry {
         long now = System.currentTimeMillis();
 
         return CompletableFuture.supplyAsync(() -> loadCauldronRecipesFromDirectory(plugin, new StandardRecipeLoadResult(), recipesDirectory, recipesDirectory))
-        .thenCompose(result -> {
-            CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
+            .thenCompose(result -> {
+                CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
 
-            /*
-             * Events need to be called synchronously.
-             *
-             * This also forces the event to be called AFTER all plugins have finished enabling and registering their listeners.
-             * runTask() is run on the next server tick which is done post-plugin enable.
-             */
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                AlchemaEventFactory.callCauldronRecipeRegisterEvent(this);
+                /*
+                 * Events need to be called synchronously.
+                 *
+                 * This also forces the event to be called AFTER all plugins have finished enabling and registering their listeners.
+                 * runTask() is run on the next server tick which is done post-plugin enable.
+                 */
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    AlchemaEventFactory.callCauldronRecipeRegisterEvent(this);
 
-                long timeToComplete = System.currentTimeMillis() - now;
+                    long timeToComplete = System.currentTimeMillis() - now;
 
-                result.setThirdParty(getRecipes().size() - result.getNative());
-                result.setTimeToComplete(timeToComplete);
+                    result.setThirdParty(getRecipes().size() - result.getNative());
+                    result.setTimeToComplete(timeToComplete);
 
-                registryEventFuture.complete(result);
+                    registryEventFuture.complete(result);
+                });
+
+                return registryEventFuture;
+            })
+
+            // Once all recipes have been registered, create and register permissions for them all
+            .whenComplete((result, e) -> {
+                PluginManager pluginManager = Bukkit.getPluginManager();
+                Permission craftPermission = pluginManager.getPermission(AlchemaConstants.PERMISSION_CRAFT);
+                if (craftPermission == null) {
+                    return;
+                }
+
+                boolean changed = false;
+
+                for (CauldronRecipe recipe : recipes.values()) {
+                    Permission permission = new Permission(recipe.getCraftingPermission(), "Allows a player to craft the " + recipe.getKey() + " recipe.", PermissionDefault.TRUE);
+
+                    // Add the permission to the plugin manager
+                    pluginManager.removePermission(permission);
+                    pluginManager.addPermission(permission);
+
+                    // Declare it as a child permission of "alchema.craft"
+                    craftPermission.getChildren().put(recipe.getCraftingPermission(), true);
+                    changed = true;
+                }
+
+                if (changed) {
+                    craftPermission.recalculatePermissibles();
+                }
             });
-
-            return registryEventFuture;
-        });
     }
 
     private StandardRecipeLoadResult loadCauldronRecipesFromDirectory(@NotNull Alchema plugin, @NotNull StandardRecipeLoadResult result, @NotNull File recipesDirectory, File subdirectory) throws JsonSyntaxException {

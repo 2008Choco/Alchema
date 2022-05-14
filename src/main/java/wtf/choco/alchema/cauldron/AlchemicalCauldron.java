@@ -19,6 +19,10 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -449,11 +453,14 @@ public class AlchemicalCauldron {
      *
      * @param reason the reason for the items to be dropped. null if none
      * @param player the player that caused the ingredients to drop. null if none
+     * @param force whether or not to ignore the cancellation state of the called event.
+     * If this is true and the event is cancelled, items will still be dropped as if the
+     * event was not cancelled.
      *
      * @return true if ingredients were cleared, false if cancelled by the
-     * {@link CauldronIngredientsDropEvent}
+     * {@link CauldronIngredientsDropEvent} and {@code force} was false
      */
-    public boolean dropIngredients(@Nullable CauldronIngredientsDropEvent.Reason reason, @Nullable Player player) {
+    public boolean dropIngredients(@Nullable CauldronIngredientsDropEvent.Reason reason, @Nullable Player player, boolean force) {
         if (!hasIngredients()) {
             return true;
         }
@@ -461,7 +468,7 @@ public class AlchemicalCauldron {
         List<@NotNull Item> items = new ArrayList<>();
         this.getIngredients().forEach(ingredient -> items.addAll(ingredient.drop(this, getWorld(), getLocation().add(0.5, 0.5, 0.5))));
 
-        CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(this, items, player, reason);
+        CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(this, items, player, reason, !force);
         if (ingredientsDropEvent.isCancelled()) {
             items.forEach(Item::remove);
             return false;
@@ -469,6 +476,19 @@ public class AlchemicalCauldron {
 
         this.ingredients.clear();
         return true;
+    }
+
+    /**
+     * Clear all ingredients from this cauldron and drop them into the world.
+     *
+     * @param reason the reason for the items to be dropped. null if none
+     * @param player the player that caused the ingredients to drop. null if none
+     *
+     * @return true if ingredients were cleared, false if cancelled by the
+     * {@link CauldronIngredientsDropEvent}
+     */
+    public boolean dropIngredients(@Nullable CauldronIngredientsDropEvent.Reason reason, @Nullable Player player) {
+        return dropIngredients(reason, player, false);
     }
 
     /**
@@ -650,7 +670,17 @@ public class AlchemicalCauldron {
             return;
         }
 
+        // Check if the player has permission to craft this specific recipe. If not, drop the items out of the cauldron
         OfflinePlayer lastInteracted = getLastInteracted();
+        if (lastInteracted != null) {
+            Player player = lastInteracted.getPlayer();
+            if (player != null && !player.hasPermission(activeRecipe.getCraftingPermission())) {
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder("You don't have permission to craft this.").color(ChatColor.RED).create());
+                this.dropIngredients(CauldronIngredientsDropEvent.Reason.NO_PERMISSION, player, true);
+                return;
+            }
+        }
+
         CauldronItemCraftEvent cauldronCraftEvent = AlchemaEventFactory.callCauldronItemCraftEvent(this, activeRecipe, lastInteracted != null ? lastInteracted.getPlayer() : null);
         if (cauldronCraftEvent.isCancelled()) {
             return;

@@ -29,6 +29,7 @@ public class CauldronIngredientsDropEvent extends CauldronEvent implements Cance
     private final List<@NotNull Item> items;
     private final Player player;
     private final Reason reason;
+    private final boolean cancellable;
 
     /**
      * Construct a new {@link CauldronIngredientsDropEvent}.
@@ -37,8 +38,9 @@ public class CauldronIngredientsDropEvent extends CauldronEvent implements Cance
      * @param items the items to be dropped
      * @param player the player
      * @param reason the reason for this event
+     * @param cancellable whether or not this event will respect cancelled states
      */
-    public CauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull Reason reason) {
+    public CauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull Reason reason, boolean cancellable) {
         super(cauldron);
 
         Preconditions.checkArgument(items != null, "items must not be null");
@@ -47,6 +49,7 @@ public class CauldronIngredientsDropEvent extends CauldronEvent implements Cance
         this.items = new ArrayList<>(items);
         this.player = player;
         this.reason = reason;
+        this.cancellable = cancellable;
     }
 
     /**
@@ -81,6 +84,21 @@ public class CauldronIngredientsDropEvent extends CauldronEvent implements Cance
         return reason;
     }
 
+    /**
+     * Check whether or not this event is cancellable.
+     * <p>
+     * If this event is not cancellable, any attempt to cancel it with {@link #setCancelled(boolean)}
+     * will not be respected by the event caller.
+     *
+     * @return true if cancellable, false otherwise
+     *
+     * @apiNote according to Alchema, this will only ever be true if the reason is
+     * {@link Reason#NO_PERMISSION}. Cancellation is respected in all other instances.
+     */
+    public boolean isCancellable() {
+        return cancellable;
+    }
+
     @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
@@ -88,7 +106,7 @@ public class CauldronIngredientsDropEvent extends CauldronEvent implements Cance
 
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return cancellable && cancelled;
     }
 
     @NotNull
@@ -125,7 +143,12 @@ public class CauldronIngredientsDropEvent extends CauldronEvent implements Cance
         /**
          * The cauldron was destroyed.
          */
-        DESTROYED;
+        DESTROYED,
+
+        /**
+         * A player did not have permission to craft the recipe.
+         */
+        NO_PERMISSION;
 
     }
 

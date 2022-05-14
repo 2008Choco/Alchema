@@ -156,12 +156,13 @@ public final class AlchemaEventFactory {
      * @param items the items to drop
      * @param player the player
      * @param reason the reason for the event call
+     * @param cancellable whether or not this event will respect cancelled states
      *
      * @return the event
      */
     @NotNull
-    public static CauldronIngredientsDropEvent callCauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull CauldronIngredientsDropEvent.Reason reason) {
-        CauldronIngredientsDropEvent event = new CauldronIngredientsDropEvent(cauldron, items, player, reason);
+    public static CauldronIngredientsDropEvent callCauldronIngredientsDropEvent(@NotNull AlchemicalCauldron cauldron, @NotNull Collection<@NotNull Item> items, @Nullable Player player, @NotNull CauldronIngredientsDropEvent.Reason reason, boolean cancellable) {
+        CauldronIngredientsDropEvent event = new CauldronIngredientsDropEvent(cauldron, items, player, reason, cancellable);
         Bukkit.getPluginManager().callEvent(event);
         return event;
     }

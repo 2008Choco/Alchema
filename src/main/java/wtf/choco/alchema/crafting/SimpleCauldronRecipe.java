@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import wtf.choco.alchema.util.AlchemaConstants;
+
 /**
  * A simple implementation of {@link CauldronRecipe}.
  *
@@ -24,6 +26,7 @@ class SimpleCauldronRecipe implements CauldronRecipe {
     private final RecipeResult result;
 
     private final String name, description, comment;
+    private final String craftingPermission;
     private final int experience;
 
     private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
@@ -39,6 +42,7 @@ class SimpleCauldronRecipe implements CauldronRecipe {
         this.name = name;
         this.description = description;
         this.comment = comment;
+        this.craftingPermission = AlchemaConstants.PERMISSION_CRAFT + "." + key.getNamespace() + "." + key.getKey().replace('/', '.'); // e.g. "alchema.craft.alchema.glowstone_dust"
 
         this.ingredients.addAll(ingredients);
     }
@@ -77,6 +81,12 @@ class SimpleCauldronRecipe implements CauldronRecipe {
     @Override
     public Optional<@NotNull String> getComment() {
         return Optional.ofNullable(comment);
+    }
+
+    @NotNull
+    @Override
+    public String getCraftingPermission() {
+        return craftingPermission;
     }
 
     @Override

@@ -80,6 +80,15 @@ public interface CauldronRecipe {
     public Optional<@NotNull String> getComment();
 
     /**
+     * Get the permission node required by a player in order to craft this recipe
+     * in addition to the generic crafting permission.
+     *
+     * @return the crafting permission
+     */
+    @NotNull
+    public String getCraftingPermission();
+
+    /**
      * Get the experience yielded from this recipe.
      *
      * @return the experience
