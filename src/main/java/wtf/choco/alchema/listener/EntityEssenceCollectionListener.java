@@ -1,8 +1,6 @@
 package wtf.choco.alchema.listener;
 
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -24,7 +22,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
@@ -33,6 +30,7 @@ import wtf.choco.alchema.api.event.player.PlayerEssenceCollectEvent;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
+import wtf.choco.alchema.util.EssenceUtil;
 import wtf.choco.alchema.util.RefreshableEnumSets;
 import wtf.choco.commons.collection.RefreshableEnumSet;
 
@@ -58,6 +56,11 @@ public final class EntityEssenceCollectionListener implements Listener {
         FileConfiguration config = plugin.getConfig();
         double baseDropChance = config.getDouble(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_DEATH_BASE_DROP_CHANCE, 0.75);
         if (baseDropChance <= 0.0) {
+            return;
+        }
+
+        // If the entity was recently interacted with, don't attempt to drop essence
+        if (!EssenceUtil.canHaveEssenceExtracted(entity, plugin)) {
             return;
         }
 
@@ -118,8 +121,10 @@ public final class EntityEssenceCollectionListener implements Listener {
             return;
         }
 
+        boolean creativeMode = player.getGameMode() == GameMode.CREATIVE;
+
         if (EntityEssenceData.isEmptyVial(item)) {
-            if (!canHaveEssenceExtracted(player, entity, config)) {
+            if (!creativeMode && !EssenceUtil.canHaveEssenceExtracted(entity, plugin)) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This " + type.getKey().getKey().replace('_', ' ') + " has had its essence extracted recently."));
                 event.setCancelled(true);
                 return;
@@ -134,7 +139,7 @@ public final class EntityEssenceCollectionListener implements Listener {
 
             amountOfEssence = playerEssenceCollectEvent.getEssenceAmount();
 
-            if (player.getGameMode() != GameMode.CREATIVE) {
+            if (!creativeMode) {
                 item.setAmount(item.getAmount() - 1);
                 inventory.setItem(hand, item);
             }
@@ -143,7 +148,7 @@ public final class EntityEssenceCollectionListener implements Listener {
             inventory.addItem(essenceData.createItemStack(amountOfEssence)).forEach((slot, newItem) -> player.getWorld().dropItemNaturally(player.getLocation(), newItem));
             player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1.0F, 1.25F);
 
-            if (player.getGameMode() != GameMode.CREATIVE) {
+            if (!creativeMode) {
                 entity.setMetadata(AlchemaConstants.METADATA_KEY_INTERACTED_WITH_VIAL, new FixedMetadataValue(plugin, System.currentTimeMillis()));
             }
         }
@@ -154,7 +159,7 @@ public final class EntityEssenceCollectionListener implements Listener {
                 return;
             }
 
-            if (!canHaveEssenceExtracted(player, entity, config)) {
+            if (!creativeMode && !EssenceUtil.canHaveEssenceExtracted(entity, plugin)) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This " + type.getKey().getKey().replace('_', ' ') + " has had its essence extracted recently."));
                 event.setCancelled(true);
                 return;
@@ -195,31 +200,10 @@ public final class EntityEssenceCollectionListener implements Listener {
 
             player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1.0F, 1.25F);
 
-            if (player.getGameMode() != GameMode.CREATIVE) {
+            if (!creativeMode) {
                 entity.setMetadata(AlchemaConstants.METADATA_KEY_INTERACTED_WITH_VIAL, new FixedMetadataValue(plugin, System.currentTimeMillis()));
             }
         }
-    }
-
-    private boolean canHaveEssenceExtracted(Player player, Entity entity, FileConfiguration config) {
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            return true;
-        }
-
-        int timeoutSeconds = config.getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_FROM_ENTITIES_ON_INTERACT_TIMEOUT_SECONDS, 300);
-        if (timeoutSeconds <= 0) {
-            return true;
-        }
-
-        List<MetadataValue> interactionMetadata = entity.getMetadata(AlchemaConstants.METADATA_KEY_INTERACTED_WITH_VIAL);
-        long lastInteractedWith = -1;
-
-        for (MetadataValue value : interactionMetadata) {
-            lastInteractedWith = Math.max(lastInteractedWith, value.asLong());
-        }
-
-        long secondsSinceLastInteraction = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastInteractedWith);
-        return secondsSinceLastInteraction >= timeoutSeconds;
     }
 
     private int getRandomEssenceAmount(ThreadLocalRandom random, FileConfiguration config, String minPath, int minDefault, String maxPath, int maxDefault) {

@@ -65,6 +65,7 @@ import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
+import wtf.choco.alchema.util.EssenceUtil;
 import wtf.choco.commons.util.MathUtil;
 import wtf.choco.commons.util.NamespacedKeyUtil;
 
@@ -622,7 +623,7 @@ public class AlchemicalCauldron {
                         livingEntity.damage(damage);
 
                         // Entity died due to cauldron damage. Insert essence into the cauldron
-                        if (livingEntity.isDead()) {
+                        if (livingEntity.isDead() && EssenceUtil.canHaveEssenceExtracted(livingEntity, plugin)) {
                             EntityType type = livingEntity.getType();
                             boolean hasEntityEssenceData = essenceEffectRegistry.hasEntityEssenceData(type);
 
