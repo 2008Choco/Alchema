@@ -128,6 +128,18 @@ public class AlchemicalCauldron {
     }
 
     /**
+     * Check whether or not this cauldron is valid.
+     * <p>
+     * A cauldron is considered valid if its type is still a {@link Material#WATER_CAULDRON}.
+     * If a cauldron is not valid, it will be marked for removal.
+     *
+     * @return true if the cauldron is valid, false otherwise
+     */
+    public boolean isValid() {
+        return cauldronBlock.getType() == Material.WATER_CAULDRON;
+    }
+
+    /**
      * Get the block at which the cauldron resides.
      *
      * @return the cauldron block

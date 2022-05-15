@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -76,9 +74,8 @@ public final class CauldronUpdateHandler {
                 continue;
             }
 
-            // Remove cauldrons that aren't cauldrons anymore. Ingredients are dropped during removal after this iteration.
-            Block block = cauldron.getCauldronBlock();
-            if (block.getType() != Material.WATER_CAULDRON) {
+            // Remove invalid cauldrons. Ingredients are dropped during removal after this iteration.
+            if (!cauldron.isValid()) {
                 this.forRemoval.add(cauldron);
                 continue;
             }
