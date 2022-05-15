@@ -23,7 +23,7 @@ import wtf.choco.alchema.util.AlchemaConstants;
 class SimpleCauldronRecipe implements CauldronRecipe {
 
     private final NamespacedKey key;
-    private final RecipeResult result;
+    private final CauldronRecipeResult result;
 
     private final String name, description, comment;
     private final String craftingPermission;
@@ -31,7 +31,7 @@ class SimpleCauldronRecipe implements CauldronRecipe {
 
     private final List<CauldronIngredient> ingredients = new ArrayList<>();
 
-    SimpleCauldronRecipe(@NotNull NamespacedKey key, @NotNull RecipeResult result, @Nullable String name, @Nullable String description, @Nullable String comment, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
+    SimpleCauldronRecipe(@NotNull NamespacedKey key, @NotNull CauldronRecipeResult result, @Nullable String name, @Nullable String description, @Nullable String comment, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(result != null, "result must not be null");
 
@@ -61,7 +61,7 @@ class SimpleCauldronRecipe implements CauldronRecipe {
 
     @NotNull
     @Override
-    public RecipeResult getRecipeResult() {
+    public CauldronRecipeResult getRecipeResult() {
         return result;
     }
 

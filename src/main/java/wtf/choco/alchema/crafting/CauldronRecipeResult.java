@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents a {@link CauldronRecipe} result.
  */
-public interface RecipeResult extends Supplier<ItemStack> {
+public interface CauldronRecipeResult extends Supplier<ItemStack> {
 
     /**
      * Get the key for this recipe result type.

@@ -47,7 +47,7 @@ import wtf.choco.alchema.crafting.CauldronIngredientEntityEssence;
 import wtf.choco.alchema.crafting.CauldronIngredientItemStack;
 import wtf.choco.alchema.crafting.CauldronIngredientMaterial;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
-import wtf.choco.alchema.crafting.RecipeResultItemStack;
+import wtf.choco.alchema.crafting.CauldronRecipeResultItemStack;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
 import wtf.choco.alchema.integration.mmoitems.PluginIntegrationMMOItems;
@@ -107,7 +107,7 @@ public final class Alchema extends JavaPlugin {
         this.recipeRegistry.registerIngredientType(CauldronIngredientEntityEssence.KEY, object -> new CauldronIngredientEntityEssence(object, entityEssenceEffectRegistry));
 
         // Result types
-        this.recipeRegistry.registerResultType(RecipeResultItemStack.KEY, RecipeResultItemStack::new);
+        this.recipeRegistry.registerResultType(CauldronRecipeResultItemStack.KEY, CauldronRecipeResultItemStack::new);
 
         /*
          * We're also going to handle plugin integration registrations on load just to jump the gun a bit.

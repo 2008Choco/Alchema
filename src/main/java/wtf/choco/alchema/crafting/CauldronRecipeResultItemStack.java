@@ -13,11 +13,11 @@ import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.util.ItemUtil;
 
 /**
- * A {@link RecipeResult} implementation wrapped around an {@link ItemStack}.
+ * A {@link CauldronRecipeResult} implementation wrapped around an {@link ItemStack}.
  *
  * @author Parker Hawke - Choco
  */
-public class RecipeResultItemStack implements RecipeResult {
+public class CauldronRecipeResultItemStack implements CauldronRecipeResult {
 
     /** The {@link NamespacedKey} used for this result type */
     public static final NamespacedKey KEY = Alchema.key("item");
@@ -25,12 +25,12 @@ public class RecipeResultItemStack implements RecipeResult {
     private final ItemStack item;
 
     /**
-     * Construct a new {@link RecipeResultItemStack} with a given amount.
+     * Construct a new {@link CauldronRecipeResultItemStack} with a given amount.
      *
      * @param item the item
      * @param amount the amount of material
      */
-    public RecipeResultItemStack(@NotNull ItemStack item, int amount) {
+    public CauldronRecipeResultItemStack(@NotNull ItemStack item, int amount) {
         Preconditions.checkArgument(item != null, "item must not be null");
         Preconditions.checkArgument(amount > 0, "amount must be > 0");
 
@@ -39,22 +39,22 @@ public class RecipeResultItemStack implements RecipeResult {
     }
 
     /**
-     * Construct a new {@link RecipeResultItemStack} with an amount of
+     * Construct a new {@link CauldronRecipeResultItemStack} with an amount of
      * {@link ItemStack#getAmount()}.
      *
      * @param item the item
      */
-    public RecipeResultItemStack(@NotNull ItemStack item) {
+    public CauldronRecipeResultItemStack(@NotNull ItemStack item) {
         this(item, item.getAmount());
     }
 
     /**
-     * Construct a new {@link RecipeResultItemStack} deserialized from the
+     * Construct a new {@link CauldronRecipeResultItemStack} deserialized from the
      * provided {@link JsonObject}.
      *
      * @param object the object from which to deserialize
      */
-    public RecipeResultItemStack(@NotNull JsonObject object) {
+    public CauldronRecipeResultItemStack(@NotNull JsonObject object) {
         this.item = ItemUtil.deserializeItemStackModern(object);
         this.item.setAmount(object.has("amount") ? object.get("amount").getAsInt() : 1);
     }
@@ -83,7 +83,7 @@ public class RecipeResultItemStack implements RecipeResult {
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || (obj instanceof RecipeResultItemStack other && Objects.equals(item, other.item));
+        return obj == this || (obj instanceof CauldronRecipeResultItemStack other && Objects.equals(item, other.item));
     }
 
     @Override

@@ -51,7 +51,7 @@ public class CauldronRecipeRegistry {
 
     private final Map<@NotNull NamespacedKey, @NotNull CauldronRecipe> recipes = new HashMap<>();
     private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends CauldronIngredient>> ingredientTypes = new HashMap<>();
-    private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends RecipeResult>> resultTypes = new HashMap<>();
+    private final Map<@NotNull NamespacedKey, Function<@NotNull JsonObject, @NotNull ? extends CauldronRecipeResult>> resultTypes = new HashMap<>();
 
     /**
      * Register a {@link CauldronRecipe} to be used by any {@link AlchemicalCauldron}.
@@ -269,17 +269,17 @@ public class CauldronRecipeRegistry {
     }
 
     /**
-     * Register a new type of {@link RecipeResult}. This registration should be done during the plugin's
+     * Register a new type of {@link CauldronRecipeResult}. This registration should be done during the plugin's
      * load phase (i.e. {@link JavaPlugin#onLoad()}).
      * <p>
      * <strong>NOTE:</strong> This method should be called in {@link JavaPlugin#onLoad()}. Registrations
      * will no longer be accepted in {@link JavaPlugin#onEnable()} and an IllegalStateException will be
      * thrown.
      *
-     * @param key the ingredient key. Should match that of {@link RecipeResult#getKey()}
+     * @param key the ingredient key. Should match that of {@link CauldronRecipeResult#getKey()}
      * @param resultProvider the result provider
      */
-    public void registerResultType(@NotNull NamespacedKey key, @NotNull Function<@NotNull JsonObject, @NotNull ? extends RecipeResult> resultProvider) {
+    public void registerResultType(@NotNull NamespacedKey key, @NotNull Function<@NotNull JsonObject, @NotNull ? extends CauldronRecipeResult> resultProvider) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(resultProvider != null, "ingredientProvider must not be null");
 
@@ -291,7 +291,7 @@ public class CauldronRecipeRegistry {
     }
 
     /**
-     * Parse a {@link RecipeResult} with the result type matching the provided {@link NamespacedKey}
+     * Parse a {@link CauldronRecipeResult} with the result type matching the provided {@link NamespacedKey}
      * from a {@link JsonObject}.
      *
      * @param key the key of the result type to parse
@@ -300,11 +300,11 @@ public class CauldronRecipeRegistry {
      * @return the parsed result. null if invalid
      */
     @Nullable
-    public RecipeResult parseResultType(@NotNull NamespacedKey key, @NotNull JsonObject object) {
+    public CauldronRecipeResult parseResultType(@NotNull NamespacedKey key, @NotNull JsonObject object) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(object != null, "object must not be null");
 
-        Function<@NotNull JsonObject, @NotNull ? extends RecipeResult> resultProvider = resultTypes.get(key);
+        Function<@NotNull JsonObject, @NotNull ? extends CauldronRecipeResult> resultProvider = resultTypes.get(key);
         if (resultProvider == null) {
             return null;
         }

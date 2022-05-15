@@ -58,7 +58,7 @@ public interface CauldronRecipe {
      * @return the result
      */
     @NotNull
-    public RecipeResult getRecipeResult();
+    public CauldronRecipeResult getRecipeResult();
 
     /**
      * Get the name of this recipe.
@@ -149,7 +149,7 @@ public interface CauldronRecipe {
      */
     @NotNull
     public static CauldronRecipe.Builder builder(@NotNull NamespacedKey key, @NotNull ItemStack result) {
-        return builder(key, new RecipeResultItemStack(result));
+        return builder(key, new CauldronRecipeResultItemStack(result));
     }
 
     /**
@@ -161,7 +161,7 @@ public interface CauldronRecipe {
      * @return the builder instance
      */
     @NotNull
-    public static CauldronRecipe.Builder builder(@NotNull NamespacedKey key, @NotNull RecipeResult result) {
+    public static CauldronRecipe.Builder builder(@NotNull NamespacedKey key, @NotNull CauldronRecipeResult result) {
         Preconditions.checkArgument(key != null, "key must not be null");
         Preconditions.checkArgument(result != null, "result must not be null");
 
@@ -193,12 +193,12 @@ public interface CauldronRecipe {
 
         // Parse the result
         JsonObject resultObject = object.getAsJsonObject("result");
-        NamespacedKey resultTypeKey = (resultObject.has("type") ? NamespacedKeyUtil.fromString(resultObject.get("type").getAsString(), Alchema.getInstance()) : RecipeResultItemStack.KEY);
+        NamespacedKey resultTypeKey = (resultObject.has("type") ? NamespacedKeyUtil.fromString(resultObject.get("type").getAsString(), Alchema.getInstance()) : CauldronRecipeResultItemStack.KEY);
         if (resultTypeKey == null) {
             throw new JsonParseException("Invalid namespaced key \"" + resultObject.get("type").getAsString() + "\". Expected format is \"alchema:example\"");
         }
 
-        RecipeResult result = recipeRegistry.parseResultType(resultTypeKey, resultObject);
+        CauldronRecipeResult result = recipeRegistry.parseResultType(resultTypeKey, resultObject);
 
         if (result == null) {
             throw new JsonParseException("Could not find result type with id \"" + resultTypeKey + "\"");
@@ -255,9 +255,9 @@ public interface CauldronRecipe {
         private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
 
         private final NamespacedKey key;
-        private final RecipeResult result;
+        private final CauldronRecipeResult result;
 
-        private Builder(NamespacedKey key, RecipeResult result) {
+        private Builder(NamespacedKey key, CauldronRecipeResult result) {
             Preconditions.checkArgument(key != null, "key must not be null");
             Preconditions.checkArgument(result != null, "result must not be null");
 

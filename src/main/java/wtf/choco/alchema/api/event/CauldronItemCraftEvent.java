@@ -12,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
 import wtf.choco.alchema.crafting.CauldronRecipe;
-import wtf.choco.alchema.crafting.RecipeResult;
-import wtf.choco.alchema.crafting.RecipeResultItemStack;
+import wtf.choco.alchema.crafting.CauldronRecipeResult;
+import wtf.choco.alchema.crafting.CauldronRecipeResultItemStack;
 
 /**
  * Called when an {@link AlchemicalCauldron} has successfully prepared a crafting recipe.
@@ -25,7 +25,7 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean cancelled = false;
-    private RecipeResult result;
+    private CauldronRecipeResult result;
     private int experience;
 
     private final CauldronRecipe recipe;
@@ -41,7 +41,7 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
      * {@link CauldronRecipe#getRecipeResult()}
      * @param experience the experience yielded from the recipe
      */
-    public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player, @Nullable RecipeResult result, int experience) {
+    public CauldronItemCraftEvent(@NotNull AlchemicalCauldron cauldron, @NotNull CauldronRecipe recipe, @Nullable Player player, @Nullable CauldronRecipeResult result, int experience) {
         super(cauldron);
 
         Preconditions.checkArgument(recipe != null, "recipe must not be null");
@@ -89,12 +89,12 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
      *
      * @param result the result to set
      *
-     * @deprecated use {@link #setRecipeResult(RecipeResult)} instead
+     * @deprecated use {@link #setRecipeResult(CauldronRecipeResult)} instead
      */
     @ScheduledForRemoval(inVersion = "1.4.0")
     @Deprecated(since = "1.3.0", forRemoval = true)
     public void setResult(@Nullable ItemStack result) {
-        this.result = (result != null) ? new RecipeResultItemStack(result) : null;
+        this.result = (result != null) ? new CauldronRecipeResultItemStack(result) : null;
     }
 
     /**
@@ -112,21 +112,21 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
     }
 
     /**
-     * Set the resulting {@link RecipeResult} of the cauldron crafting process. Null if none.
+     * Set the resulting {@link CauldronRecipeResult} of the cauldron crafting process. Null if none.
      *
      * @param result the result to set
      */
-    public void setRecipeResult(@Nullable RecipeResult result) {
+    public void setRecipeResult(@Nullable CauldronRecipeResult result) {
         this.result = result;
     }
 
     /**
-     * Get the resulting {@link RecipeResult} for this cauldron crafting process.
+     * Get the resulting {@link CauldronRecipeResult} for this cauldron crafting process.
      *
      * @return the result
      */
     @Nullable
-    public RecipeResult getRecipeResult() {
+    public CauldronRecipeResult getRecipeResult() {
         return result;
     }
 
