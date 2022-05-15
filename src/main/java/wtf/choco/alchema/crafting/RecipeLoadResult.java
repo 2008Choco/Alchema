@@ -3,7 +3,9 @@ package wtf.choco.alchema.crafting;
 import java.io.File;
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.alchema.Alchema;
 
@@ -11,6 +13,7 @@ import wtf.choco.alchema.Alchema;
  * Represents a result of the {@link CauldronRecipeRegistry#loadCauldronRecipes(Alchema, File)}
  * asynchronous recipe loading.
  */
+@NonExtendable
 public interface RecipeLoadResult {
 
     /**
@@ -42,6 +45,7 @@ public interface RecipeLoadResult {
      * @return the failures. If none, an empty list is returned
      */
     @NotNull
+    @Unmodifiable
     public List<@NotNull RecipeLoadFailureReport> getFailures();
 
     /**

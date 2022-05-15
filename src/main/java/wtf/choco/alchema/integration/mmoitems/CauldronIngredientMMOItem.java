@@ -176,11 +176,10 @@ public final class CauldronIngredientMMOItem implements CauldronIngredient {
             return true;
         }
 
-        if (!(obj instanceof CauldronIngredientMMOItem)) {
+        if (!(obj instanceof CauldronIngredientMMOItem other)) {
             return false;
         }
 
-        CauldronIngredientMMOItem other = (CauldronIngredientMMOItem) obj;
         return getAmount() == other.getAmount() && mmoItem.getType() == other.mmoItem.getType()
                 && Objects.equals(mmoItem.getId(), other.mmoItem.getId()) && Objects.equals(item, other.item);
     }

@@ -11,6 +11,7 @@ import org.bukkit.Color;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * Represents a registry by which {@link EntityType EntityTypes} may be mapped to their
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class EntityEssenceEffectRegistry {
 
-    private final Map<@NotNull EntityType, @NotNull EntityEssenceData> essenceDataByEntityType = new EnumMap<>(EntityType.class);
+    private final Map<EntityType, EntityEssenceData> essenceDataByEntityType = new EnumMap<>(EntityType.class);
 
     /**
      * Register an {@link EntityEssenceData} for the given {@link EntityType}.
@@ -92,6 +93,7 @@ public final class EntityEssenceEffectRegistry {
      * @return the registered entity types
      */
     @NotNull
+    @UnmodifiableView
     public Set<@NotNull EntityType> getRegisteredEntityEssenceTypes() {
         return Collections.unmodifiableSet(essenceDataByEntityType.keySet());
     }

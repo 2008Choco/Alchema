@@ -52,7 +52,7 @@ public final class CauldronManipulationListener implements Listener {
 
         else if ((newMaterial != Material.WATER_CAULDRON || ((Levelled) blockData).getLevel() < ((Levelled) blockData).getMaximumLevel()) && cauldron != null) {
             Entity entity = event.getEntity();
-            cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.EMPTIED_BY_PLAYER, entity instanceof Player ? (Player) entity : null);
+            cauldron.dropIngredients(CauldronIngredientsDropEvent.Reason.EMPTIED_BY_PLAYER, entity instanceof Player player ? player : null);
         }
     }
 

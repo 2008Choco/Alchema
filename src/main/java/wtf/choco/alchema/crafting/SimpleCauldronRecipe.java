@@ -29,7 +29,7 @@ class SimpleCauldronRecipe implements CauldronRecipe {
     private final String craftingPermission;
     private final int experience;
 
-    private final List<@NotNull CauldronIngredient> ingredients = new ArrayList<>();
+    private final List<CauldronIngredient> ingredients = new ArrayList<>();
 
     SimpleCauldronRecipe(@NotNull NamespacedKey key, @NotNull RecipeResult result, @Nullable String name, @Nullable String description, @Nullable String comment, int experience, @NotNull List<@NotNull CauldronIngredient> ingredients) {
         Preconditions.checkArgument(key != null, "key must not be null");

@@ -28,7 +28,7 @@ public final class RefreshableEnumSets {
      * @return the enum set
      */
     @NotNull
-    public static RefreshableEnumSet<@NotNull EntityType> entityType(@NotNull Supplier<@NotNull List<@NotNull String>> refresher) {
+    public static RefreshableEnumSet<EntityType> entityType(@NotNull Supplier<@NotNull List<@NotNull String>> refresher) {
         return new RefreshableEnumSet<>(EntityType.class, refresher, string -> {
             NamespacedKey entityTypeKey = NamespacedKeyUtil.fromString(string);
             return entityTypeKey != null ? Registry.ENTITY_TYPE.get(entityTypeKey) : null;

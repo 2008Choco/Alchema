@@ -99,7 +99,6 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
     @Override
     public CauldronIngredient adjustAmountBy(int amount) {
         Preconditions.checkArgument(amount < getAmount(), "amount must be < getAmount(), %d", getAmount());
-
         return new CauldronIngredientItemStack(item, getAmount() + amount);
     }
 
@@ -107,8 +106,10 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
     @Override
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
+
         object.addProperty("item_base64", Base64.getEncoder().encodeToString(ItemUtil.serialize(item)));
         object.addProperty("amount", getAmount()); // Adjust "amount" to match getAmount()
+
         return object;
     }
 

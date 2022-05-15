@@ -125,7 +125,6 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     @Override
     public CauldronIngredient merge(@NotNull CauldronIngredient other) {
         Preconditions.checkArgument(other instanceof CauldronIngredientEntityEssence, "Cannot merge %s with %s", getClass().getName(), other.getClass().getName());
-
         return new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, getAmount() + other.getAmount());
     }
 
@@ -133,7 +132,6 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
     @Override
     public CauldronIngredient adjustAmountBy(int amount) {
         Preconditions.checkArgument(amount < getAmount(), "amount must be < getAmount(), %d", getAmount());
-
         return new CauldronIngredientEntityEssence(entityType, essenceEffectRegistry, getAmount() + amount);
     }
 

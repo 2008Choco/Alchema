@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,6 +91,7 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
      *
      * @deprecated use {@link #setRecipeResult(RecipeResult)} instead
      */
+    @ScheduledForRemoval(inVersion = "1.4.0")
     @Deprecated(since = "1.3.0", forRemoval = true)
     public void setResult(@Nullable ItemStack result) {
         this.result = (result != null) ? new RecipeResultItemStack(result) : null;
@@ -103,6 +105,7 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
      * @deprecated use {@link #getRecipeResult()} instead
      */
     @Nullable
+    @ScheduledForRemoval(inVersion = "1.4.0")
     @Deprecated(since = "1.3.0", forRemoval = true)
     public ItemStack getResult() {
         return result != null ? result.asItemStack() : null;

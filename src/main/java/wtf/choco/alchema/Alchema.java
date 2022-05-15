@@ -233,7 +233,7 @@ public final class Alchema extends JavaPlugin {
         this.integrationHandler.disableIntegrations(true);
 
         // Write all cauldrons to file
-        Collection<@NotNull AlchemicalCauldron> cauldrons = cauldronManager.getCauldrons();
+        Collection<AlchemicalCauldron> cauldrons = cauldronManager.getCauldrons();
         if (!cauldrons.isEmpty()) {
             JsonArray cauldronsArray = new JsonArray();
             cauldrons.forEach(cauldron -> cauldronsArray.add(cauldron.write(new JsonObject())));
@@ -398,7 +398,7 @@ public final class Alchema extends JavaPlugin {
 
     @NotNull
     private List<@NotNull String> getDefaultRecipePaths(String path) {
-        List<@NotNull String> paths = new ArrayList<>();
+        List<String> paths = new ArrayList<>();
 
         try (JarFile jar = new JarFile(getFile())) {
             Enumeration<JarEntry> entries = jar.entries();
@@ -485,8 +485,8 @@ public final class Alchema extends JavaPlugin {
 
         command.setExecutor(executor);
 
-        if (executor instanceof TabCompleter) {
-            command.setTabCompleter((TabCompleter) executor);
+        if (executor instanceof TabCompleter tabCompleter) {
+            command.setTabCompleter(tabCompleter);
         }
     }
 

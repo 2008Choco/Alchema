@@ -4,7 +4,7 @@ package wtf.choco.alchema.config;
  * A simple implementation of {@link CauldronConfigurationContext}.
  */
 // TODO: This would be a really nice class to use a record ._.
-public final class SimpleCauldronConfigurationContext implements CauldronConfigurationContext {
+final class SimpleCauldronConfigurationContext implements CauldronConfigurationContext {
 
     private final int itemSearchInterval;
     private final int millisecondsToHeatUp;

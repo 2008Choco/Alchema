@@ -29,6 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronRecipeRegisterEvent;
@@ -160,7 +161,7 @@ public class CauldronRecipeRegistry {
      */
     @NotNull
     public List<@NotNull CauldronRecipe> getApplicableRecipes(@NotNull List<@NotNull CauldronIngredient> ingredients) {
-        List<@NotNull CauldronRecipe> applicable = new ArrayList<>();
+        List<CauldronRecipe> applicable = new ArrayList<>();
 
         this.recipes.values().forEach(recipe -> {
             if (recipe.getYieldFromIngredients(ingredients) == 0) {
@@ -181,8 +182,9 @@ public class CauldronRecipeRegistry {
      * @return the collection of registered recipes
      */
     @NotNull
+    @UnmodifiableView
     public Collection<@NotNull CauldronRecipe> getRecipes() {
-        return recipes.values(); // Intentionally mutable
+        return Collections.unmodifiableCollection(recipes.values());
     }
 
     /**
@@ -254,6 +256,7 @@ public class CauldronRecipeRegistry {
      * @return all known ingredient types
      */
     @NotNull
+    @UnmodifiableView
     public Set<NamespacedKey> getIngredientTypes() {
         return Collections.unmodifiableSet(ingredientTypes.keySet());
     }
@@ -315,6 +318,7 @@ public class CauldronRecipeRegistry {
      * @return all known result types
      */
     @NotNull
+    @UnmodifiableView
     public Set<NamespacedKey> getResultTypes() {
         return Collections.unmodifiableSet(resultTypes.keySet());
     }
@@ -342,7 +346,7 @@ public class CauldronRecipeRegistry {
 
         return CompletableFuture.supplyAsync(() -> loadCauldronRecipesFromDirectory(plugin, new StandardRecipeLoadResult(), recipesDirectory, recipesDirectory))
             .thenCompose(result -> {
-                CompletableFuture<@NotNull RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
+                CompletableFuture<RecipeLoadResult> registryEventFuture = new CompletableFuture<>();
 
                 /*
                  * Events need to be called synchronously.
@@ -442,7 +446,7 @@ public class CauldronRecipeRegistry {
         private int nativelyRegistered, thirdPartyRegistered;
         private long timeToComplete;
 
-        private final List<@NotNull RecipeLoadFailureReport> failures = new ArrayList<>();
+        private final List<RecipeLoadFailureReport> failures = new ArrayList<>();
 
         StandardRecipeLoadResult() { }
 

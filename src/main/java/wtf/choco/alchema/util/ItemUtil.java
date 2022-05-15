@@ -56,6 +56,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.commons.util.NamespacedKeyUtil;
@@ -121,8 +122,9 @@ public final class ItemUtil {
      *
      * @deprecated use {@link #serialize(ItemStack)}
      */
-    @Deprecated(since = "1.3.0", forRemoval = true)
     @NotNull
+    @ScheduledForRemoval(inVersion = "1.4.0")
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public static JsonObject serializeItemStack(@NotNull ItemStack item) {
         Preconditions.checkArgument(item != null, "item must not be null");
 
@@ -445,8 +447,9 @@ public final class ItemUtil {
      *
      * @deprecated use {@link #deserializeItemStackModern(JsonObject)}
      */
-    @Deprecated(since = "1.3.0", forRemoval = true)
     @NotNull
+    @ScheduledForRemoval(inVersion = "1.4.0")
+    @Deprecated(since = "1.3.0", forRemoval = true)
     @SuppressWarnings("unused") // Eclipse thinks Optional#orNull() never returns null... wot?
     public static ItemStack deserializeItemStack(@NotNull ItemStack item, @NotNull JsonObject object) {
         Preconditions.checkArgument(object != null, "object must not be null");
@@ -996,8 +999,9 @@ public final class ItemUtil {
      *
      * @deprecated use {@link #deserializeItemStackModern(JsonObject)}
      */
-    @Deprecated(since = "1.3.0", forRemoval = true)
     @NotNull
+    @ScheduledForRemoval(inVersion = "1.4.0")
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public static ItemStack deserializeItemStack(@NotNull JsonObject object) {
         Preconditions.checkArgument(object != null, "object must not be null");
 

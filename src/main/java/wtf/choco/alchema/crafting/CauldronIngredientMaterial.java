@@ -116,7 +116,6 @@ public class CauldronIngredientMaterial implements CauldronIngredient {
     @Override
     public CauldronIngredient adjustAmountBy(int amount) {
         Preconditions.checkArgument(amount < getAmount(), "amount must be < getAmount(), %d", getAmount());
-
         return new CauldronIngredientMaterial(material, getAmount() + amount);
     }
 

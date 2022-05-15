@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.alchema.Alchema;
 
@@ -86,6 +87,7 @@ public final class CauldronManager {
      * @return all cauldrons
      */
     @NotNull
+    @UnmodifiableView
     public Collection<@NotNull AlchemicalCauldron> getCauldrons() {
         return Collections.unmodifiableCollection(cauldrons.values());
     }

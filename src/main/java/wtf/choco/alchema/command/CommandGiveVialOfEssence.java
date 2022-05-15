@@ -41,19 +41,19 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
 
     private final Alchema plugin;
 
-    public CommandGiveVialOfEssence(Alchema plugin) {
+    public CommandGiveVialOfEssence(@NotNull Alchema plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length < 1 && !(sender instanceof Player)) {
             sender.sendMessage("You must specify a player when running this command from the console.");
             return true;
         }
 
         // Target selector argument
-        List<Player> targets = (sender instanceof Player) ? Arrays.asList((Player) sender) : Collections.emptyList();
+        List<Player> targets = (sender instanceof Player player) ? Arrays.asList(player) : Collections.emptyList();
         if (args.length >= 1) {
             try {
                 targets = Bukkit.selectEntities(sender, args[0]).stream()
@@ -147,7 +147,7 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
 
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 1) {
             String arg = args[0];
             List<String> suggestions = StringUtil.copyPartialMatches(arg, Arrays.asList("@a", "@p", "@r", "@s"), new ArrayList<>());
@@ -168,7 +168,7 @@ public final class CommandGiveVialOfEssence implements TabExecutor {
         else if (args.length == 3) {
             String arg = args[2];
 
-            Set<@NotNull EntityType> essenceTypes = plugin.getEntityEssenceEffectRegistry().getRegisteredEntityEssenceTypes();
+            Set<EntityType> essenceTypes = plugin.getEntityEssenceEffectRegistry().getRegisteredEntityEssenceTypes();
             List<String> suggestions = new ArrayList<>(essenceTypes.size());
 
             essenceTypes.forEach(type -> {

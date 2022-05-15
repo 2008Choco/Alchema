@@ -42,7 +42,7 @@ public final class CommandAlchema implements TabExecutor {
     private static final List<String> RELOAD_ARGS = Arrays.asList("verbose");
     private static final List<String> SAVE_FLAG_ARGS = Arrays.asList("-f");
 
-    private static final Map<@NotNull String, @Nullable String> BASE_ARGS = new HashMap<>();
+    private static final Map<String, String> BASE_ARGS = new HashMap<>();
     static {
         BASE_ARGS.put("version", null);
         BASE_ARGS.put("reload", AlchemaConstants.PERMISSION_COMMAND_RELOAD);
@@ -51,15 +51,15 @@ public final class CommandAlchema implements TabExecutor {
     }
 
     private final Alchema plugin;
-    private final List<@NotNull String> defaultRecipePaths;
+    private final List<String> defaultRecipePaths;
 
-    public CommandAlchema(Alchema plugin) {
+    public CommandAlchema(@NotNull Alchema plugin) {
         this.plugin = plugin;
         this.defaultRecipePaths = plugin.getDefaultRecipePaths();
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
             sender.sendMessage(Alchema.CHAT_PREFIX + "Insufficient arguments. " + ChatColor.YELLOW + "/" + label + " <" + String.join(" | ", getBaseArgsFor(sender)) + ">");
             return true;
@@ -127,7 +127,7 @@ public final class CommandAlchema implements TabExecutor {
                     : ".")
                         + " Took " + ChatColor.AQUA + result.getTimeToComplete() + "ms" + ChatColor.GRAY + ".");
 
-                List<@NotNull RecipeLoadFailureReport> failures = result.getFailures();
+                List<RecipeLoadFailureReport> failures = result.getFailures();
                 if (!failures.isEmpty()) {
                     String errorMessage = ChatColor.RED.toString() + ChatColor.BOLD + "(!) " + ChatColor.RED + "Failed to load " + ChatColor.YELLOW + "(" + failures.size() + ") " + ChatColor.RED + "recipes.";
 
@@ -167,12 +167,12 @@ public final class CommandAlchema implements TabExecutor {
                 return true;
             }
 
-            List<@NotNull Plugin> integrations = Arrays.stream(CauldronRecipeRegisterEvent.getHandlerList().getRegisteredListeners())
+            List<Plugin> integrations = Arrays.stream(CauldronRecipeRegisterEvent.getHandlerList().getRegisteredListeners())
                 .map(RegisteredListener::getPlugin)
                 .distinct()
                 .filter(plugin -> plugin != this.plugin) // Remove Alchema from the list... just in case
                 .collect(Collectors.toList());
-            Collection<@NotNull ? extends PluginIntegration> nativeIntegrations = plugin.getIntegrationHandler().getIntegrations();
+            Collection<? extends PluginIntegration> nativeIntegrations = plugin.getIntegrationHandler().getIntegrations();
 
             if (integrations.isEmpty() && nativeIntegrations.isEmpty()) {
                 sender.sendMessage(Alchema.CHAT_PREFIX + "No plugins are currently integrating with Alchema.");
@@ -216,7 +216,7 @@ public final class CommandAlchema implements TabExecutor {
                 sender.sendMessage(Alchema.CHAT_PREFIX + "Successfully saved the default recipe at path " + ChatColor.YELLOW + recipePath + ChatColor.GRAY + ". You must " + ChatColor.AQUA + "/" + label + " reload " + ChatColor.GRAY + "in order for changes to apply.");
             }
             else if (args[1].endsWith("/*")) {
-                List<@NotNull String> applicableRecipePaths = new ArrayList<>(defaultRecipePaths.size());
+                List<String> applicableRecipePaths = new ArrayList<>(defaultRecipePaths.size());
 
                 String recipePathDirectory = args[1].substring(0, args[1].length() - 1);
                 this.defaultRecipePaths.forEach(recipePath -> {
@@ -262,7 +262,7 @@ public final class CommandAlchema implements TabExecutor {
 
     @Override
     @Nullable
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
             return StringUtil.copyPartialMatches(args[0], getBaseArgsFor(sender), new ArrayList<>());
         }
@@ -311,7 +311,7 @@ public final class CommandAlchema implements TabExecutor {
         return args;
     }
 
-    private <T> void displayListOfIntegrations(@NotNull CommandSender sender, @NotNull Collection<@NotNull T> integrations, @NotNull Function<@NotNull T, @NotNull Plugin> toPluginFunction, boolean isNative) {
+    private <T> void displayListOfIntegrations(@NotNull CommandSender sender, @NotNull Collection<T> integrations, @NotNull Function<T, Plugin> toPluginFunction, boolean isNative) {
         integrations.forEach(integration -> {
             Plugin plugin = toPluginFunction.apply(integration);
             PluginDescriptionFile description = plugin.getDescription();
@@ -321,7 +321,7 @@ public final class CommandAlchema implements TabExecutor {
         });
     }
 
-    private void displayListOfIntegrations(@NotNull CommandSender sender, @NotNull Collection<@NotNull Plugin> integrations, boolean isNative) {
+    private void displayListOfIntegrations(@NotNull CommandSender sender, @NotNull Collection<Plugin> integrations, boolean isNative) {
         this.displayListOfIntegrations(sender, integrations, Function.identity(), isNative);
     }
 

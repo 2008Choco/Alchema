@@ -1,5 +1,6 @@
 package wtf.choco.alchema.config;
 
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -7,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Parker Hawke - Choco
  */
+@NonExtendable
 public interface CauldronConfigurationContext {
 
     /**

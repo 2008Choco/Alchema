@@ -24,6 +24,7 @@ import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTables;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * Represents a set of constant {@link EssenceConsumptionCallback EssenceConsumptionCallbacks}
@@ -35,6 +36,7 @@ import org.bukkit.potion.PotionEffectType;
  *
  * @author Parker Hawke - Choco
  */
+@Internal
 final class DefaultEntityEffects {
 
     // A

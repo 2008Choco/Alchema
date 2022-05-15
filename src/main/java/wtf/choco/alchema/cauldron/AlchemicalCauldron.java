@@ -49,8 +49,10 @@ import org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.api.event.CauldronIngredientAddEvent;
@@ -206,6 +208,7 @@ public class AlchemicalCauldron {
      * {@link #getHeatSourceBlock()} instead. This method will be removed in the near future.
      */
     @NotNull
+    @ScheduledForRemoval(inVersion = "1.4.0")
     @Deprecated(since = "1.0.1.1", forRemoval = true)
     public Block getFireBlock() {
         return heatSourceBlock;
@@ -462,6 +465,7 @@ public class AlchemicalCauldron {
      * @return the ingredients
      */
     @NotNull
+    @UnmodifiableView
     public List<@NotNull CauldronIngredient> getIngredients() {
         return Collections.unmodifiableList(ingredients);
     }
@@ -856,9 +860,8 @@ public class AlchemicalCauldron {
     }
 
     @Override
-    public boolean equals(Object object) {
-        return object == this || (object instanceof AlchemicalCauldron
-            && Objects.equals(cauldronBlock, ((AlchemicalCauldron) object).cauldronBlock));
+    public boolean equals(Object obj) {
+        return obj == this || (obj instanceof AlchemicalCauldron other && Objects.equals(cauldronBlock, other.cauldronBlock));
     }
 
 }

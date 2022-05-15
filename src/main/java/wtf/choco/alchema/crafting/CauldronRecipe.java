@@ -14,8 +14,11 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.cauldron.AlchemicalCauldron;
@@ -26,6 +29,7 @@ import wtf.choco.commons.util.NamespacedKeyUtil;
  *
  * @author Parker Hawke - Choco
  */
+@NonExtendable
 public interface CauldronRecipe {
 
     /**
@@ -44,6 +48,7 @@ public interface CauldronRecipe {
      * @deprecated use {@link #getRecipeResult()} instead
      */
     @NotNull
+    @ScheduledForRemoval(inVersion = "1.4.0")
     @Deprecated(since = "1.3.0", forRemoval = true)
     public ItemStack getResult();
 
@@ -111,6 +116,7 @@ public interface CauldronRecipe {
      * @return the required ingredients
      */
     @NotNull
+    @Unmodifiable
     public List<@NotNull CauldronIngredient> getIngredients();
 
     /**
@@ -314,6 +320,7 @@ public interface CauldronRecipe {
          * @deprecated poor naming. See {@link #comment(String)}. Will be removed in a future release
          */
         @NotNull
+        @ScheduledForRemoval(inVersion = "1.4.0")
         @Deprecated(since = "1.2.0", forRemoval = true)
         public CauldronRecipe.Builder setComment(@Nullable String comment) {
             this.comment = comment; // Not calling #comment() because of the change in nullability handling
@@ -346,6 +353,7 @@ public interface CauldronRecipe {
          * @deprecated poor naming. See {@link #experience(int)}. Will be removed in a future release
          */
         @NotNull
+        @ScheduledForRemoval(inVersion = "1.4.0")
         @Deprecated(since = "1.2.0", forRemoval = true)
         public CauldronRecipe.Builder setExperience(int experience) {
             return experience(experience);
