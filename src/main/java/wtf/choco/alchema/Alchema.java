@@ -13,20 +13,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.inventory.RecipeChoice.MaterialChoice;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -114,6 +120,7 @@ public final class Alchema extends JavaPlugin {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+        this.getConfig().options().copyDefaults(true);
 
         // Save default recipes
         this.recipesDirectory = new File(getDataFolder(), "recipes");
@@ -178,7 +185,7 @@ public final class Alchema extends JavaPlugin {
         this.registerCommandSafely("givevialofessence", new CommandGiveVialOfEssence(this));
 
         // Register crafting recipes
-        Bukkit.addRecipe(new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(3)).shape("G G", " G ").setIngredient('G', new MaterialChoice(AlchemaConstants.MATERIALS_GLASS_PANES)));
+        this.parseAndRegisterVialRecipe();
 
         this.cauldronUpdateTask = CauldronUpdateHandler.init(this);
         this.cauldronUpdateTask.startTask();
@@ -312,6 +319,74 @@ public final class Alchema extends JavaPlugin {
         return getDefaultRecipePaths("recipes");
     }
 
+    /**
+     * Parse the empty vial of essence recipe from the config.yml and register it.
+     * If the recipe was already registered, this method will unregister it. If the
+     * recipe is not enabled, it will not be registered.
+     */
+    public void parseAndRegisterVialRecipe() {
+        Bukkit.removeRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL);
+
+        if (!getConfig().getBoolean(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_RECIPE_ENABLED, true)) {
+            return;
+        }
+
+        // Ensure that there are three entries with length of three. If not, don't register the recipe
+        String[] shape = getConfig().getStringList(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_RECIPE_SHAPE).toArray(String[]::new);
+        if (shape.length != 3 || !Arrays.stream(shape).allMatch(string -> string.length() == 3)) {
+            return;
+        }
+
+        Map<Character, RecipeChoice> ingredients = new HashMap<>();
+        ConfigurationSection ingredientsSection = getConfig().getConfigurationSection(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_RECIPE_INGREDIENTS);
+        if (ingredientsSection != null) {
+            ingredientsSection.getKeys(false).forEach(ingredientKeyString -> {
+                char ingredientKey = ingredientKeyString.charAt(0);
+
+                // Single material
+                if (ingredientsSection.isString(ingredientKeyString)) {
+                    String materialString = ingredientsSection.getString(ingredientKeyString);
+                    Material material = Material.matchMaterial(materialString != null ? materialString : Material.AIR.getKey().toString());
+
+                    if (material == null || material.isAir()) {
+                        return;
+                    }
+
+                    ingredients.put(ingredientKey, new RecipeChoice.MaterialChoice(material));
+                }
+
+                // List of materials
+                else if (ingredientsSection.isList(ingredientKeyString)) {
+                    List<Material> materials = ingredientsSection.getStringList(ingredientKeyString).stream()
+                            .map(Material::matchMaterial)
+                            .filter(Objects::nonNull)
+                            .distinct()
+                            .toList();
+
+                    if (materials.isEmpty()) {
+                        return;
+                    }
+
+                    ingredients.put(ingredientKey, new RecipeChoice.MaterialChoice(materials));
+                }
+            });
+        }
+
+        int yield = getConfig().getInt(AlchemaConstants.CONFIG_VIAL_OF_ESSENCE_RECIPE_YIELD, 3);
+        yield = (yield <= 64) ? (yield >= 1 ? yield : 1) : 64; // Clamp between 1 and 64
+
+        ShapedRecipe recipe = new ShapedRecipe(AlchemaConstants.RECIPE_KEY_EMPTY_VIAL, EntityEssenceData.createEmptyVial(yield)).shape(shape);
+        for (Map.Entry<Character, RecipeChoice> choice : ingredients.entrySet()) {
+            try {
+                recipe.setIngredient(choice.getKey(), choice.getValue());
+            } catch (IllegalArgumentException e) {
+                return;
+            }
+        }
+
+        Bukkit.addRecipe(recipe);
+    }
+
     @NotNull
     private List<@NotNull String> getDefaultRecipePaths(String path) {
         List<@NotNull String> paths = new ArrayList<>();
@@ -361,7 +436,6 @@ public final class Alchema extends JavaPlugin {
     @NotNull
     public static NamespacedKey key(@NotNull String key) {
         Preconditions.checkArgument(key != null, "key must not be null");
-
         return new NamespacedKey(instance, key);
     }
 

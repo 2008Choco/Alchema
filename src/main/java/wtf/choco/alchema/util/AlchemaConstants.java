@@ -49,9 +49,6 @@ public final class AlchemaConstants {
     /** A {@link NamespacedKey} used as a key for the empty vial crafting recipe */
     public static final NamespacedKey RECIPE_KEY_EMPTY_VIAL = Alchema.key("empty_vial");
 
-    /** A {@link NamespacedKey} used as a key for the recipe book crafting recipe */
-    public static final NamespacedKey RECIPE_KEY_RECIPE_BOOK = Alchema.key("recipe_book");
-
 
     // Configuration keys
     /** Configuration path, MetricsEnabled */
@@ -122,6 +119,18 @@ public final class AlchemaConstants {
 
     /** Configuration path, VialOfEssence.Consumption.TastelessThoughts */
     public static final String CONFIG_VIAL_OF_ESSENCE_CONSUMPTION_TASTELESS_THOUGHTS = "VialOfEssence.Consumption.TastelessThoughts";
+
+    /** Configuration path, VialOfEssence.Recipe.Enabled */
+    public static final String CONFIG_VIAL_OF_ESSENCE_RECIPE_ENABLED = "VialOfEssence.Recipe.Enabled";
+
+    /** Configuration path. VialOfEssence.Recipe.Yield */
+    public static final String CONFIG_VIAL_OF_ESSENCE_RECIPE_YIELD = "VialOfEssence.Recipe.Yield";
+
+    /** Configuration path, VialOfEssence.Recipe.Shape */
+    public static final String CONFIG_VIAL_OF_ESSENCE_RECIPE_SHAPE = "VialOfEssence.Recipe.Shape";
+
+    /** Configuration path, VialOfEssence.Recipe.Ingredients */
+    public static final String CONFIG_VIAL_OF_ESSENCE_RECIPE_INGREDIENTS = "VialOfEssence.Recipe.Ingredients";
 
     /** Configuration path, VialOfEssence.Item.Empty.Name */
     public static final String CONFIG_VIAL_OF_ESSENCE_ITEM_EMPTY_NAME = "VialOfEssence.Item.Empty.Name";
