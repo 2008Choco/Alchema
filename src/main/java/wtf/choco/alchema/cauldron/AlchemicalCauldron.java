@@ -1,7 +1,6 @@
 package wtf.choco.alchema.cauldron;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,6 +14,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
@@ -82,13 +82,11 @@ import wtf.choco.commons.util.NamespacedKeyUtil;
  */
 public class AlchemicalCauldron {
 
+    private static final Set<Material> HEAT_SOURCE_MATERIALS = Set.of(Material.FIRE, Material.SOUL_FIRE, Material.LAVA);
     private static final Map<@NotNull Material, @NotNull Predicate<@NotNull BlockData>> HEAT_SOURCE_BLOCKS = new EnumMap<>(Material.class);
     static {
-        HEAT_SOURCE_BLOCKS.put(Material.FIRE, Predicates.alwaysTrue());
-        HEAT_SOURCE_BLOCKS.put(Material.SOUL_FIRE, Predicates.alwaysTrue());
         HEAT_SOURCE_BLOCKS.put(Material.CAMPFIRE, blockData -> ((Campfire) blockData).isLit());
         HEAT_SOURCE_BLOCKS.put(Material.SOUL_CAMPFIRE, blockData -> ((Campfire) blockData).isLit());
-        HEAT_SOURCE_BLOCKS.put(Material.LAVA, Predicates.alwaysTrue());
     }
 
     private long heatingStartTime;
@@ -299,7 +297,14 @@ public class AlchemicalCauldron {
      * @return true if a valid heat source is present, false otherwise
      */
     public boolean hasValidHeatSource() {
-        Predicate<@NotNull BlockData> heatSourcePredicate = HEAT_SOURCE_BLOCKS.get(heatSourceBlock.getType());
+        // Quick checks for simple types
+        Material heatSourceType = heatSourceBlock.getType();
+        if (HEAT_SOURCE_MATERIALS.contains(heatSourceType)) {
+            return true;
+        }
+
+        // Complex types for heatable materials that have specific conditions
+        Predicate<@NotNull BlockData> heatSourcePredicate = HEAT_SOURCE_BLOCKS.get(heatSourceType);
         return heatSourcePredicate != null && heatSourcePredicate.test(heatSourceBlock.getBlockData());
     }
 
@@ -545,8 +550,25 @@ public class AlchemicalCauldron {
         Location location = getLocation().add(0.5, 0.25, 0.5);
         Location particleLocation = getLocation().add(0.5, 1, 0.5);
 
-        // Unheat if conditions are not met
-        if (!canHeatUp()) {
+        // If a cauldron is heating up
+        if (isHeatingUp()) {
+            // Don't continue processing anything else in this update method until the heat up time is complete
+            long timeSinceHeatingUp = System.currentTimeMillis() - getHeatingStartTime();
+            if (timeSinceHeatingUp < cauldronConfiguration.getMillisecondsToHeatUp()) {
+                return;
+            }
+
+            // If the heating up time has passed, start bubbling the cauldron
+            if (!AlchemaEventFactory.handleCauldronBubbleEvent(this)) {
+                return;
+            }
+
+            this.stopHeatingUp();
+            this.setBubbling(true);
+        }
+
+        // If the cauldron is currently bubbling but does not have the necessary requirements to be bubbling, stop bubbling
+        if (isBubbling() && !canHeatUp()) {
             this.stopHeatingUp();
             this.setBubbling(false);
 
@@ -554,24 +576,9 @@ public class AlchemicalCauldron {
             return;
         }
 
-        // Attempt to heat cauldron (if valid)
+        // If the cauldron is not yet bubbling or heating up, attempt to heat it up
         if (!isBubbling() && !isHeatingUp() && !attemptToHeatUp()) {
             return;
-        }
-
-        // Prepare bubbling cauldrons
-        if (isHeatingUp()) {
-            long timeSinceHeatingUp = System.currentTimeMillis() - getHeatingStartTime();
-            if (timeSinceHeatingUp < cauldronConfiguration.getMillisecondsToHeatUp()) {
-                return;
-            }
-
-            if (!AlchemaEventFactory.handleCauldronBubbleEvent(this)) {
-                return;
-            }
-
-            this.stopHeatingUp();
-            this.setBubbling(true);
         }
 
         world.spawnParticle(Particle.BUBBLE_COLUMN_UP, getLocation().add(0.5, 0.95, 0.5), 2, 0.15F, 0F, 0.15F, 0F);
