@@ -568,7 +568,7 @@ public class AlchemicalCauldron {
         }
 
         // If the cauldron is currently bubbling but does not have the necessary requirements to be bubbling, stop bubbling
-        if (isBubbling() && !canHeatUp()) {
+        if ((isBubbling() || isHeatingUp()) && !canHeatUp()) {
             this.stopHeatingUp();
             this.setBubbling(false);
 
