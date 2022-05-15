@@ -35,7 +35,7 @@ import org.bukkit.potion.PotionEffectType;
  *
  * @author Parker Hawke - Choco
  */
-public final class DefaultEntityEffects {
+final class DefaultEntityEffects {
 
     // A
     static final EssenceConsumptionCallback AXOLOTL = (player, essenceData, item, amountOfEssence, potency) -> {
