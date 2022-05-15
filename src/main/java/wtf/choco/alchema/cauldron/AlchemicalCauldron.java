@@ -471,6 +471,7 @@ public class AlchemicalCauldron {
         CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(this, new ArrayList<>(items), player, reason, !force);
         if (ingredientsDropEvent.isCancelled()) {
             items.forEach(Item::remove);
+            ingredientsDropEvent.getItems().forEach(Item::remove);
             return false;
         }
 
