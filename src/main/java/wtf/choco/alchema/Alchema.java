@@ -57,6 +57,7 @@ import wtf.choco.alchema.listener.EmptyVialRecipeDiscoverListener;
 import wtf.choco.alchema.listener.EntityEssenceCollectionListener;
 import wtf.choco.alchema.listener.UpdateReminderListener;
 import wtf.choco.alchema.listener.VialOfEssenceConsumptionListener;
+import wtf.choco.alchema.metrics.MetricsHelper;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.commons.integration.IntegrationHandler;
 import wtf.choco.commons.util.UpdateChecker;
@@ -115,6 +116,10 @@ public final class Alchema extends JavaPlugin {
          */
         this.integrationHandler.registerIntegrations("MMOItems", () -> PluginIntegrationMMOItems::new);
         this.integrationHandler.integrate();
+
+        // Handle ingredient and result types for metrics (do this early so that third-party types aren't known)
+        this.recipeRegistry.getIngredientTypes().forEach(MetricsHelper::addKnownIngredientKey);
+        this.recipeRegistry.getResultTypes().forEach(MetricsHelper::addKnownResultKey);
     }
 
     @Override
@@ -196,7 +201,9 @@ public final class Alchema extends JavaPlugin {
         // Load Metrics
         if (getConfig().getBoolean(AlchemaConstants.CONFIG_METRICS_ENABLED, true)) {
             this.getLogger().info("Enabling plugin metrics");
-            new Metrics(this, 9741); // https://bstats.org/what-is-my-plugin-id
+
+            Metrics metrics = new Metrics(this, 9741); // https://bstats.org/what-is-my-plugin-id
+            MetricsHelper.registerCustomCharts(metrics, this);
         }
 
         UpdateChecker updateChecker = UpdateChecker.init(this, 87078);
@@ -247,6 +254,8 @@ public final class Alchema extends JavaPlugin {
         this.entityEssenceEffectRegistry.clearEntityEssenceData();
 
         this.cauldronUpdateTask.cancelTask();
+
+        MetricsHelper.clearKeyWhitelists();
     }
 
     /**

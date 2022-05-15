@@ -29,7 +29,7 @@ import wtf.choco.alchema.crafting.CauldronIngredient;
  */
 public final class CauldronIngredientMMOItem implements CauldronIngredient {
 
-    static NamespacedKey key; // Set by PluginIntegrationMMOItems
+    public static NamespacedKey key; // Set by PluginIntegrationMMOItems
 
     private final MMOItem mmoItem;
     private final ItemStack item;

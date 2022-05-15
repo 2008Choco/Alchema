@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -248,6 +249,16 @@ public class CauldronRecipeRegistry {
     }
 
     /**
+     * Get an unmodifiable {@link Set} of all known ingredient type {@link NamespacedKey keys}.
+     *
+     * @return all known ingredient types
+     */
+    @NotNull
+    public Set<NamespacedKey> getIngredientTypes() {
+        return Collections.unmodifiableSet(ingredientTypes.keySet());
+    }
+
+    /**
      * Clear all registered ingredient types.
      */
     public void clearIngredientTypes() {
@@ -296,6 +307,16 @@ public class CauldronRecipeRegistry {
         }
 
         return resultProvider.apply(object);
+    }
+
+    /**
+     * Get an unmodifiable {@link Set} of all known result type {@link NamespacedKey keys}.
+     *
+     * @return all known result types
+     */
+    @NotNull
+    public Set<NamespacedKey> getResultTypes() {
+        return Collections.unmodifiableSet(resultTypes.keySet());
     }
 
     /**

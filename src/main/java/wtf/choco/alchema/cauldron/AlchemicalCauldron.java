@@ -67,6 +67,7 @@ import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
 import wtf.choco.alchema.crafting.RecipeResult;
 import wtf.choco.alchema.essence.EntityEssenceData;
 import wtf.choco.alchema.essence.EntityEssenceEffectRegistry;
+import wtf.choco.alchema.metrics.MetricsHelper;
 import wtf.choco.alchema.util.AlchemaConstants;
 import wtf.choco.alchema.util.AlchemaEventFactory;
 import wtf.choco.alchema.util.EssenceUtil;
@@ -740,6 +741,8 @@ public class AlchemicalCauldron {
             world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_UPWARDS_AMBIENT, cauldronConfiguration.getSuccessfulCraftVolume(), 1.5F);
             world.playSound(location, Sound.BLOCK_BUBBLE_COLUMN_WHIRLPOOL_AMBIENT, cauldronConfiguration.getSuccessfulCraftVolume(), 0.8F);
         }
+
+        MetricsHelper.addSuccessfulCraft();
     }
 
     /**
