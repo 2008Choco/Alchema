@@ -468,10 +468,17 @@ public class AlchemicalCauldron {
         List<@NotNull Item> items = new ArrayList<>();
         this.getIngredients().forEach(ingredient -> items.addAll(ingredient.drop(this, getWorld(), getLocation().add(0.5, 0.5, 0.5))));
 
-        CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(this, items, player, reason, !force);
+        CauldronIngredientsDropEvent ingredientsDropEvent = AlchemaEventFactory.callCauldronIngredientsDropEvent(this, new ArrayList<>(items), player, reason, !force);
         if (ingredientsDropEvent.isCancelled()) {
             items.forEach(Item::remove);
             return false;
+        }
+
+        // If an Item was removed in the event, remove it from the world
+        for (Item item : items) {
+            if (!ingredientsDropEvent.getItems().contains(item)) {
+                item.remove();
+            }
         }
 
         this.ingredients.clear();
