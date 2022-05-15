@@ -8,6 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,18 +53,50 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.commons.util.NamespacedKeyUtil;
 
 /**
  * A series of utilities pertaining to {@link ItemStack ItemStacks}.
+ * <p>
+ * <strong>NOTE:</strong>This class it not a part of Alchema's API contract and may
+ * be subject to breakages without prior warning. Use of methods in this class should
+ * be done at ones own risk.
  *
  * @author Parker Hawke - Choco
  */
+@Internal
 public final class ItemUtil {
 
     private ItemUtil() { }
+
+    public static byte[] serialize(@NotNull ItemStack itemStack) {
+        try (ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+                BukkitObjectOutputStream outputStream = new BukkitObjectOutputStream(byteArrayStream)) {
+            outputStream.writeObject(itemStack);
+            return byteArrayStream.toByteArray();
+        } catch (IOException e) {
+            return new byte[0];
+        }
+    }
+
+    @NotNull
+    public static ItemStack deserialize(byte[] bytes) {
+        try (ByteArrayInputStream byteArrayStream = new ByteArrayInputStream(bytes);
+                BukkitObjectInputStream inputStream = new BukkitObjectInputStream(byteArrayStream)) {
+            Object read = inputStream.readObject();
+
+            if (read instanceof ItemStack itemStack) {
+                return itemStack;
+            }
+        } catch (IOException | ClassNotFoundException e) { }
+
+        return new ItemStack(Material.AIR);
+    }
 
     /**
      * Serialize an {@link ItemStack} to a {@link JsonObject}.
@@ -69,7 +104,10 @@ public final class ItemUtil {
      * @param item the item to serialize
      *
      * @return the object into which the item was serialized
+     *
+     * @deprecated use {@link #serialize(ItemStack)}
      */
+    @Deprecated(forRemoval = true)
     @NotNull
     public static JsonObject serializeItemStack(@NotNull ItemStack item) {
         Preconditions.checkArgument(item != null, "item must not be null");
