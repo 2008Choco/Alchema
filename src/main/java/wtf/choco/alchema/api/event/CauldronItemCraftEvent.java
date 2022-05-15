@@ -90,7 +90,7 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
      *
      * @deprecated use {@link #setRecipeResult(RecipeResult)} instead
      */
-    @Deprecated(since = "1.3.0")
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public void setResult(@Nullable ItemStack result) {
         this.result = (result != null) ? new RecipeResultItemStack(result) : null;
     }
@@ -103,7 +103,7 @@ public class CauldronItemCraftEvent extends CauldronEvent implements Cancellable
      * @deprecated use {@link #getRecipeResult()} instead
      */
     @Nullable
-    @Deprecated(since = "1.3.0")
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public ItemStack getResult() {
         return result != null ? result.asItemStack() : null;
     }

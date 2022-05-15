@@ -74,6 +74,13 @@ public final class ItemUtil {
 
     private ItemUtil() { }
 
+    /**
+     * Serialize an {@link ItemStack} as a byte array.
+     *
+     * @param itemStack the item to serialize
+     *
+     * @return the serialized item stack
+     */
     public static byte[] serialize(@NotNull ItemStack itemStack) {
         try (ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                 BukkitObjectOutputStream outputStream = new BukkitObjectOutputStream(byteArrayStream)) {
@@ -84,6 +91,13 @@ public final class ItemUtil {
         }
     }
 
+    /**
+     * Deserialize an {@link ItemStack} from a byte array.
+     *
+     * @param bytes the bytes
+     *
+     * @return the deserialized item stack
+     */
     @NotNull
     public static ItemStack deserialize(byte[] bytes) {
         try (ByteArrayInputStream byteArrayStream = new ByteArrayInputStream(bytes);
@@ -107,7 +121,7 @@ public final class ItemUtil {
      *
      * @deprecated use {@link #serialize(ItemStack)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "1.3.0", forRemoval = true)
     @NotNull
     public static JsonObject serializeItemStack(@NotNull ItemStack item) {
         Preconditions.checkArgument(item != null, "item must not be null");
@@ -428,7 +442,10 @@ public final class ItemUtil {
      * @param object the object from which to deserialize an ItemStack
      *
      * @return the deserialized ItemStack
+     *
+     * @deprecated use {@link #deserializeItemStackModern(JsonObject)}
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     @NotNull
     @SuppressWarnings("unused") // Eclipse thinks Optional#orNull() never returns null... wot?
     public static ItemStack deserializeItemStack(@NotNull ItemStack item, @NotNull JsonObject object) {
@@ -976,7 +993,10 @@ public final class ItemUtil {
      * @param object the object from which to deserialize an ItemStack
      *
      * @return the deserialized ItemStack
+     *
+     * @deprecated use {@link #deserializeItemStackModern(JsonObject)}
      */
+    @Deprecated(since = "1.3.0", forRemoval = true)
     @NotNull
     public static ItemStack deserializeItemStack(@NotNull JsonObject object) {
         Preconditions.checkArgument(object != null, "object must not be null");

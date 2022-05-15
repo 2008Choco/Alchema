@@ -206,7 +206,7 @@ public class AlchemicalCauldron {
      * {@link #getHeatSourceBlock()} instead. This method will be removed in the near future.
      */
     @NotNull
-    @Deprecated
+    @Deprecated(since = "1.0.1.1", forRemoval = true)
     public Block getFireBlock() {
         return heatSourceBlock;
     }

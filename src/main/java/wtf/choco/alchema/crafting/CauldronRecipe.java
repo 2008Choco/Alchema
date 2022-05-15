@@ -44,7 +44,7 @@ public interface CauldronRecipe {
      * @deprecated use {@link #getRecipeResult()} instead
      */
     @NotNull
-    @Deprecated(since = "1.3.0")
+    @Deprecated(since = "1.3.0", forRemoval = true)
     public ItemStack getResult();
 
     /**
@@ -314,7 +314,7 @@ public interface CauldronRecipe {
          * @deprecated poor naming. See {@link #comment(String)}. Will be removed in a future release
          */
         @NotNull
-        @Deprecated
+        @Deprecated(since = "1.2.0", forRemoval = true)
         public CauldronRecipe.Builder setComment(@Nullable String comment) {
             this.comment = comment; // Not calling #comment() because of the change in nullability handling
             return this;
@@ -346,7 +346,7 @@ public interface CauldronRecipe {
          * @deprecated poor naming. See {@link #experience(int)}. Will be removed in a future release
          */
         @NotNull
-        @Deprecated
+        @Deprecated(since = "1.2.0", forRemoval = true)
         public CauldronRecipe.Builder setExperience(int experience) {
             return experience(experience);
         }
