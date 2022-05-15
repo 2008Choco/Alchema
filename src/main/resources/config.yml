@@ -1,5 +1,8 @@
 CheckForUpdates: true
-Metrics: true
+
+Metrics:
+  Enabled: true
+  AnonymousCustomRecipeTypes: false
 
 Cauldron:
   ItemSearchInterval: 1

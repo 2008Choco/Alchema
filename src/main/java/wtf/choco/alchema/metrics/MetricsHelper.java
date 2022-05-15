@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import wtf.choco.alchema.Alchema;
 import wtf.choco.alchema.crafting.CauldronRecipeRegistry;
+import wtf.choco.alchema.util.AlchemaConstants;
 
 /**
  * A utility class handling statistics of custom Metrics charts.
@@ -46,8 +47,8 @@ public final class MetricsHelper {
         metrics.addCustomChart(new SimplePie("loaded_cauldrons", () -> String.valueOf(plugin.getCauldronManager().getCauldrons().size())));
         metrics.addCustomChart(new SimplePie("cauldron_recipes", () -> String.valueOf(plugin.getRecipeRegistry().getRecipes().size())));
         metrics.addCustomChart(new SingleLineChart("cauldron_crafts", MetricsHelper::getSuccessfulCraftsAndReset));
-        metrics.addCustomChart(new AdvancedPie("cauldron_recipe_ingredient_types", () -> calculateCauldronRecipeIngredientTypes(plugin.getRecipeRegistry())));
-        metrics.addCustomChart(new AdvancedPie("cauldron_recipe_result_types", () -> calculateCauldronRecipeResultTypes(plugin.getRecipeRegistry())));
+        metrics.addCustomChart(new AdvancedPie("cauldron_recipe_ingredient_types", () -> calculateCauldronRecipeIngredientTypes(plugin.getRecipeRegistry(), shouldAnonymizeRecipeTypes(plugin))));
+        metrics.addCustomChart(new AdvancedPie("cauldron_recipe_result_types", () -> calculateCauldronRecipeResultTypes(plugin.getRecipeRegistry(), shouldAnonymizeRecipeTypes(plugin))));
     }
 
     /**
@@ -96,12 +97,12 @@ public final class MetricsHelper {
     }
 
     @NotNull
-    private static Map<String, Integer> calculateCauldronRecipeIngredientTypes(@NotNull CauldronRecipeRegistry recipeRegistry) {
+    private static Map<String, Integer> calculateCauldronRecipeIngredientTypes(@NotNull CauldronRecipeRegistry recipeRegistry, boolean anonymize) {
         Map<String, Integer> ingredientTypes = new HashMap<>();
 
         recipeRegistry.getRecipes().forEach(recipe -> recipe.getIngredients().forEach(ingredient -> {
             NamespacedKey key = ingredient.getKey();
-            String keyString = INGREDIENT_KEY_WHITELIST.contains(key) ? key.toString() : "Third-Party Ingredient Type";
+            String keyString = (!anonymize || INGREDIENT_KEY_WHITELIST.contains(key)) ? key.toString() : "Third-Party Ingredient Type";
             ingredientTypes.merge(keyString, 1, Integer::sum);
         }));
 
@@ -109,16 +110,20 @@ public final class MetricsHelper {
     }
 
     @NotNull
-    private static Map<String, Integer> calculateCauldronRecipeResultTypes(@NotNull CauldronRecipeRegistry recipeRegistry) {
+    private static Map<String, Integer> calculateCauldronRecipeResultTypes(@NotNull CauldronRecipeRegistry recipeRegistry, boolean anonymize) {
         Map<String, Integer> resultTypes = new HashMap<>();
 
         recipeRegistry.getRecipes().forEach(recipe -> {
             NamespacedKey key = recipe.getRecipeResult().getKey();
-            String keyString = RESULT_KEY_WHITELIST.contains(key) ? key.toString() : "Third-Party Result Type";
+            String keyString = (!anonymize || RESULT_KEY_WHITELIST.contains(key)) ? key.toString() : "Third-Party Result Type";
             resultTypes.merge(keyString, 1, Integer::sum);
         });
 
         return resultTypes;
+    }
+
+    private static boolean shouldAnonymizeRecipeTypes(Alchema plugin) {
+        return plugin.getConfig().getBoolean(AlchemaConstants.CONFIG_METRICS_ANONYMOUS_CUSTOM_RECIPE_TYPES, false);
     }
 
 }

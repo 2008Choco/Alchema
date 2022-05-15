@@ -51,11 +51,14 @@ public final class AlchemaConstants {
 
 
     // Configuration keys
-    /** Configuration path, MetricsEnabled */
-    public static final String CONFIG_METRICS_ENABLED = "MetricsEnabled";
-
     /** Configuration path, CheckForUpdates */
     public static final String CONFIG_CHECK_FOR_UPDATES = "CheckForUpdates";
+
+    /** Configuration path, Metrics.Enabled */
+    public static final String CONFIG_METRICS_ENABLED = "Metrics.Enabled";
+
+    /** Configuration path, Metrics.AnonymousCustomRecipeTypes */
+    public static final String CONFIG_METRICS_ANONYMOUS_CUSTOM_RECIPE_TYPES = "Metrics.AnonymousCustomRecipeTypes";
 
     /** Configuration path, Cauldron.ItemSearchInterval */
     public static final String CONFIG_CAULDRON_ITEM_SEARCH_INTERVAL = "Cauldron.ItemSearchInterval";
