@@ -1047,7 +1047,7 @@ public final class ItemUtil {
             result = deserializeItemStack(result, object);
         } catch (IllegalArgumentException e) {
             throw new JsonParseException("Malformatted \"item\" input. Got: \"" + resultString + "\"");
-        } catch (Exception e) { // If the method doesn't exist, we'll fall back to old serialization
+        } catch (Exception | NoSuchMethodError e) { // If the method doesn't exist, we'll fall back to old serialization
             result = deserializeItemStack(object);
         }
 
