@@ -58,8 +58,8 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
      * @param object the object from which to deserialize
      */
     public CauldronIngredientItemStack(@NotNull JsonObject object) {
-        if (!object.has("item_base64")) { // Modern deserialization using Base64
-            throw new JsonParseException("object does not contain i.");
+        if (!object.has("item_base64")) {
+            throw new JsonParseException("object does not contain item_base64.");
         }
 
         this.item = ItemUtil.deserialize(Base64.getDecoder().decode(object.get("item_base64").getAsString()));
