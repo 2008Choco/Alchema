@@ -32,7 +32,7 @@ public final class VialOfEssenceConsumptionListener implements Listener {
             return;
         }
 
-        // TODO: Future PR for 1.16.4
+        // TODO: Create pull request to Bukkit
 //        event.setReplacement(EntityEssenceData.createEmptyVial(item.getAmount()));
 
         EntityType type = EntityEssenceData.getEntityEssenceType(item);

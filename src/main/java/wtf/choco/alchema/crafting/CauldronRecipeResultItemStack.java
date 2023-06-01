@@ -55,7 +55,7 @@ public class CauldronRecipeResultItemStack implements CauldronRecipeResult {
      * @param object the object from which to deserialize
      */
     public CauldronRecipeResultItemStack(@NotNull JsonObject object) {
-        this.item = ItemUtil.deserializeItemStackModern(object);
+        this.item = ItemUtil.parseItemStack(object);
         this.item.setAmount(object.has("amount") ? object.get("amount").getAsInt() : 1);
     }
 

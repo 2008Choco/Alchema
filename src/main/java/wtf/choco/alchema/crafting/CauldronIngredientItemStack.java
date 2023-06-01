@@ -2,6 +2,7 @@ package wtf.choco.alchema.crafting;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import java.util.Base64;
 import java.util.Objects;
@@ -57,12 +58,11 @@ public class CauldronIngredientItemStack implements CauldronIngredient {
      * @param object the object from which to deserialize
      */
     public CauldronIngredientItemStack(@NotNull JsonObject object) {
-        if (object.has("item_base64")) { // Modern deserialization using Base64
-            this.item = ItemUtil.deserialize(Base64.getDecoder().decode(object.get("item_base64").getAsString()));
-        } else { // Legacy deserialization using incomplete re-implemented JsonObject structure
-            this.item = ItemUtil.deserializeItemStackModern(object);
+        if (!object.has("item_base64")) { // Modern deserialization using Base64
+            throw new JsonParseException("object does not contain i.");
         }
 
+        this.item = ItemUtil.deserialize(Base64.getDecoder().decode(object.get("item_base64").getAsString()));
         this.item.setAmount(object.has("amount") ? Math.max(object.get("amount").getAsInt(), 1) : 1);
     }
 

@@ -81,7 +81,7 @@ public class CauldronIngredientEntityEssence implements CauldronIngredient {
         Preconditions.checkArgument(essenceEffectRegistry != null, "essenceEffectRegistry must not be null");
 
         if (!object.has("entity")) {
-            throw new JsonParseException("object does not contain item.");
+            throw new JsonParseException("object does not contain entity.");
         }
 
         NamespacedKey entityKey = NamespacedKeyUtil.fromString(object.get("entity").getAsString(), null);

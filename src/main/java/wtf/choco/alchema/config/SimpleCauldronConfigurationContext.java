@@ -3,7 +3,6 @@ package wtf.choco.alchema.config;
 /**
  * A simple implementation of {@link CauldronConfigurationContext}.
  */
-// TODO: This would be a really nice class to use a record ._.
 final class SimpleCauldronConfigurationContext implements CauldronConfigurationContext {
 
     private final int itemSearchInterval;
