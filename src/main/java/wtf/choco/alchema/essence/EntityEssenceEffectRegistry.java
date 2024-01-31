@@ -116,6 +116,7 @@ public final class EntityEssenceEffectRegistry {
         Preconditions.checkArgument(registry != null, "registry must not be null");
 
         // A
+        register(registry, EntityType.ALLAY, 0x00DAFF, DefaultEntityEffects.ALLAY);
         register(registry, EntityType.AXOLOTL, 0xF59DE0, DefaultEntityEffects.AXOLOTL);
 
         // B
@@ -124,6 +125,7 @@ public final class EntityEssenceEffectRegistry {
         register(registry, EntityType.BLAZE, 0xB76D00, DefaultEntityEffects.BLAZE);
 
         // C
+        register(registry, EntityType.CAMEL, 0xCB9337, DefaultEntityEffects.CAMEL);
         register(registry, EntityType.CAT, 0x937155, DefaultEntityEffects.CAT);
         register(registry, EntityType.CAVE_SPIDER, 0x002D31, DefaultEntityEffects.CAVE_SPIDER);
         register(registry, EntityType.CHICKEN, 0xB90000, DefaultEntityEffects.CHICKEN);
@@ -145,6 +147,7 @@ public final class EntityEssenceEffectRegistry {
 
         // F
         register(registry, EntityType.FOX, 0xE48D40, DefaultEntityEffects.FOX);
+        register(registry, EntityType.FROG, 0xD07444, DefaultEntityEffects.FROG);
 
         // G
         register(registry, EntityType.GHAST, 0xAFAFAF, DefaultEntityEffects.GHAST);
@@ -197,6 +200,7 @@ public final class EntityEssenceEffectRegistry {
         register(registry, EntityType.SKELETON, 0xFFFFFF, DefaultEntityEffects.SKELETON);
         register(registry, EntityType.SKELETON_HORSE, 0x707070, DefaultEntityEffects.SKELETON_HORSE);
         register(registry, EntityType.SLIME, 0x75BF65, DefaultEntityEffects.SLIME);
+        register(registry, EntityType.SNIFFER, 0x962930, DefaultEntityEffects.SNIFFER);
         register(registry, EntityType.SNOWMAN, 0xADC8C8, DefaultEntityEffects.SNOWMAN);
         register(registry, EntityType.SPIDER, 0x241F1C, DefaultEntityEffects.SPIDER);
         register(registry, EntityType.SQUID, 0x3D4f5D, DefaultEntityEffects.SQUID);
@@ -204,6 +208,7 @@ public final class EntityEssenceEffectRegistry {
         register(registry, EntityType.STRIDER, 0x913032, DefaultEntityEffects.STRIDER);
 
         // T
+        register(registry, EntityType.TADPOLE, 0x6D533D, DefaultEntityEffects.TADPOLE);
         register(registry, EntityType.TRADER_LLAMA, 0x38507A, DefaultEntityEffects.TRADER_LLAMA);
         register(registry, EntityType.TROPICAL_FISH, 0xD85F13, DefaultEntityEffects.TROPICAL_FISH);
         register(registry, EntityType.TURTLE, 0x46BD49, DefaultEntityEffects.TURTLE);
@@ -215,6 +220,7 @@ public final class EntityEssenceEffectRegistry {
 
         // W
         register(registry, EntityType.WANDERING_TRADER, 0x435F91, DefaultEntityEffects.WANDERING_TRADER);
+        register(registry, EntityType.WARDEN, 0x0F4649, DefaultEntityEffects.WARDEN);
         register(registry, EntityType.WITCH, 0x351757, DefaultEntityEffects.WITCH);
         register(registry, EntityType.WITHER, 0x262626, DefaultEntityEffects.WITHER);
         register(registry, EntityType.WITHER_SKELETON, 0x1E1E1E, DefaultEntityEffects.WITHER_SKELETON);

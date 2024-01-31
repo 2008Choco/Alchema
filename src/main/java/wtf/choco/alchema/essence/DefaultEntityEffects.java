@@ -40,6 +40,7 @@ import org.jetbrains.annotations.ApiStatus.Internal;
 final class DefaultEntityEffects {
 
     // A
+    static final EssenceConsumptionCallback ALLAY = null;
     static final EssenceConsumptionCallback AXOLOTL = (player, essenceData, item, amountOfEssence, potency) -> {
         player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80 + (int) (potency * 60), 0, true));
     };
@@ -54,6 +55,7 @@ final class DefaultEntityEffects {
     };
 
     // C
+    static final EssenceConsumptionCallback CAMEL = null;
     static final EssenceConsumptionCallback CAT = (player, essenceData, item, amountOfEssence, potency) -> {
         Random random = ThreadLocalRandom.current();
         Location location = player.getLocation();
@@ -174,7 +176,9 @@ final class DefaultEntityEffects {
 
     // F
     static final EssenceConsumptionCallback FOX = null;
-
+    static final EssenceConsumptionCallback FROG = (player, essenceData, item, amountOfEssence, potency) -> {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 40 + (int) (60 * potency), 0, true));
+    };
     // G
     static final EssenceConsumptionCallback GHAST = null;
     static final EssenceConsumptionCallback GIANT = null;
@@ -235,6 +239,7 @@ final class DefaultEntityEffects {
     static final EssenceConsumptionCallback SKELETON = null;
     static final EssenceConsumptionCallback SKELETON_HORSE = null;
     static final EssenceConsumptionCallback SLIME = null;
+    static final EssenceConsumptionCallback SNIFFER = null;
     static final EssenceConsumptionCallback SNOWMAN = null;
     static final EssenceConsumptionCallback SPIDER = null;
     static final EssenceConsumptionCallback SQUID = null;
@@ -242,6 +247,7 @@ final class DefaultEntityEffects {
     static final EssenceConsumptionCallback STRIDER = null;
 
     // T
+    static final EssenceConsumptionCallback TADPOLE = null;
     static final EssenceConsumptionCallback TRADER_LLAMA = null;
     static final EssenceConsumptionCallback TROPICAL_FISH = null;
     static final EssenceConsumptionCallback TURTLE = null;
@@ -253,6 +259,7 @@ final class DefaultEntityEffects {
 
     // W
     static final EssenceConsumptionCallback WANDERING_TRADER = null;
+    static final EssenceConsumptionCallback WARDEN = null;
     static final EssenceConsumptionCallback WITCH = null;
     static final EssenceConsumptionCallback WITHER = null;
     static final EssenceConsumptionCallback WITHER_SKELETON = null;
